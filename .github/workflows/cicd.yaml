@@ -64,4 +64,5 @@ jobs:
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated \
-            --set-env-vars ENVIRONMENT=$ENVIRONMENT
+            --set-env-vars $(cat env/stg.env | sed 's/^/--set-env-vars /' | tr '\n' ',') \
+            --project civic-gate-432301-b8
