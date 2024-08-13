@@ -15,9 +15,6 @@ COPY . /app/
 
 EXPOSE 8080
 
-RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate --noinput
-
 CMD ["uvicorn", "poolshop.asgi:application", "--host", "0.0.0.0", "--port", "8080"]
 
 
