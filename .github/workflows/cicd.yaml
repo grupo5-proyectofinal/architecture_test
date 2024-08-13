@@ -44,3 +44,33 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: docker push juancru68/poolshop_staging:latest
+
+  deploy:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.SERVICE_ACCOUNT }}
+
+      - name: Deploy to Google Cloud Run
+        run: |
+          gcloud run deploy poolshop-staging \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/poolshop_staging:latest \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated \
+            --set-env-vars ENVIRONMENT=$ENVIRONMENT
+      
+      - name: Deploy to Google Cloud Run
+        run: |
+          gcloud run deploy poolshop-staging \
+            --image docker.io/juancru68/poolshop_staging:latest \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated \
+            --set-env-vars ENVIRONMENT=$ENVIRONMENT
