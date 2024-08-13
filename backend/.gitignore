@@ -1,0 +1,66 @@
+*.env
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+*.log
+*.pot
+*.pyc
+*.sqlite3
+
+env/
+
+*.sqlite3
+db.sqlite3
+
+/staticfiles/
+/media/
+/static/
+/mediafiles/
+
+*.bak
+*.swp
+
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Pyre type checker
+.pyre/
+
+# Pytest
+.pytest_cache/
+.tox/
+coverage/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Ignore IDE-specific files
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+.project
+.settings/
+.metadata/
+*.iml
+*.ipr
+*.iws
+
+# Ignore files related to deployment
+*.bak
+*.orig
+*.swp
+
+# Linux files
+.Trash-*
+
+
