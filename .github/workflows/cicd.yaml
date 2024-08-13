@@ -36,7 +36,8 @@ jobs:
           docker build \
             -t poolshop_staging:latest \
             --build-arg ENVIRONMENT=$ENVIRONMENT \
-            --no-cache
+            --no-cache \
+            ./backend
 
       - name: Tag Docker image
         run: docker tag poolshop_staging:latest juancru68/poolshop_staging:latest
