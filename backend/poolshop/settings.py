@@ -1,6 +1,7 @@
 from pathlib import Path
 import environ
 import os
+from google.oauth2 import service_account
 
 env = environ.Env()
 
@@ -86,7 +87,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 TIME_ZONE = 'UTC'
 
@@ -94,7 +95,24 @@ USE_I18N = True
 
 USE_TZ = True
 
+if env.bool("USE_GOOGLE_STORAGE"):
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+        os.path.join(BASE_DIR, env('GS_CREDENTIALS_FILE_PATH'))
+    )
+    STORAGES = {
+        "default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"},
+        "staticfiles": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"},
+    }
+    GS_PROJECT_ID = env('GS_PROJECT_ID')
+    GS_BUCKET_NAME = env('GS_BUCKET_NAME')
+    GS_DEFAULT_ACL = "publicRead"
+    GS_CUSTOM_ENDPOINT = f"https://{GS_BUCKET_NAME}.storage.googleapis.com"
+    GS_IS_GZIPPED = True
+else:
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
 
-STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
