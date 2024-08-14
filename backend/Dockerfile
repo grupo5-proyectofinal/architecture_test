@@ -15,8 +15,6 @@ RUN pip install --upgrade pip && \
     
 COPY . /app/
     
-RUN echo $SERVICE_ACCOUNT > /app/service-account.json
-
 EXPOSE 8080
 
 CMD ["uvicorn", "poolshop.asgi:application", "--host", "0.0.0.0", "--port", "8080"]
