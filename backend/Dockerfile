@@ -12,7 +12,10 @@ COPY ./service-account.json /app/service-account.json
 RUN pip install --upgrade pip && \
     pip3 install -r /app/requirements.txt
 
+    
 COPY . /app/
+    
+RUN echo $SERVICE_ACCOUNT > /app/service-account.json
 
 EXPOSE 8080
 

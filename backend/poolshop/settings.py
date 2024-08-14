@@ -107,7 +107,7 @@ else:
 
 if env.bool("USE_GOOGLE_STORAGE"):
     GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-        os.path.join(BASE_DIR, env('GS_CREDENTIALS_FILE_PATH'))
+        os.path.join(BASE_DIR, 'service-account.json') 
     )
     STORAGES = {
         "default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"},
