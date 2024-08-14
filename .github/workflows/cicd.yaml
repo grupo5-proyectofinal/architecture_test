@@ -33,16 +33,10 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      - name: Build Docker image
+      - name: Build and Push Docker image using docker-compose
         run: |
-          docker build \
-            -t us-central1-docker.pkg.dev/civic-gate-432301-b8/poolshop/poolshop_staging:latest \
-            --build-arg ENVIRONMENT=$ENVIRONMENT \
-            --no-cache \
-            ./backend
-
-      - name: Push Docker image to Google Artifact Registry
-        run: |
+          docker-compose -f ./backend/docker-compose.yml --profile staging build staging
+          docker tag poolshop_staging:latest us-central1-docker.pkg.dev/civic-gate-432301-b8/poolshop/poolshop_staging:latest
           docker push us-central1-docker.pkg.dev/civic-gate-432301-b8/poolshop/poolshop_staging:latest
 
   deploy:
@@ -64,5 +58,4 @@ jobs:
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated \
-            --set-env-vars $(cat env/stg.env | sed 's/^/--set-env-vars /' | tr '\n' ',') \
-            --project civic-gate-432301-b8
+            --set-env-vars ENVIRONMENT=$ENVIRONMENT
