@@ -33,10 +33,16 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and Push Docker image using docker-compose
+      - name: Build Docker image
         run: |
-          docker-compose -f ./backend/docker-compose.yml --profile staging build staging
-          docker tag poolshop_staging:latest us-central1-docker.pkg.dev/civic-gate-432301-b8/poolshop/poolshop_staging:latest
+          docker build \
+            -t us-central1-docker.pkg.dev/civic-gate-432301-b8/poolshop/poolshop_staging:latest \
+            --build-arg ENVIRONMENT=$ENVIRONMENT \
+            --no-cache \
+            ./backend
+
+      - name: Push Docker image to Google Artifact Registry
+        run: |
           docker push us-central1-docker.pkg.dev/civic-gate-432301-b8/poolshop/poolshop_staging:latest
 
   deploy:
@@ -52,6 +58,17 @@ jobs:
           credentials_json: ${{ secrets.SERVICE_ACCOUNT }}
   
       - name: Deploy to Google Cloud Run
+        env:
+          DEBUG: "True"
+          SECRET_KEY: "django-insecure--w-2b7frn3o_z+bs7*o#@v*5!sd)^&rahzf5=zhdaqev)vj+8#"
+          ALLOWED_HOSTS: "*"
+          USE_GOOGLE_STORAGE: "True"
+          GS_BUCKET_NAME: "poolshop-dev"
+          GS_CREDENTIALS_FILE_PATH: "/app/service-account.json"
+          GS_PROJECT_ID: "poolshop"
+          DATABASE_URL: "postgres://postgres:mnbmnbmnb3@130.211.125.221:5432/poolshop"
+          STATIC_URL: "https://storage.googleapis.com/poolshop-dev/static/"
+          MEDIA_URL: "https://storage.googleapis.com/poolshop-dev/media/"
         run: |
           gcloud run deploy poolshop-staging \
             --image us-central1-docker.pkg.dev/civic-gate-432301-b8/poolshop/poolshop_staging:latest \
