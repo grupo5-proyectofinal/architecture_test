@@ -76,3 +76,4 @@ jobs:
             --region us-central1 \
             --allow-unauthenticated \
             --set-env-vars DEBUG=$DEBUG,SECRET_KEY=$SECRET_KEY,ALLOWED_HOSTS=$ALLOWED_HOSTS,USE_GOOGLE_STORAGE=$USE_GOOGLE_STORAGE,GS_BUCKET_NAME=$GS_BUCKET_NAME,GS_CREDENTIALS_FILE_PATH=$GS_CREDENTIALS_FILE_PATH,GS_PROJECT_ID=$GS_PROJECT_ID,DATABASE_URL=$DATABASE_URL,STATIC_URL=$STATIC_URL,MEDIA_URL=$MEDIA_URL
+            --update-secrets /app/service-account.json=service-account:latest
