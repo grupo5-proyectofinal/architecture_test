@@ -3,6 +3,7 @@ from pathlib import Path
 import environ
 import os
 from google.oauth2 import service_account
+import google.auth
 
 env = environ.Env()
 
@@ -106,15 +107,16 @@ else:
     STATICFILES_DIRS = []
     MEDIA_ROOT = ''
 
+
+
 if env.bool("USE_GOOGLE_STORAGE"):
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
-        json.loads(os.getenv("SERVICE_ACCOUNT_JSON"))
-    )
+    credentials, project_id = google.auth.default()
+    GS_CREDENTIALS = credentials
     STORAGES = {
         "default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"},
         "staticfiles": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"},
     }
-    GS_PROJECT_ID = env('GS_PROJECT_ID')
+    GS_PROJECT_ID = project_id
     GS_BUCKET_NAME = env('GS_BUCKET_NAME')
     GS_DEFAULT_ACL = "publicRead"
     GS_CUSTOM_ENDPOINT = f"https://{GS_BUCKET_NAME}.storage.googleapis.com"
