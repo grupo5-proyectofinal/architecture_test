@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import environ
 import os
@@ -106,8 +107,8 @@ else:
     MEDIA_ROOT = ''
 
 if env.bool("USE_GOOGLE_STORAGE"):
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-        os.path.join(BASE_DIR, 'service-account.json') 
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+        json.loads(os.getenv("SERVICE_ACCOUNT_JSON"))
     )
     STORAGES = {
         "default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"},
