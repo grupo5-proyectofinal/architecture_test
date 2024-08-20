@@ -1,8 +1,6 @@
-import json
 from pathlib import Path
 import environ
 import os
-from google.oauth2 import service_account
 import google.auth
 
 env = environ.Env()
@@ -34,7 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django-rest-framework'
+    'user',
+    'pool',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +124,5 @@ if env.bool("USE_GOOGLE_STORAGE"):
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'user.Usuario'
