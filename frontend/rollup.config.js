@@ -5,6 +5,7 @@ import css from 'rollup-plugin-css-only';
 import terser from '@rollup/plugin-terser';
 import serve from 'rollup-plugin-serve'; // Importa el plugin serve
 
+
 const production = !process.env.ROLLUP_WATCH;
 export default {
   input: 'src/main.js',
@@ -20,7 +21,9 @@ export default {
         css.write('public/build/bundle.css');
       }
     }),
-    resolve(),
+    resolve({
+      exportConditions: ['svelte']
+    }),
     commonjs(),
     css({ 
       output: 'public/build/styles.css'
