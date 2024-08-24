@@ -127,3 +127,17 @@ if env.bool("USE_GOOGLE_STORAGE"):
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.Usuario'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'user.auth.JWTAuthentication',
+    ]
+}
+
+JWT_CONF = {
+    'TOKEN_LIFETIME_HOURS': 5  # Duración del token en horas
+}
