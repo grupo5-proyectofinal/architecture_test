@@ -2,42 +2,25 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import generics
 from .models import Pool, Categoria, Producto
 from .serializers import CreatePoolSerializer, ListPoolSerializer, PoolDetailSerializer
 from user.models import Usuario
 
 
-@api_view(['GET', 'POST'])
-def pool_list_create(request):
-    if request.method == 'GET':
-        pools = Pool.objects.all()
-        serializer = ListPoolSerializer(pools, many=True)
-        return Response(serializer.data)
-    
-    elif request.method == 'POST':
+
+class PoolListCreateView(generics.ListCreateAPIView):
+    queryset = Pool.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ListPoolSerializer
+        return CreatePoolSerializer
+
+    def perform_create(self, serializer):
         usuario = Usuario.objects.get(username="juan")
-        serializer = CreatePoolSerializer(data=request.data)
-        if serializer.is_valid():
-            breakpoint()
-            producto_data = serializer.validated_data['producto']
-            categoria_data = producto_data['categoria']
+        serializer.save(creador=usuario)  # Pasamos el usuario como creador
 
-            # Crear la categoría si no existe
-            categoria, created = Categoria.objects.get_or_create(**categoria_data)
-
-            producto = Producto.objects.create(
-                nombre=producto_data['nombre'],
-                descripcion=producto_data['descripcion'],
-                precio=producto_data['precio'],
-                cantidad=producto_data['cantidad'],
-                categoria=categoria
-            )
-            
-            # Guardar el pool con el creador y el producto
-            pool = serializer.save(creador=usuario, producto=producto)
-            return Response(CreatePoolSerializer(pool).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 # Retrieve, update, and delete pool
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -61,3 +44,20 @@ def pool_detail(request, pk):
     elif request.method == 'DELETE':
         pool.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class PoolDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Pool.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return PoolDetailSerializer  # Serializer para ver los detalles del pool
+        return CreatePoolSerializer  # Serializer para actualizar el pool
+
+    def perform_update(self, serializer):
+        # Puedes agregar lógica adicional si es necesario, como pasar el usuario
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        # Agrega lógica personalizada para el borrado si es necesario
+        instance.delete()

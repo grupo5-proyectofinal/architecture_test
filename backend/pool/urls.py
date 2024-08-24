@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import pool_detail, pool_list_create
+from .views import PoolDetailUpdateDeleteView, PoolListCreateView
 
 urlpatterns = [
-    path('pools/', pool_list_create, name='pool-list-create'),
-    path('pools/<int:pk>/', pool_detail, name='pool-detail'),
+    path('pools/', PoolListCreateView.as_view(), name='pool-list-create'),
+    path('pools/<int:pk>/', PoolDetailUpdateDeleteView.as_view(), name='pool-detail'),
 ]

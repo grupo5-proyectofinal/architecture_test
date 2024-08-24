@@ -24,8 +24,23 @@ class CreatePoolSerializer(serializers.ModelSerializer):
         fields = ["titulo", "descripcion", "minimo_participantes", "producto", "fecha_cierre"]
 
     def create(self, validated_data):
-        # Esta lógica puede quedar aquí o puede estar en la vista
-        return super().create(validated_data)
+        producto_data = validated_data.pop('producto')
+        categoria_data = producto_data.pop('categoria')
+
+     
+        categoria, created = Categoria.objects.get_or_create(**categoria_data)
+
+        producto = Producto.objects.create(
+            categoria=categoria,
+            **producto_data
+        )
+
+        pool = Pool.objects.create(
+            producto=producto,
+            **validated_data
+        )
+
+        return pool
 
 
 class ListPoolSerializer(serializers.ModelSerializer):
