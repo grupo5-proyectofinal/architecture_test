@@ -1,12 +1,12 @@
 <script>
 	import Footer from "./Components/footer.svelte";
 	import Header from "./Components/header.svelte";
-    import Form from "./Components/Form.svelte";
+	import Filter from "./Components/Filter.svelte"
 </script>
 
 <main>
 	<Header />
-	<Form />
+	<Filter />
 	
 	<Footer />
 </main>
