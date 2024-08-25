@@ -1,6 +1,6 @@
 <script>
   // Define el estado activo de los enlaces de navegación
-  let activeLink = 'crearPool';
+  let activeLink = 'home';
 
   function setActive(link) {
     activeLink = link;
@@ -18,21 +18,30 @@
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a 
-            class="nav-link {activeLink === 'crearPool' ? 'active' : ''}" 
+            class="nav-link {activeLink === 'home' ? 'active' : ''}" 
             aria-current="page" 
-            href="#crearPool"
-            on:click={() => setActive('crearPool')}
+            href="#home"
+            on:click={() => setActive('home')}
           >
-            Crear Pool
+            Inicio
           </a>
         </li>
         <li class="nav-item">
           <a 
-            class="nav-link {activeLink === 'unirsePool' ? 'active' : ''}" 
-            href="#unirsePool"
-            on:click={() => setActive('unirsePool')}
+            class="nav-link {activeLink === 'about' ? 'active' : ''}" 
+            href="#about"
+            on:click={() => setActive('about')}
           >
-            Unirse a Pool
+            Pools
+          </a>
+        </li>
+        <li class="nav-item">
+          <a 
+            class="nav-link {activeLink === 'contact' ? 'active' : ''}" 
+            href="#contact"
+            on:click={() => setActive('contact')}
+          >
+            Contacto
           </a>
         </li>
         <li class="nav-item">
@@ -44,22 +53,14 @@
             Perfil
           </a>
         </li>
+        
         <li class="nav-item">
           <a 
-            class="nav-link {activeLink === 'mensajes' ? 'active' : ''}" 
-            href="#mensajes"
-            on:click={() => setActive('mensajes')}
+            class="nav-link {activeLink === 'logout' ? 'active' : ''}" 
+            href="#logout"
+            on:click={() => setActive('logout')}
           >
-            Mensajes
-          </a>
-        </li>
-        <li class="nav-item">
-          <a 
-            class="nav-link {activeLink === 'salir' ? 'active' : ''}" 
-            href="#salir"
-            on:click={() => setActive('salir')}
-          >
-            Salir
+           Salir
           </a>
         </li>
       </ul>
@@ -69,9 +70,9 @@
 
 <style>
   .navbar {
-    background-color: #000000; /* Establece el color de fondo negro */
-    padding: 5px 10px; /* Reduce el padding del navbar */
-    font-size: 14px;   /* Tamaño de fuente más pequeño para los enlaces */
+    background-color: #000000; 
+    padding: 5px 10px; 
+    font-size: 14px;   
   }
 
   .navbar-brand {
@@ -80,17 +81,11 @@
   }
 
   .logo {
-    max-width: 30px; /* Reducir aún más el tamaño máximo del logo */
-    max-height: 30px; /* Limitar la altura máxima del logo */
-    height: auto;    /* Mantiene la proporción del logo */
+    max-width: 30px; 
+    max-height: 30px; 
+    height: auto;   
   }
 
-  @media (max-width: 768px) {
-    .logo {
-      max-width: 25px; /* Tamaño del logo en pantallas pequeñas */
-      max-height: 25px; /* Limitar la altura en pantallas pequeñas */
-    }
-  }
 
   .navbar-nav {
     display: flex;
@@ -98,13 +93,13 @@
   }
 
   .nav-link.active {
-    color: #007bff; /* Cambia el color del texto del enlace activo */
-    border-bottom: 2px solid #007bff; /* Color de la línea de subrayado activa */
+    color: #007bff;
+    border-bottom: 2px solid #007bff; 
   }
 
   .nav-link {
-    color: #ffffff; /* Asegura que el texto de los enlaces sea blanco para el contraste */
-    transition: color 0.3s ease, border-bottom 0.3s ease; /* Suaviza el efecto al cambiar el estado activo */
+    color: #ffffff;
+    transition: color 0.3s ease, border-bottom 0.3s ease; 
   }
 
   /* Ajustar el margen superior para evitar el solapamiento */

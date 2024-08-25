@@ -164,12 +164,12 @@
 	}
   
 	.profile-picture {
-	  max-width: 100px; /* Ajustar el tamaño de la imagen */
+	  max-width: 100px; 
 	  width: 100px; 
 	  height: 100px;
-	  border-radius: 50%; /* Redondear la imagen */
-	  border: 2px solid #ddd; /* Borde para la imagen */
-	  object-fit: cover; /* Ajustar la imagen para cubrir el espacio */
+	  border-radius: 50%; 
+	  border: 2px solid #ddd; 
+	  object-fit: cover; 
 	}
   
 	.text-danger {
@@ -181,5 +181,12 @@
 		margin-left: 0;
 	  }
 	}
-  
+  .button {
+		border-radius: 4px;
+		border-color: #a0c0f0;
+		background-color: #acf;
+		color: #124;
+		transition: .2s ease all;
+		padding: 6px 10px;
+	}
 </style>
