@@ -2,16 +2,16 @@
 	
 	import Footer from "./Components/footer.svelte";
 	import Header from "./Components/header.svelte";
-	import Perfil from "./routes/perfil.svelte"
+    import Form from "./Components/Form.svelte";
 </script>
 
 <Header />
 <br/>
 <main>
-	<br/>
-
-<home/>
-
+	<Header />
+	<Form />
+	
+	<Footer />
 </main>
 <br/>
 <Footer />

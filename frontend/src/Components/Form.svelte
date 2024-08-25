@@ -6,9 +6,13 @@
     let miembrosNecesarios = 1;
     let ubicacion = '';
     let radio = 0;
+    //let touchFields = {}
+    
 
     let tituloError = '';
     let descripcionError = '';
+
+
 
     //Validación de campo vacio
     const validateField = (fieldValue, errorMessageSetter, errorMessage) => {
@@ -57,7 +61,10 @@
 
                             <div class="form-group">
                                 <label for="titulo">Titulo del Pool</label>
-                                <input id="titulo" class="form-control" type="text" bind:value={titulo} placeholder="Ingrese titulo del Pool" />
+                                <input id="titulo"
+                                 class="form-control"
+                                  type="text" bind:value={titulo}
+                                  placeholder="Ingrese titulo del Pool" />
                                 {#if tituloError}
                                     <span class="error">{tituloError}</span>
                                 {/if}
@@ -91,7 +98,7 @@
 
                             <div class="form-group">
                                 <label for="ubicacion">Ubicación</label>
-                                <input id="ubicacion" class="form-control" type="text" bind:value={ubicacion} placeholder="Enter location" />
+                                <input id="ubicacion" class="form-control" type="text" bind:value={ubicacion} placeholder="Ingrese Ubicación" />
                             </div>
 
                             <div class="form-group">
@@ -102,7 +109,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit">Crear Pool</button>
+                            <button type="submit" class="btn btn-secondary">Guardar</button>
                         </div>
                     </form>
                 </div>
