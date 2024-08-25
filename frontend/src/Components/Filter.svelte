@@ -45,54 +45,60 @@
         handleSearch();
     });
 </script>
+<div class="container">
+        <div class="row">
+            <h1 class="display-4 text-center mt-5">Bienvenido a Pool Shop</h1>
+        </div>
+        <div class="row">
+            <div class="container mt-3">
+                <input 
+                    class="form-control mb-3" 
+                    type="text" 
+                    bind:value={searchQuery} 
+                    on:input={handleSearch} 
+                    placeholder={placeholder} 
+                />
 
-<div class="container mt-3">
-    <input 
-        class="form-control mb-3" 
-        type="text" 
-        bind:value={searchQuery} 
-        on:input={handleSearch} 
-        placeholder={placeholder} 
-    />
+                {#if isLoading}
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                    </div>
+                {/if}
 
-    {#if isLoading}
-        <div class="text-center">
-            <div class="spinner-border" role="status">
-                <span class="sr-only">Cargando...</span>
+                {#if error}
+                    <div class="alert alert-danger" role="alert">
+                        {error}
+                    </div>
+                {/if}
+
+                <div>
+                    <!-- Mostrar resultados de los pools filtrados -->
+                    {#if filteredPools.length > 0}
+                        <h5>Pools de Compras Abiertos</h5>
+                        <ul class="list-group mb-3">
+                            {#each filteredPools as pool}
+                                <li class="list-group-item">{pool.name}</li>
+                            {/each}
+                        </ul>
+                    {/if}
+
+                    <!-- Mostrar resultados de los usuarios filtrados -->
+                    {#if filteredUsers.length > 0}
+                        <h5>Usuarios</h5>
+                        <ul class="list-group">
+                            {#each filteredUsers as user}
+                                <li class="list-group-item">{user.name}</li>
+                            {/each}
+                        </ul>
+                    {/if}
+
+                    <!-- Mostrar mensaje si no hay resultados -->
+                    {#if searchQuery && filteredPools.length === 0 && filteredUsers.length === 0 && !isLoading}
+                        <p class="text-muted">No se encontraron resultados.</p>
+                    {/if}
+                </div>
             </div>
         </div>
-    {/if}
-
-    {#if error}
-        <div class="alert alert-danger" role="alert">
-            {error}
-        </div>
-    {/if}
-
-    <div>
-        <!-- Mostrar resultados de los pools filtrados -->
-        {#if filteredPools.length > 0}
-            <h5>Pools de Compras Abiertos</h5>
-            <ul class="list-group mb-3">
-                {#each filteredPools as pool}
-                    <li class="list-group-item">{pool.name}</li>
-                {/each}
-            </ul>
-        {/if}
-
-        <!-- Mostrar resultados de los usuarios filtrados -->
-        {#if filteredUsers.length > 0}
-            <h5>Usuarios</h5>
-            <ul class="list-group">
-                {#each filteredUsers as user}
-                    <li class="list-group-item">{user.name}</li>
-                {/each}
-            </ul>
-        {/if}
-
-        <!-- Mostrar mensaje si no hay resultados -->
-        {#if searchQuery && filteredPools.length === 0 && filteredUsers.length === 0 && !isLoading}
-            <p class="text-muted">No se encontraron resultados.</p>
-        {/if}
-    </div>
 </div>

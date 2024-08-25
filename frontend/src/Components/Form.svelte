@@ -109,7 +109,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-secondary">Crear Pool</button>
+                            <button type="submit" class="btn btn-secondary">Guardar</button>
                         </div>
                     </form>
                 </div>
