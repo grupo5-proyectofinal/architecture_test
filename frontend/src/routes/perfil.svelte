@@ -181,12 +181,4 @@
 		margin-left: 0;
 	  }
 	}
-  .button {
-		border-radius: 4px;
-		border-color: #a0c0f0;
-		background-color: #acf;
-		color: #124;
-		transition: .2s ease all;
-		padding: 6px 10px;
-	}
 </style>
