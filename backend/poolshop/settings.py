@@ -99,15 +99,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = env('STATIC_URL')
-MEDIA_URL = env('MEDIA_URL')
-
-if ENVIRONMENT == 'stg':
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-else:
-    STATICFILES_DIRS = []
-    MEDIA_ROOT = ''
 
 
 
@@ -119,11 +110,19 @@ if env.bool("USE_GOOGLE_STORAGE"):
         "staticfiles": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"},
     }
     GS_PROJECT_ID = project_id
+    GS_DEFAULT_ACL = "publicRead"
     GS_BUCKET_NAME = env('GS_BUCKET_NAME')
     GS_DEFAULT_ACL = "publicRead"
     GS_CUSTOM_ENDPOINT = f"https://{GS_BUCKET_NAME}.storage.googleapis.com"
     GS_IS_GZIPPED = True
 
+
+if ENVIRONMENT == 'stg' or ENVIRONMENT == 'prod':
+    STATIC_URL = env('STATIC_URL')
+    MEDIA_URL = env('MEDIA_URL')
+else:
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
