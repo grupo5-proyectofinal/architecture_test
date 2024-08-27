@@ -1,9 +1,16 @@
 <script>
+    // import {goto} from '@sveltejs/kit/navigation';
     export let titulo = '';
     export let descripcion = '';
     export let icon = '';
     export let actionLabel = '';
-    export let onAction = () => {};
+    export let actionClick = '';
+    // export let redirectTo = '';
+    
+    // function handleClick() {
+    //     goto(redirectTo);
+    // }
+
 </script>
 
 <div class="card text-center">
@@ -15,7 +22,7 @@
         {/if}
         <h5 class="card-titulo">{titulo}</h5>
         <p class="card-text">{descripcion}</p>
-        <button class="btn btn-secondary" on:click={onAction}>{actionLabel}</button>
+        <button class="btn btn-secondary" on:click={actionClick}>{actionLabel}</button>
     </div>
 </div>
 
