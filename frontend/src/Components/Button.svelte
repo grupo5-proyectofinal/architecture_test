@@ -1,20 +1,45 @@
-<button type="button" class="button" on:click>
-	<slot />
-</button>
-
-<style>	
-	.button {
-		border-radius: 4px;
-		border-color: #a0c0f0;
-		background-color: #acf;
-		color: #124;
-		transition: .2s ease all;
-		padding: 6px 10px;
+<script>
+	export let type = 'text';
+	export let value = type === 'text' ? '' : null;
+	export let error = '';
+	export let label = '';
+	export let placeholder = '';
+  
+	function handleInput({ target: t }) {
+	  if (type === 'number') {
+		value = t.value === '' ? null : t.valueAsNumber;
+	  } else {
+		value = t.value;
+	  }
 	}
-
-	.button:hover {
-		border-color: #b0d0f0;
-		background-color: #bdf;
-		color: #248;
+  </script>
+  
+  
+  <label class="block">
+	  {#if label}
+		  <span class="block">{label}</span>
+	  {/if}
+	  <input
+	  class="block input"
+	  class:error
+		  {type}
+		  {placeholder}
+		  {value}
+		  on:input={handleInput}
+		  on:input
+		  on:blur
+	  />
+	  {#if error}
+		  <span class="block error-text">{error}</span>
+	  {/if}
+  </label>
+  
+  <style>
+	.error {
+	  border-color: #f55;
 	}
-</style>
+  
+	.error-text {
+	  color: #f55;
+	}
+  </style>

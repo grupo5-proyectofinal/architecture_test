@@ -70,6 +70,18 @@
                                 {/if}
                             </div>
 
+                            //Probar boton con gestion de errores
+                            <!-- <div class="form-group">
+                                <label for="Producto">Titulo del Pool</label>
+                                <Input
+                                type="text"
+                                label="Producto"
+                                bind:value={producto}
+                                on:blur={() => touchedFields.name = true}
+                                error={errors.name}
+                            />
+                            </div> -->
+
                             <div class="form-group">
                                 <label for="descripcion">Descripcion del Producto</label>
                                 <input id="descripcion" class="form-control" type="text" bind:value={descripcion} placeholder="Ingrese descripcion del Producto" on:click={handleProductClick} />
