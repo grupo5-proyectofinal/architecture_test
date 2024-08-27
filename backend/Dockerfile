@@ -6,7 +6,6 @@ ENV ENVIRONMENT=$ENVIRONMENT
 
 WORKDIR /app
 
-# Instala las dependencias del sistema necesarias para compilar psycopg2
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
