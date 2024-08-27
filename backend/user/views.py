@@ -1,41 +1,20 @@
-from django.contrib.auth import get_user_model
-from rest_framework import views, permissions, status, generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions, views, status
 from rest_framework.response import Response
-
-from .serializers import ObtainTokenSerializer
+from rest_framework.generics import RetrieveAPIView
+from django.contrib.auth import get_user_model
 from .serializers import UsuarioSerializer
-from .auth import JWTAuthentication
 
 User = get_user_model()
 
-class ObtainTokenView(views.APIView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = ObtainTokenSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        username_or_email = serializer.validated_data.get('username')
-        password = serializer.validated_data.get('password')
-
-        user = User.objects.filter(username=username_or_email).first()
-        if user is None:
-            user = User.objects.filter(phone_number=username_or_email).first()
-
-        if user is None or not user.check_password(password):
-            return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
-
-        jwt_token = JWTAuthentication.create_jwt(user)
-
-        return Response({'token': jwt_token})
-    
-
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
+class MeView(RetrieveAPIView):
     serializer_class = UsuarioSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save()
+    def get_object(self):
+        return self.request.user
+
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.serializer_class(user)
+        return Response(serializer.data)
+

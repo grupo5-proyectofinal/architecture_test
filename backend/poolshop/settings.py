@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
     'user',
     'pool',
 ]
@@ -98,15 +99,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = env('STATIC_URL')
-MEDIA_URL = env('MEDIA_URL')
-
-if ENVIRONMENT == '':
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-else:
-    STATICFILES_DIRS = []
-    MEDIA_ROOT = ''
 
 
 
@@ -118,11 +110,19 @@ if env.bool("USE_GOOGLE_STORAGE"):
         "staticfiles": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"},
     }
     GS_PROJECT_ID = project_id
+    GS_DEFAULT_ACL = "publicRead"
     GS_BUCKET_NAME = env('GS_BUCKET_NAME')
     GS_DEFAULT_ACL = "publicRead"
     GS_CUSTOM_ENDPOINT = f"https://{GS_BUCKET_NAME}.storage.googleapis.com"
     GS_IS_GZIPPED = True
 
+
+if ENVIRONMENT == 'stg' or ENVIRONMENT == 'prod':
+    STATIC_URL = env('STATIC_URL')
+    MEDIA_URL = env('MEDIA_URL')
+else:
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -134,10 +134,18 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'user.auth.JWTAuthentication',
-    ]
+        'auth.auth.JWTAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 JWT_CONF = {
     'TOKEN_LIFETIME_HOURS': 5  # Duración del token en horas
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'PoolShop API',
+    'DESCRIPTION': 'Endpoints de la API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': True,  # Para incluir o no el esquema en la respuesta
 }
