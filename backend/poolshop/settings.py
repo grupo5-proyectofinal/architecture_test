@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
     'user',
     'pool',
 ]
@@ -101,7 +102,7 @@ USE_TZ = True
 STATIC_URL = env('STATIC_URL')
 MEDIA_URL = env('MEDIA_URL')
 
-if ENVIRONMENT == '':
+if ENVIRONMENT == 'stg':
     STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 else:
@@ -134,10 +135,18 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'user.auth.JWTAuthentication',
-    ]
+        'auth.auth.JWTAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 JWT_CONF = {
     'TOKEN_LIFETIME_HOURS': 5  # Duración del token en horas
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'PoolShop API',
+    'DESCRIPTION': 'Endpoints de la API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': True,  # Para incluir o no el esquema en la respuesta
 }
