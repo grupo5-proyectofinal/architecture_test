@@ -16,14 +16,9 @@
     "rollup-plugin-css-only": "^4.5.2",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-serve": "^1.1.1",
-<<<<<<< HEAD
     "rollup-plugin-svelte": "^7.1.2",
     "svelte": "^3.55.0",
     "svelte-routing": "^2.13.0"
-=======
-    "rollup-plugin-svelte": "^7.2.2",
-    "svelte": "^3.55.0"
->>>>>>> fff2e1008375b209a0e20798bdc2a5271f59fbee
   },
   "dependencies": {
     "agnostic-svelte": "^1.1.27",
