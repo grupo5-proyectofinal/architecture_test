@@ -3,10 +3,10 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import css from 'rollup-plugin-css-only';
 import terser from '@rollup/plugin-terser';
-import serve from 'rollup-plugin-serve'; // Importa el plugin serve
-
+import serve from 'rollup-plugin-serve';
 
 const production = !process.env.ROLLUP_WATCH;
+
 export default {
   input: 'src/main.js',
   output: {
@@ -16,22 +16,23 @@ export default {
   },
   plugins: [
     svelte({
-      dev: !production,
-      css: css => {
-        css.write('public/build/bundle.css');
-      }
+      compilerOptions: {
+        dev: !production, // Use compilerOptions para configurar el modo de desarrollo
+      },
+      emitCss: true, // Asegura que el CSS sea emitido por el plugin svelte
+    }),
+    css({
+      output: 'public/build/bundle.css' // Genera un archivo CSS separado
     }),
     resolve({
-      exportConditions: ['svelte']
+      browser: true,
+      dedupe: ['svelte']
     }),
     commonjs(),
-    css({ 
-      output: 'public/build/styles.css'
-    }),
     !production && serve({
-      open: true, // Abre el navegador automáticamente
+      open: true,
       contentBase: 'public',
-      port: 3000 // Configura el puerto 
+      port: 3000
     }),
     production && terser()
   ]
