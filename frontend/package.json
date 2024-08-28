@@ -25,6 +25,7 @@
     "agnostic-svelte": "^1.1.27",
     "cookie": "^0.6.0",
     "devalue": "^5.0.0",
+    "set-cookie-parser": "^2.7.0",
     "sirv-cli": "^2.0.0",
     "svelte-material-ui": "^7.0.0",
     "svelte-routing": "^2.13.0"
