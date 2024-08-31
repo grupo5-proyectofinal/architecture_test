@@ -72,6 +72,9 @@
     "isEntry": true,
     "imports": [
       "_ssr.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.UTOvLyzE.css"
     ]
   },
   "src/routes/perfil/+page.svelte": {
