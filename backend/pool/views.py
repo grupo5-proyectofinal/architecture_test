@@ -19,7 +19,6 @@ class PoolListCreateView(generics.ListCreateAPIView):
         serializer.save(creador=usuario)  
 
     
-
 class PoolDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Pool.objects.all()
 
