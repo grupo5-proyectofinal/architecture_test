@@ -5,27 +5,30 @@
     import Cardpool from '../lib/componentes/Cardpool.svelte';
 </script>
 
-<Header/> 
 <main>
     <Header />
     <br />
-    <Home />
-    <br />
-    <div class="pool-visto-container">
-        <h2 class="text-body-secondary">
-            Pools más vistos
-        </h2>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <Cardpool />
+    <div class="body">
+        <Home />
+        <div class="container">
+            <div class="pool-visto-container">
+                <h2 class="text-body-secondary">
+                    Pools más vistos
+                </h2>
             </div>
-            <div class="col">
-                <Cardpool />
-            </div>
-            <div class="col">
-                <Cardpool />
+            <br />
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <Cardpool />
+                    </div>
+                    <div class="col">
+                        <Cardpool />
+                    </div>
+                    <div class="col">
+                        <Cardpool />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -34,6 +37,9 @@
 </main>
 
 <style>
+    .body{
+        padding: 75px;
+    }
     .pool-visto-container {
         text-align: center;
         margin-top: 20px;  

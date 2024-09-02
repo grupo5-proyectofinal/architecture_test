@@ -1,5 +1,4 @@
 <script>
-  // Define el estado activo de los enlaces de navegación
   let activeLink = 'home';
 
   function setActive(link) {
@@ -7,16 +6,19 @@
   }
 </script>
 
-<header class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top header">
+<header class="navbar navbar-expand-lg fixed-top" style="background-color: #343a40;">
   <div class="container d-flex justify-content-between align-items-center">
-
     <!-- Espacio para el logo -->
     <a class="navbar-brand" href="#home">
       <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
     </a>
 
     <!-- Menú de navegación -->
-    <div class="navbar-collapse">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a 
@@ -36,7 +38,7 @@
           >
             Pools
           </a>
-        
+        </li>
         <li class="nav-item">
           <a 
             class="nav-link {activeLink === 'perfil' ? 'active' : ''}" 
@@ -46,7 +48,6 @@
             Perfil
           </a>
         </li>
-        
         <li class="nav-item">
           <a 
             class="nav-link {activeLink === 'logout' ? 'active' : ''}" 
@@ -62,21 +63,10 @@
 </header>
 
 <style>
-  .header {
-    padding: 20px;
-    background-color: #333;
-    color: #fff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-  }
-
   .navbar {
-    background-color: #000000c2; 
-    padding: 10px 20px; 
-    font-size: 20px;   
+    padding: 10px 20px;
+    font-size: 20px;
+    background-color: #343a40; /* Fondo gris oscuro */
   }
 
   .navbar-brand {
@@ -86,22 +76,37 @@
 
   .logo {
     max-width: 100px; 
-    max-height: 100px; 
-    
-     
+    max-height: 100px;
   }
 
-  .navbar-nav {
-    display: flex;
-    align-items: center;
+  .navbar-nav .nav-link {
+    color: #212529; /* Letras negras */
+    transition: color 0.3s ease-in-out;
   }
 
-  .nav-link.active {
-    border-bottom: 2px solid #f3f5f8; 
+  .navbar-nav .nav-link:hover, 
+  .navbar-nav .nav-link.active {
+    color: #000; /* Letras negras en hover o activo */
+    border-bottom: 2px solid #000; /* Borde negro para enlace activo */
   }
 
-  /* Ajustar el margen superior para evitar el solapamiento */
-  .header {
-    height: 100px;
+  @media (max-width: 991.98px) {
+    .navbar-collapse {
+      justify-content: flex-end;
+    }
+
+    .navbar-nav {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-left: 0;
+    }
+
+    .nav-link {
+      padding-left: 0;
+    }
+
+    .navbar-brand {
+      margin-right: auto;
+    }
   }
 </style>
