@@ -9,10 +9,12 @@
 
 <header class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top header">
   <div class="container d-flex justify-content-between align-items-center">
+
     <!-- Espacio para el logo -->
     <a class="navbar-brand" href="#home">
-      <img src="" alt="PoolShop" class="logo img-fluid" />
+      <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
     </a>
+
     <!-- Menú de navegación -->
     <div class="navbar-collapse">
       <ul class="navbar-nav ml-auto">
@@ -34,16 +36,7 @@
           >
             Pools
           </a>
-        </li>
-        <li class="nav-item">
-          <a 
-            class="nav-link {activeLink === 'contact' ? 'active' : ''}" 
-            href="#contact"
-            on:click={() => setActive('contact')}
-          >
-            Contacto
-          </a>
-        </li>
+        
         <li class="nav-item">
           <a 
             class="nav-link {activeLink === 'perfil' ? 'active' : ''}" 
@@ -69,10 +62,21 @@
 </header>
 
 <style>
+  .header {
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
   .navbar {
-    background-color: #000000; 
-    padding: 5px 10px; 
-    font-size: 14px;   
+    background-color: #000000c2; 
+    padding: 10px 20px; 
+    font-size: 20px;   
   }
 
   .navbar-brand {
@@ -81,11 +85,11 @@
   }
 
   .logo {
-    max-width: 30px; 
-    max-height: 30px; 
-    height: auto;   
+    max-width: 100px; 
+    max-height: 100px; 
+    
+     
   }
-
 
   .navbar-nav {
     display: flex;
@@ -93,17 +97,11 @@
   }
 
   .nav-link.active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff; 
-  }
-
-  .nav-link {
-    color: #ffffff;
-    transition: color 0.3s ease, border-bottom 0.3s ease; 
+    border-bottom: 2px solid #f3f5f8; 
   }
 
   /* Ajustar el margen superior para evitar el solapamiento */
   .header {
-    height: 100px; /* Ajusta según el tamaño del header */
+    height: 100px;
   }
 </style>

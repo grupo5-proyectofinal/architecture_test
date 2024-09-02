@@ -5,6 +5,7 @@
     import Cardpool from '../lib/componentes/Cardpool.svelte';
 </script>
 
+<Header/> 
 <main>
     <Header />
     <br />
