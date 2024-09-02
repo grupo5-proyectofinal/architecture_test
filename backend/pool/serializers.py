@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Pool, Categoria, Producto
-from user.models import Usuario
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
