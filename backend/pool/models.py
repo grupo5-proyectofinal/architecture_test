@@ -15,8 +15,18 @@ class Producto(models.Model):
     cantidad = models.IntegerField()
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
 
+
     def __str__(self):
         return self.nombre
+    
+
+class ProductoImagen(models.Model):
+    producto = models.ForeignKey(Producto, related_name='imagenes', on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='productos/')
+
+    def __str__(self):
+        return f"Imagen de {self.producto.nombre}"
+    
     
 class Pool(models.Model):
     ESTADO_CHOICES = [

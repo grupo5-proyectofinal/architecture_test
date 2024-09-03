@@ -1,20 +1,26 @@
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Pool, Categoria, Producto
+from .models import Pool, Categoria, Producto, ProductoImagen
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
-        fields = ['id', 'nombre']
+        fields = ['nombre']
 
+
+class ProductoImagenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductoImagen
+        fields = ['imagen']
 
 class ProductoSerializer(serializers.ModelSerializer):
     categoria = CategoriaSerializer()
+    imagenes = ProductoImagenSerializer(many=True, read_only=True)
 
     class Meta:
         model = Producto
-        fields = ['nombre', 'descripcion', 'precio', 'cantidad', 'categoria']
+        fields = ['nombre', 'descripcion', 'precio', 'cantidad', 'categoria', 'imagenes']
 
 
 class CreatePoolSerializer(serializers.ModelSerializer):
@@ -23,10 +29,13 @@ class CreatePoolSerializer(serializers.ModelSerializer):
     precio = serializers.DecimalField(source='producto.precio', max_digits=10, decimal_places=2)
     cantidad = serializers.IntegerField(source='producto.cantidad')
     categoria = serializers.CharField(source='producto.categoria.nombre')
+    imagenes = serializers.ListField(
+        child=serializers.ImageField(), write_only=True, required=False
+    )
     
     class Meta:
         model = Pool
-        fields = ['titulo', 'descripcion', 'minimo_participantes', 'producto', 'precio', 'cantidad', 'categoria', 'fecha_cierre']
+        fields = ['titulo', 'descripcion', 'minimo_participantes', 'producto', 'precio', 'cantidad', 'categoria', 'fecha_cierre', 'imagenes']
 
     def validate_titulo(self, value):
         if not value:
@@ -64,7 +73,7 @@ class CreatePoolSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-    
+        imagenes_data = validated_data.pop('imagenes', [])
         producto_data = validated_data.pop('producto')
 
         categoria_data = producto_data.pop('categoria')
@@ -75,6 +84,9 @@ class CreatePoolSerializer(serializers.ModelSerializer):
             categoria=categoria,
             **producto_data
         )
+
+        for imagen_data in imagenes_data:
+            ProductoImagen.objects.create(producto=producto, imagen=imagen_data)
 
         pool = Pool.objects.create(
             producto=producto,
@@ -90,6 +102,7 @@ class ListPoolSerializer(serializers.ModelSerializer):
 
 
 class PoolDetailSerializer(serializers.ModelSerializer):
+    producto = ProductoSerializer()
     class Meta:
         model = Pool
         fields = '__all__'
