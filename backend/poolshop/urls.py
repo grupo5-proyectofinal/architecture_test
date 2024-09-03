@@ -8,7 +8,7 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/pools/', include('pool.urls')),
+    path('api/', include('pool.urls')),
     path('api/auth/', include('auth.urls')),
     path('api/user/', include('user.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),  # Esquema OpenAPI en JSON

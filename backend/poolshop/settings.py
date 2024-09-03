@@ -151,3 +151,5 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': True,  # Para incluir o no el esquema en la respuesta
 }
+
+APPEND_SLASH = True
