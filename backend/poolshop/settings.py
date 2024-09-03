@@ -116,13 +116,15 @@ if env.bool("USE_GOOGLE_STORAGE"):
     GS_CUSTOM_ENDPOINT = f"https://{GS_BUCKET_NAME}.storage.googleapis.com"
     GS_IS_GZIPPED = True
 
-
 if ENVIRONMENT == 'stg' or ENVIRONMENT == 'prod':
     STATIC_URL = env('STATIC_URL')
     MEDIA_URL = env('MEDIA_URL')
 else:
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+    STATIC_URL = os.path.join(BASE_DIR, "static/")
+    MEDIA_URL = os.path.join(BASE_DIR, "media/")
+    STATIC_ROOT = os.path.join(BASE_DIR, "static") 
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
