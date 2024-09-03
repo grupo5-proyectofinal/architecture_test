@@ -1,11 +1,20 @@
 <script>
     import Crearpool from "../../lib/componentes/Crearpool.svelte"
-    import Header from "../../lib/componentes/Header.svelte"
-    import Footer from "../../lib/componentes/Footer.svelte"
+    import Footer from "../../lib/componentes/Footer.svelte";
+    import Header from "../../lib/componentes/Header.svelte";
+   
 </script>
 
 <main>
     <Header />
-    <Crearpool />
+    <div class="crearpool">
+        <Crearpool />
+    </div>
     <Footer />
 </main>
+
+<style>
+    .crearpool {
+        padding: 120px;
+    }
+</style>
