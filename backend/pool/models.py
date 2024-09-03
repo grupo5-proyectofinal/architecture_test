@@ -4,8 +4,7 @@ from user.models import Usuario
 # Create your models here.
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100)
-    descripcion = models.TextField()
-
+    
     def __str__(self):
         return self.nombre
     
@@ -27,9 +26,14 @@ class Pool(models.Model):
         ('finalizado', 'Finalizado'),
         ('cancelado', 'Cancelado'),
     ]
+    PAGO_CHOICES = [
+        ('efectivo', 'Efectivo'),
+        ('tarjeta', 'Tarjeta'),
+        ('transferencia', 'Transferencia'),
+        ('todos', 'Todos'),
+    ]
 
     titulo = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True, null=True)
     minimo_participantes = models.IntegerField(default=1)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     creador = models.ForeignKey(Usuario, on_delete=models.CASCADE)
@@ -40,6 +44,11 @@ class Pool(models.Model):
         max_length=20,
         choices=ESTADO_CHOICES,
         default='abierto'
+    )
+    tipo_pago = models.CharField(
+        max_length=20,
+        choices=PAGO_CHOICES,
+        default='todos'
     )
 
     def __str__(self):
