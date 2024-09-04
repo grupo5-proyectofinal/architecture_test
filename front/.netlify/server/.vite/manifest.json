@@ -8,6 +8,23 @@
       "_internal.js"
     ]
   },
+  "_Footer.js": {
+    "file": "chunks/Footer.js",
+    "name": "Footer",
+    "imports": [
+      "_ssr.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Footer.D3j5YEJm.css"
+    ]
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "name": "client",
+    "imports": [
+      "_exports.js"
+    ]
+  },
   "_exports.js": {
     "file": "chunks/exports.js",
     "name": "exports"
@@ -30,7 +47,7 @@
     "isEntry": true,
     "imports": [
       "_ssr.js",
-      "_exports.js"
+      "_client.js"
     ]
   },
   "node_modules/@sveltejs/kit/src/runtime/components/layout.svelte": {
@@ -59,10 +76,12 @@
     "src": "src/routes/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_ssr.js"
+      "_ssr.js",
+      "_Footer.js",
+      "_client.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.C_7oAplS.css"
+      "_app/immutable/assets/_page.Dzon13wA.css"
     ]
   },
   "src/routes/crearpoolshop/+page.svelte": {
@@ -71,7 +90,11 @@
     "src": "src/routes/crearpoolshop/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_ssr.js"
+      "_ssr.js",
+      "_Footer.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.DdnWS6AS.css"
     ]
   },
   "src/routes/perfil/+page.svelte": {
@@ -80,7 +103,11 @@
     "src": "src/routes/perfil/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_ssr.js"
+      "_ssr.js",
+      "_Footer.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.CfZnVr_U.css"
     ]
   }
 }
