@@ -24,7 +24,7 @@
           <a 
             class="nav-link {activeLink === 'home' ? 'active' : ''}" 
             aria-current="page" 
-            href="#home"
+            href="/"
             on:click={() => setActive('home')}
           >
             Inicio

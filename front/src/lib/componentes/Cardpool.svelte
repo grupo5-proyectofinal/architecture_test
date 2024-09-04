@@ -1,25 +1,9 @@
 <script>
-    async function loadCharacters() {
-        try {
-            const response = await fetch('https://rickandmortyapi.com/api/character');
-            console.log(response);  
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();  // Convierte la respuesta a JSON
-            console.log(data);  // Imprime los datos JSON en la consola
-        } catch (error) {
-            console.error('Hubo un problema en la respuesta, error:', error);
-        }
-    }
-
-    loadCharacters();
+  export let data;
 </script>
 
 <div class="card mb-3">
-    <h3 class="card-header">Card header</h3>
+    <h3 class="card-header">{data.name}</h3>
     <div class="card-body">
       <h5 class="card-title">Special title treatment</h5>
       <h6 class="card-subtitle text-muted">Support card subtitle</h6>
@@ -37,8 +21,8 @@
       <li class="list-group-item">Vestibulum at eros</li>
     </ul>
     <div class="card-body">
-      <a href="#" class="card-link">Card link</a>
-      <a href="#" class="card-link">Another link</a>
+      <a href="/" class="card-link">Card link</a>
+      <a href="/" class="card-link">Another link</a>
     </div>
     <div class="card-footer text-muted">
       2 days ago
