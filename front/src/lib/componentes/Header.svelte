@@ -1,8 +1,19 @@
 <script>
   let activeLink = 'home';
+  export let redirectTo;
+
+  function handleRedict() {
+        goto(redirectTo);
+    }
 
   function setActive(link) {
     activeLink = link;
+  }
+
+  function handleClicks(link) {
+    setActive(link)
+    handleRedict()
+
   }
 </script>
 
@@ -32,9 +43,9 @@
         </li>
         <li class="nav-item">
           <a 
-            class="nav-link {activeLink === 'about' ? 'active' : ''}" 
-            href="#about"
-            on:click={() => setActive('about')}
+            class="nav-link {activeLink === 'pools' ? 'active' : ''}" 
+            href="#pools"
+            on:click={() => setActive('pools')}
           >
             Pools
           </a>
