@@ -1,4 +1,6 @@
 <script>
+    import { onMount } from "svelte";
+
     let titulo = '';
     let descripcion = '';
     let cantidadDisponible = 1;
@@ -6,6 +8,7 @@
     let miembrosNecesarios = 1;
     let ubicacion = '';
     let radio = 0;
+    let categorias;
     //let touchFields = {}
     
 
@@ -44,11 +47,24 @@
             // Aquí puedes manejar el envío del formulario
         }
     };
+
+    onMount(async() =>{
+        try{
+            const response = await fetch('https://poolshop-staging-267jcx7yjq-uc.a.run.app/api/categorias/')
+            if (!response.ok){
+                throw new Error('Timeout')
+            }
+            console.log(response)
+        } catch(error){
+            console.error ('Error:',error)
+        }
+    })
+
+
+
 </script>
 
-<style>
 
-</style>
 
 <div class="container">
     <div class="row">
@@ -70,7 +86,7 @@
                                 {/if}
                             </div>
 
-                            //Probar boton con gestion de errores
+                            <!-- Probar boton con gestion de errores -->
                             <!-- <div class="form-group">
                                 <label for="Producto">Titulo del Pool</label>
                                 <Input
@@ -89,7 +105,16 @@
                                     <span class="error">{descripcionError}</span>
                                 {/if}
                             </div>
-
+                            <div class="form-group">
+                                <label for="exampleSelect2" class="form-label">Categoria</label>
+                                <select multiple="" class="form-control" id="exampleSelect2">
+                                  <option>prueba de ancho</option>
+                                  <option>2</option>
+                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option>
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label for="cantidadDisponible">Cantidad disponible</label>
                                 <div class="slider-container">
@@ -139,3 +164,9 @@
         </div>
     </div>
 </div>
+
+<style>
+    .error{
+        color: red;
+    }
+</style>
