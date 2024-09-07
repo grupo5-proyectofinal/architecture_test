@@ -23,7 +23,7 @@ class ProductoSerializer(serializers.ModelSerializer):
         fields = ['nombre', 'descripcion', 'precio', 'cantidad', 'categoria', 'imagenes']
 
 
-class CreatePoolSerializer(serializers.ModelSerializer):
+class PoolSerializer(serializers.ModelSerializer):
     producto = serializers.CharField(source='producto.nombre')
     descripcion = serializers.CharField(source='producto.descripcion')
     precio = serializers.DecimalField(source='producto.precio', max_digits=10, decimal_places=2)
@@ -78,7 +78,7 @@ class CreatePoolSerializer(serializers.ModelSerializer):
 
         categoria_data = producto_data.pop('categoria')
 
-        categoria, created = Categoria.objects.get_or_create(**categoria_data)
+        categoria = Categoria.objects.get(**categoria_data)
 
         producto = Producto.objects.create(
             categoria=categoria,
@@ -94,6 +94,25 @@ class CreatePoolSerializer(serializers.ModelSerializer):
         )
 
         return pool
+    
+    def update(self, instance, validated_data):
+        producto_data = validated_data.pop('producto', None)
+        if producto_data:
+            categoria_data = producto_data.pop('categoria', None)
+
+            if categoria_data:
+                categoria = Categoria.objects.get(**categoria_data)
+                instance.producto.categoria = categoria
+
+            for attr, value in producto_data.items():
+                setattr(instance.producto, attr, value)
+            instance.producto.save()
+        
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
 
 class ListPoolSerializer(serializers.ModelSerializer):
     class Meta:
