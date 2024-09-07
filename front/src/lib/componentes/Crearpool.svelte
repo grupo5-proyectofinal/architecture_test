@@ -2,18 +2,23 @@
     import { onMount } from "svelte";
 
     let titulo = '';
-    let descripcion = '';
-    let cantidadDisponible = 1;
-    let fechaCierre = '';
-    let miembrosNecesarios = 1;
-    let ubicacion = '';
+    let descripcion = ''; // descripcion del pool o producto
+    let minimo_participantes = 1; 
+    let producto = '';
+    let precio = ''
+    let cantidadDisponible = 1; // hay que especificar que cantidad es, cantidadTomaAdmin o CantidadDisponible
+    let categorias = '';
+    let fecha_cierre = ''; 
+    let ubicacion = ''; // falta ubicacion en el back
     let radio = 0;
-    let categorias;
-    //let touchFields = {}
+    let imagenes = '';
     
 
+    
+    // Manejo de errores
     let tituloError = '';
     let descripcionError = '';
+    //let touchFields = {}
 
 
 
@@ -54,7 +59,8 @@
             if (!response.ok){
                 throw new Error('Timeout')
             }
-            console.log(response)
+            const data = await response.json()
+            categorias = data
         } catch(error){
             console.error ('Error:',error)
         }
@@ -85,19 +91,16 @@
                                     <span class="error">{tituloError}</span>
                                 {/if}
                             </div>
-
-                            <!-- Probar boton con gestion de errores -->
-                            <!-- <div class="form-group">
-                                <label for="Producto">Titulo del Pool</label>
-                                <Input
-                                type="text"
-                                label="Producto"
-                                bind:value={producto}
-                                on:blur={() => touchedFields.name = true}
-                                error={errors.name}
-                            />
-                            </div> -->
-
+                            <div class="form-group">
+                                <label for="producto">Nombre del producto</label>
+                                <input id="producto"
+                                 class="form-control"
+                                  type="text" bind:value={producto}
+                                  placeholder="Ingrese nombre del producto" />
+                                <!-- {#if tituloError}
+                                    <span class="error">{tituloError}</span>
+                                {/if} -->
+                            </div>
                             <div class="form-group">
                                 <label for="descripcion">Descripcion del Producto</label>
                                 <input id="descripcion" class="form-control" type="text" bind:value={descripcion} placeholder="Ingrese descripcion del Producto" on:click={handleProductClick} />
@@ -106,13 +109,11 @@
                                 {/if}
                             </div>
                             <div class="form-group">
-                                <label for="exampleSelect2" class="form-label">Categoria</label>
-                                <select multiple="" class="form-control" id="exampleSelect2">
-                                  <option>prueba de ancho</option>
-                                  <option>2</option>
-                                  <option>3</option>
-                                  <option>4</option>
-                                  <option>5</option>
+                                <label for="categorias" class="form-label">Categoria</label>
+                                <select multiple="" class="form-control" id="categorias">
+                                  {#each categorias as categoria}
+                                     <option>{categoria.nombre}</option>
+                                    {/each}
                                 </select>
                             </div>
                             <div class="form-group">
@@ -124,13 +125,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="fechaCierre">Fecha de vencimiento del Pool</label>
-                                <input id="fechaCierre" class="form-control" type="date" bind:value={fechaCierre} />
+                                <label for="fecha_cierre">Fecha de vencimiento del Pool</label>
+                                <input id="fecha_cierre" class="form-control" type="date" bind:value={fecha_cierre} />
                             </div>
 
                             <div class="form-group">
-                                <label for="miembrosNecesarios">Cantidad minima de miembros</label>
-                                <input id="miembrosNecesarios" class="form-control" type="number" min="1" bind:value={miembrosNecesarios} placeholder="Enter number of members needed" />
+                                <label for="minimo_participantes">Cantidad minima de miembros</label>
+                                <input id="minimo_participantes" class="form-control" type="number" min="1" bind:value={minimo_participantes} placeholder="Ingrese numero de miembros mínimos" />
                             </div>
 
                             <div class="form-group">
@@ -145,21 +146,25 @@
                                     <span>{radio} km</span>
                                 </div>
                             </div>
-
-                            <button type="submit" class="btn btn-secondary">Guardar</button>
+                            <div class="row justify-content-center">
+                                <button type="submit" class="btn btn-secondary">Crear pool</button>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="image-section">
-                <div class="row">
-                    <img src="https://via.placeholder.com/300" alt="Pool location map" />
+            <div class="container">
+                <div class="image-section">
+                    <div class="row mb-3 justify-content-center">
+                        <img src="https://via.placeholder.com/400" alt="Pool location map" />
+                    </div>
+                    <div class="row mb-3 justify-content-center">
+                        <button type="button" class="btn btn-secondary btn-sm">Insertar imagen</button>
+                    </div>
                 </div>
-                <div class="row">
-                    <button type="button"class="button">Ampliar imagen</button>
-                </div>
+
             </div>
         </div>
     </div>

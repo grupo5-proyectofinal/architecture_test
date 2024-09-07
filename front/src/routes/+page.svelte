@@ -26,6 +26,7 @@
   
         const data = await response.json();
         pools = data.results;
+        console.log(pools)
         
         //  3 pools aleatorios
         trespools = getRandomPools(pools, 3);
