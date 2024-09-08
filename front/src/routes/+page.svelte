@@ -64,14 +64,14 @@
             <CardButton 
               titulo="Únase a grupos existentes"
               descripcion="Busque grupos basados en su ubicación"
-              actionLabel="Unirse a un grupo"
+              actionLabel="Unirse a un pool"
             />    
           </div>
           <div class="col-md-4">
             <CardButton 
               titulo="Administre sus grupos"
               descripcion="Vea y administre los creados o los que pertenece"
-              actionLabel="Administrar grupos"
+              actionLabel="Administrar pools"
             />      
           </div>
         </div>
