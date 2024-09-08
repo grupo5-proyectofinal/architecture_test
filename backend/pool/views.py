@@ -1,4 +1,4 @@
-from .serializers import CategoriaSerializer, CreatePoolSerializer, ListPoolSerializer, PoolDetailSerializer
+from .serializers import CategoriaSerializer, PoolSerializer, ListPoolSerializer, PoolDetailSerializer
 from .models import Categoria, Pool
 from django.contrib.auth import get_user_model
 from rest_framework import permissions, generics
@@ -16,7 +16,7 @@ class PoolListCreateView(generics.ListCreateAPIView):
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return ListPoolSerializer
-        return CreatePoolSerializer
+        return PoolSerializer
 
     def perform_create(self, serializer):
         User = get_user_model()
@@ -32,10 +32,10 @@ class PoolDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return PoolDetailSerializer  
-        return CreatePoolSerializer 
+        return PoolSerializer 
 
     def perform_update(self, serializer):
-        serializer.save()
+        serializer.save(partial=True)
 
     def perform_destroy(self, instance):
         instance.delete()
