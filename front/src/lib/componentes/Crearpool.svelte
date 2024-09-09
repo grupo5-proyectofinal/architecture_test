@@ -7,7 +7,8 @@
     let producto = '';
     let precio = ''
     let cantidadDisponible = 1; // hay que especificar que cantidad es, cantidadTomaAdmin o CantidadDisponible
-    let categorias = '';
+    let categorias = ''; // lista de categorias
+    let categoriaPool = '';
     let fecha_cierre = ''; 
     let ubicacion = ''; // falta ubicacion en el back
     let radio = 0;
@@ -45,17 +46,50 @@
         return isTituloValid && isDescripcionValid;
     };
 
+    async function sendForm() {
+        const pool = {
+            titulo: titulo,
+            descripcion: descripcion,
+            minimo_participantes: minimo_participantes,
+            producto: producto,
+            precio: precio,
+            cantidad: cantidadDisponible,
+            categoria: categoriaPool,
+            fecha_cierre: fecha_cierre
+        };
+
+        try{
+            const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/',{
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(pool)
+            });
+            console.log(pool)
+            if (respuesta.ok){
+                const resultado = await respuesta.json();
+                alert('Pool creado correctamente');
+                console.log(respuesta.status)
+            } else {
+                alert('Error al crear Pool')
+            }
+        } catch(error){
+            console.error('Error en la solicitud:', error);
+            alert('Error de red al enviar el formulario');
+        }
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
         if (validateForm()) {
-            console.log('Formulario enviado');
-            // Aquí puedes manejar el envío del formulario
+            sendForm()
         }
     };
 
     onMount(async() =>{
         try{
-            const response = await fetch('https://poolshop-staging-267jcx7yjq-uc.a.run.app/api/categorias/')
+            const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categorias/')
             if (!response.ok){
                 throw new Error('Timeout')
             }
@@ -102,19 +136,37 @@
                                 {/if} -->
                             </div>
                             <div class="form-group">
+                                <label for="categorias" class="form-label">Categoria</label>
+                                <select bind:value={categoriaPool} multiple="" class="form-control" id="categorias">
+                                  {#each categorias as categoria}
+                                     <option>{categoria.nombre}</option>
+                                    {/each}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="priceInput">Precio unitario del producto</label>
+                                <input
+                                    class="form-control"
+                                    id="priceInput"
+                                    type="number"
+                                    bind:value={precio}
+                                    min="0"
+                                    step="0.01"  
+                                    on:input={(e) => {
+                                        if (e.target.value < 0) {
+                                            e.target.value = 0;
+                                        }
+                                    }}
+                                    placeholder="Ingrese el precio"
+                                    required
+                                />
+                            </div>
+                            <div class="form-group">
                                 <label for="descripcion">Descripcion del Producto</label>
                                 <input id="descripcion" class="form-control" type="text" bind:value={descripcion} placeholder="Ingrese descripcion del Producto" on:click={handleProductClick} />
                                 {#if descripcionError}
                                     <span class="error">{descripcionError}</span>
                                 {/if}
-                            </div>
-                            <div class="form-group">
-                                <label for="categorias" class="form-label">Categoria</label>
-                                <select multiple="" class="form-control" id="categorias">
-                                  {#each categorias as categoria}
-                                     <option>{categoria.nombre}</option>
-                                    {/each}
-                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="cantidadDisponible">Cantidad disponible</label>
