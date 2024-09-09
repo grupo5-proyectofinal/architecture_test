@@ -1,8 +1,10 @@
 from .serializers import CategoriaSerializer, PoolSerializer, ListPoolSerializer, PoolDetailSerializer
 from .models import Categoria, Pool
 from django.contrib.auth import get_user_model
-from rest_framework import permissions, generics
+from rest_framework import permissions, generics, serializers
+import logging
 
+logger = logging.getLogger(__name__)
 
 class CategoriaListView(generics.ListAPIView):
     queryset = Categoria.objects.all()
@@ -19,9 +21,19 @@ class PoolListCreateView(generics.ListCreateAPIView):
         return PoolSerializer
 
     def perform_create(self, serializer):
-        User = get_user_model()
-        usuario = User.objects.get(username="juan")
-        serializer.save(creador=usuario)  
+        try:
+            User = get_user_model()
+            usuario = User.objects.get(username="juan")
+            serializer.is_valid(raise_exception=True)
+            serializer.save(creador=usuario)  
+        
+        except User.DoesNotExist as e:
+            logger.error("El usuario no existe.")
+            raise serializers.ValidationError(f"{e}", code='invalid')
+        
+        except Exception as e:
+            logger.error(f"Error al crear el Pool: {str(e)}")
+            raise serializers.ValidationError(f"{e}", code='invalid')
 
 
 
