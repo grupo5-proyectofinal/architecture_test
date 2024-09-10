@@ -1,3 +1,4 @@
+from user.serializers import MemberSerializer
 from .serializers import CategoriaSerializer, PoolSerializer, ListPoolSerializer, PoolDetailSerializer
 from .models import Categoria, Pool
 from django.contrib.auth import get_user_model
@@ -36,7 +37,6 @@ class PoolListCreateView(generics.ListCreateAPIView):
             raise serializers.ValidationError(f"{e}", code='invalid')
 
 
-
 class PoolDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Pool.objects.all()
     permission_classes = [permissions.AllowAny]
@@ -51,3 +51,23 @@ class PoolDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_destroy(self, instance):
         instance.delete()
+
+
+class JoinPoolView(generics.CreateAPIView):
+    serializer_class = MemberSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def perform_create(self, serializer):
+        try:
+            User = get_user_model()
+            usuario = User.objects.get(username="juan")
+
+            pool_id = self.kwargs.get('pk')
+            pool = Pool.objects.get(id=pool_id)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(user=usuario, pool=pool)
+
+        except Exception as e:
+            logger.error(f"Error al crear el Pool: {str(e)}")
+            raise serializers.ValidationError(f"{e}", code='invalid')

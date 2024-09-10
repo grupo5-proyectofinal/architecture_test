@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import PoolDetailUpdateDeleteView, PoolListCreateView, CategoriaListView
+from .views import PoolDetailUpdateDeleteView, PoolListCreateView, CategoriaListView, JoinPoolView
 
 urlpatterns = [
     path('pools/', PoolListCreateView.as_view(), name='pool-list-create'),
     path('pools/<int:pk>/', PoolDetailUpdateDeleteView.as_view(), name='pool-detail'),
-    path('categorias/', CategoriaListView.as_view(), name='list-categorias'),
+    path('pools/<int:pk>/join/', JoinPoolView.as_view(), name='join-pool'),
+    path('categories/', CategoriaListView.as_view(), name='categories-list'),
 ]

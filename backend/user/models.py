@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from pool.models import Pool
+
 
 class Usuario(AbstractUser):
     GENDER_IN_CHOICES = [
@@ -16,3 +18,21 @@ class Usuario(AbstractUser):
     
     def str(self):
         return self.username
+    
+    def is_member_of(self, pool: Pool) -> bool:
+        return self.memberships.filter(pool=pool).exists()
+
+
+class Member(models.Model):
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='memberships')
+    pool = models.ForeignKey("pool.Pool", on_delete=models.CASCADE, related_name='members')
+    joined_at = models.DateTimeField(auto_now_add=True)
+    product_quantity = models.IntegerField()
+    
+    class Meta:
+        unique_together = ('user', 'pool')
+
+    def __str__(self):
+        return f"{self.user} - {self.pool}"
+    
+    

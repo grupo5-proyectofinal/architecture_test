@@ -1,5 +1,4 @@
 from django.db import models
-from user.models import Usuario
 
 # Create your models here.
 class Categoria(models.Model):
@@ -29,42 +28,53 @@ class ProductoImagen(models.Model):
     
     
 class Pool(models.Model):
-    ESTADO_CHOICES = [
-        ('abierto', 'Abierto'),
-        ('listo', 'Listo'),
-        ('en_curso', 'En Curso'),
-        ('finalizado', 'Finalizado'),
-        ('cancelado', 'Cancelado'),
-    ]
-    PAGO_CHOICES = [
-        ('efectivo', 'Efectivo'),
-        ('tarjeta', 'Tarjeta'),
-        ('transferencia', 'Transferencia'),
-        ('todos', 'Todos'),
-    ]
+    
+    class EstadoChoices(models.TextChoices):
+        ABIERTO = 'abierto', ('Abierto')
+        LISTO = 'listo', ('Listo')
+        EN_CURSO = 'en_curso', ('En Curso')
+        FINALIZADO = 'finalizado', ('Finalizado')
+        CANCELADO = 'cancelado', ('Cancelado')
+
+    class PagoChoices(models.TextChoices):
+        EFECTIVO = 'efectivo', ('Efectivo')
+        TARJETA = 'tarjeta', ('Tarjeta')
+        TRANSFERENCIA = 'transferencia', ('Transferencia')
+        TODOS = 'todos', ('Todos')
+
 
     titulo = models.CharField(max_length=100)
     minimo_participantes = models.IntegerField(default=1)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    creador = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='pools')
+    creador = models.ForeignKey("user.Usuario", on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField()
     
     estado = models.CharField(
         max_length=20,
-        choices=ESTADO_CHOICES,
-        default='abierto'
+        choices=EstadoChoices.choices,
+        default=EstadoChoices.ABIERTO
     )
     tipo_pago = models.CharField(
         max_length=20,
-        choices=PAGO_CHOICES,
-        default='todos'
+        choices=PagoChoices.choices,
+        default=PagoChoices.TODOS
     )
 
     def __str__(self):
         return self.titulo
 
 
+    def is_open(self):
+        return self.estado == self.EstadoChoices.ABIERTO
 
-    
+    def update_stock(self, cantidad: int):
+        cant_productos = self.producto.cantidad
+        if cant_productos - cantidad >= 0:
+            self.producto.cantidad-=cantidad
+            self.producto.save()
+        else:
+            raise ValueError("No hay suficientes productos en stock.")
 
+        
+          
