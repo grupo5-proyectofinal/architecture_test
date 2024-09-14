@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import Imagen from "./Imagen.svelte";
 
     let titulo = '';
     let descripcion = ''; // descripcion del pool o producto
@@ -12,7 +13,7 @@
     let fecha_cierre = ''; 
     let ubicacion = ''; // falta ubicacion en el back
     let radio = 0;
-    let imagenes = '';
+    let imagenPool = '';
     
 
     
@@ -46,33 +47,35 @@
         return isTituloValid && isDescripcionValid;
     };
 
+
+
     async function sendForm() {
-        const pool = {
-            titulo: titulo,
-            descripcion: descripcion,
-            minimo_participantes: minimo_participantes,
-            producto: producto,
-            precio: precio,
-            cantidad: cantidadDisponible,
-            categoria: categoriaPool,
-            fecha_cierre: fecha_cierre
-        };
+
+        const formData = new FormData()
+        formData.append('titulo',titulo)
+        formData.append('descripcion',descripcion)
+        formData.append('minimo_participantes',minimo_participantes)
+        formData.append('producto',producto)
+        formData.append('precio',precio)
+        formData.append('cantidad',cantidadDisponible)
+        formData.append('categoria',categoriaPool)
+        formData.append('fecha_cierre', fecha_cierre)
+        formData.append('imagenes', imagenPool.elegirArchivo)
 
         try{
             const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/',{
                 method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(pool)
+                body: formData
             });
-            console.log(pool)
+            console.log(formData)
             if (respuesta.ok){
                 const resultado = await respuesta.json();
                 alert('Pool creado correctamente');
                 console.log(respuesta.status)
             } else {
                 alert('Error al crear Pool')
+                console.log(formData)
+                console.log(respuesta.status)
             }
         } catch(error){
             console.error('Error en la solicitud:', error);
@@ -113,8 +116,8 @@
                 <div class="card-body">
                     <form on:submit={handleSubmit} class="form-wrapper">
                         <div class="form-section">
-                            <h2>Creando nuevo Pool de Compra</h2>
-
+                            <h2 class="fw-bolder">Creando nuevo Pool de Compra</h2>
+                            <br />
                             <div class="form-group">
                                 <label for="titulo">Titulo del Pool</label>
                                 <input id="titulo"
@@ -208,15 +211,10 @@
         </div>
         <div class="col-md-6">
             <div class="container">
-                <div class="image-section">
-                    <div class="row mb-3 justify-content-center">
-                        <img src="https://via.placeholder.com/400" alt="Pool location map" />
-                    </div>
-                    <div class="row mb-3 justify-content-center">
-                        <button type="button" class="btn btn-secondary btn-sm">Insertar imagen</button>
-                    </div>
-                </div>
-
+                <Imagen
+                bind:this={imagenPool}
+                imagePreview="https://via.placeholder.com/400" 
+                />
             </div>
         </div>
     </div>
