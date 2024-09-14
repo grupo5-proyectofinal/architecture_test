@@ -124,4 +124,4 @@ class PoolDetailSerializer(serializers.ModelSerializer):
     producto = ProductoSerializer()
     class Meta:
         model = Pool
-        fields = '__all__'
+        fields = ['minimo_participantes', 'producto', 'creador', 'fecha_creacion', 'fecha_cierre', 'estado']
