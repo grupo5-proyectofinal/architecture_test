@@ -77,4 +77,5 @@ class Pool(models.Model):
             raise ValueError("No hay suficientes productos en stock.")
 
         
-          
+    def get_available_stock(self):
+        return self.producto.cantidad
