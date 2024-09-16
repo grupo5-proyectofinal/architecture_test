@@ -115,6 +115,7 @@ class PoolSerializer(serializers.ModelSerializer):
         return instance
 
 class ListPoolSerializer(serializers.ModelSerializer):
+    producto = ProductoSerializer()
     class Meta:
         model = Pool
         fields = ["id", "titulo", "minimo_participantes", "producto", "creador", "fecha_creacion", "fecha_cierre", "estado"]
