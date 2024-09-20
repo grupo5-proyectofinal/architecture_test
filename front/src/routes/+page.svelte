@@ -6,6 +6,8 @@
     import CardButton from '../lib/componentes/CardButton.svelte';
     import Filter from '../lib/componentes/Filter.svelte';
     import { onMount } from 'svelte';
+   
+    
   
     let trespools = [];
     let pools = [];
