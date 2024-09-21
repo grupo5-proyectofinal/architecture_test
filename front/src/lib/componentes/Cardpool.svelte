@@ -1,30 +1,71 @@
 <script>
+  import {format} from 'date-fns'
   export let data;
+  export let imagePreview = "http://www.w3.org/2000/svg";
+
+  let imageSrc = data?.producto?.imagenes?.[0]?.imagen || imagePreview;
+  let fecha = format(new Date(data.fecha_cierre), 'dd/MM/yyyy HH:mm');
+  let estado = data.estado
+
+  console.log(data.estado)
 </script>
 
 <div class="card mb-3">
-    <h3 class="card-header">{data.name}</h3>
-    <div class="card-body">
-      <h5 class="card-title">Special title treatment</h5>
-      <h6 class="card-subtitle text-muted">Support card subtitle</h6>
+    <h3 class="card-header titulo-clamp">{data.titulo}</h3>
+    <!-- <div class="card-body">
+      <h5 class="card-title">{data.descripcion}</h5>
+      <h6 class="card-subtitle text-muted">{data.categoria}</h6>
+    </div> -->
+    <div style="width: 100%; height: 200px; overflow: hidden;">
+      <img src={imageSrc} class="d-block user-select-none" style="width: 100%; height: 100%; object-fit: cover;" alt="Imagen del producto" />
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="200" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">
-      <rect width="100%" height="100%" fill="#868e96"></rect>
-      <text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text>
-    </svg>
-    <div class="card-body">
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
+        
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">Cras justo odio</li>
-      <li class="list-group-item">Dapibus ac facilisis in</li>
-      <li class="list-group-item">Vestibulum at eros</li>
+      <li class="list-group-item">Participantes: {data.minimo_participantes}</li>
+      <!-- Boton Estado> -->
+      <li class="list-group-item">
+        {estado}
+        <button class="boton-redondo {estado === 'abierto' ? 'abierto' : 'cerrado'}"></button>
+      </li>
     </ul>
-    <div class="card-body">
-      <a href="/" class="card-link">Card link</a>
-      <a href="/" class="card-link">Another link</a>
-    </div>
     <div class="card-footer text-muted">
-      2 days ago
+      {fecha}
     </div>
   </div>
+
+  <style>
+  .titulo-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    max-height: 3em; 
+  }
+    /* Estilos para el botón redondo */
+  .boton-redondo {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 10px;
+      border: none;
+    }
+  
+    /* Clases para los diferentes estados */
+  .abierto {
+      background-color: green;
+    }
+  
+  .cerrado {
+      background-color: red;
+    }
+  
+  li {
+      list-style: none;
+      margin-bottom: 10px;
+    }
+
+  </style>

@@ -14,6 +14,8 @@
     let ubicacion = ''; // falta ubicacion en el back
     let radio = 0;
     let imagenPool = '';
+    let paymentsMethods = ['Efectivo', 'Transferencia', 'Efectivo y/o Transferencia']
+    let paymentsSelect = ''
     
 
     
@@ -141,7 +143,7 @@
                             <div class="form-group">
                                 <label for="categorias" class="form-label">Categoria</label>
                                 <select bind:value={categoriaPool} multiple="" class="form-control" id="categorias">
-                                  {#each categorias as categoria}
+                                    {#each categorias as categoria}
                                      <option>{categoria.nombre}</option>
                                     {/each}
                                 </select>
@@ -163,6 +165,14 @@
                                     placeholder="Ingrese el precio"
                                     required
                                 />
+                            </div>
+                            <div class="form-group">
+                                <label for="payments" class="form-label">Formas de Pago</label>
+                                <select bind:value={paymentsSelect} multiple="" class="form-control" id="categorias">
+                                    {#each paymentsMethods as paymentsSelect}
+                                     <option>{paymentsSelect}</option>
+                                    {/each}
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="descripcion">Descripcion del Producto</label>
