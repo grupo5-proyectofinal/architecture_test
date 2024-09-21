@@ -102,7 +102,7 @@
   
   <style>
     .body {
-      padding: 75px;
+      padding: 10px;
     }
     .pool-visto-container {
       text-align: center;

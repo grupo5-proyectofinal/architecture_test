@@ -29,7 +29,9 @@
       </li>
     </ul>
     <div class="card-footer text-muted">
-      {fecha}
+      <div class="d-flex justify-content-center">
+        {fecha}
+      </div>
     </div>
   </div>
 
