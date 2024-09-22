@@ -6,6 +6,8 @@
     import CardButton from '../lib/componentes/CardButton.svelte';
     import Filter from '../lib/componentes/Filter.svelte';
     import { onMount } from 'svelte';
+   
+    
   
     let trespools = [];
     let pools = [];
@@ -19,20 +21,17 @@
     // Lógica de carga de datos en el cliente usando onMount
     onMount(async () => {
       try {
-        const response = await fetch('https://rickandmortyapi.com/api/character');
+        const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
   
         const data = await response.json();
-        pools = data.results;
-        
-        //  3 pools aleatorios
+        pools = data;
+         //3 pools aleatorios
         trespools = getRandomPools(pools, 3);
       } catch (error) {
         console.error('Hubo un problema en la respuesta, error:', error);
-        pools = [];
-        trespools = [];
       }
     });
   
@@ -61,16 +60,16 @@
           </div>
           <div class="col-md-4">
             <CardButton 
-              titulo="Únase a grupos existentes"
-              descripcion="Busque grupos basados en su ubicación"
-              actionLabel="Unirse a un pool"
-            />    
+            titulo="Explore pools abiertos"
+            descripcion="Explore pools de otros usuarios y unase!"
+            actionLabel="Ver pools"
+          />   
           </div>
           <div class="col-md-4">
             <CardButton 
-              titulo="Administre sus grupos"
-              descripcion="Vea y administre los creados o los que pertenece"
-              actionLabel="Administrar pools"
+              titulo="Administre sus pools"
+              descripcion="Vea y administre sus pools"
+              actionLabel="Administrar mis pools"
             />      
           </div>
         </div>
@@ -87,7 +86,10 @@
             <div class="row">
               {#each trespools as pool}
                 <div class="col">
-                  <Cardpool data={pool} />
+                  <Cardpool
+                  imagePreview={pool}
+                  data={pool} 
+                  />
                 </div>
               {/each}
             </div>
@@ -100,7 +102,7 @@
   
   <style>
     .body {
-      padding: 75px;
+      padding: 10px;
     }
     .pool-visto-container {
       text-align: center;

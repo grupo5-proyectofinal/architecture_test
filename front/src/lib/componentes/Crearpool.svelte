@@ -1,6 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import Imagen from "./Imagen.svelte";
+    import DetailPool from "./DetailPool.svelte";
+
+    // Estado del modal
+    let showModal = false;
+    let poolData = {};
 
     let titulo = '';
     let descripcion = ''; // descripcion del pool o producto
@@ -14,8 +19,9 @@
     let ubicacion = ''; // falta ubicacion en el back
     let radio = 0;
     let imagenPool = '';
+    let paymentsMethods = ['Efectivo', 'Transferencia', 'Efectivo y/o Transferencia']
+    let paymentsSelect = ''
     
-
     
     // Manejo de errores
     let tituloError = '';
@@ -103,8 +109,6 @@
         }
     })
 
-
-
 </script>
 
 
@@ -141,7 +145,7 @@
                             <div class="form-group">
                                 <label for="categorias" class="form-label">Categoria</label>
                                 <select bind:value={categoriaPool} multiple="" class="form-control" id="categorias">
-                                  {#each categorias as categoria}
+                                    {#each categorias as categoria}
                                      <option>{categoria.nombre}</option>
                                     {/each}
                                 </select>
@@ -163,6 +167,14 @@
                                     placeholder="Ingrese el precio"
                                     required
                                 />
+                            </div>
+                            <div class="form-group">
+                                <label for="payments" class="form-label">Formas de Pago</label>
+                                <select bind:value={paymentsSelect} multiple="" class="form-control" id="categorias">
+                                    {#each paymentsMethods as paymentsSelect}
+                                     <option>{paymentsSelect}</option>
+                                    {/each}
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="descripcion">Descripcion del Producto</label>
@@ -201,8 +213,8 @@
                                     <span>{radio} km</span>
                                 </div>
                             </div>
-                            <div class="row justify-content-center">
-                                <button type="submit" class="btn btn-secondary">Crear pool</button>
+                            <div class="join-button-wrapper">
+                                <button type="button" class="btn btn-dark rounded-pill">Crear pool</button>
                             </div>
                         </div>
                     </form>
@@ -220,8 +232,44 @@
     </div>
 </div>
 
+
+<!-- Modal para mostrar detalles del Pool creado -->
+{#if showModal}
+  <DetailPool {poolData} on:closeModal={() => showModal = false} />
+{/if}
+
 <style>
-    .error{
+    .error {
         color: red;
     }
+    .card {
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  input {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 50px;
+    text-align: left;
+  }
+
+  .form-label{
+    padding-left: 0%;
+    text-align: center;
+  }
+  .join-button-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items:flex-end;
+  }
+
+  .btn-dark {
+    background-color: #343a40;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
 </style>
