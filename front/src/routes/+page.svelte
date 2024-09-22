@@ -68,8 +68,8 @@
           <div class="col-md-4">
             <CardButton 
               titulo="Administre sus pools"
-              descripcion="Vea y administre sus pools"
-              actionLabel="Administrar mis pools"
+              descripcion="Vea y administre sus pools abiertos/cerrados"
+              actionLabel="Ver mis pools"
             />      
           </div>
         </div>

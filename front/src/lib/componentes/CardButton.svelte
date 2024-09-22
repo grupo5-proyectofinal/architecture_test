@@ -21,7 +21,7 @@
         {/if}
         <h5 class="card-titulo">{titulo}</h5>
         <p class="card-text">{descripcion}</p>
-        <button class="btn btn-secondary" on:click={handleClick}>{actionLabel}</button>
+        <button class="btn btn-dark rounded-pill" on:click={handleClick}>{actionLabel}</button>
     </div>
 </div>
 
@@ -29,4 +29,11 @@
     .card {
         margin-bottom: 20px;
     }
+    .btn-dark {
+        background-color: #343a40;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+     }
 </style>
