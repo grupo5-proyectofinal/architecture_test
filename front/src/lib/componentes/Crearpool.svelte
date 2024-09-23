@@ -77,11 +77,8 @@
             if (respuesta.ok){
                 const resultado = await respuesta.json();
                 alert('Pool creado correctamente');
-                console.log(respuesta.status)
             } else {
                 alert('Error al crear Pool')
-                console.log(formData)
-                console.log(respuesta.status)
             }
         } catch(error){
             console.error('Error en la solicitud:', error);
@@ -98,12 +95,11 @@
 
     onMount(async() =>{
         try{
-            const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categorias/')
+            const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categories/')
             if (!response.ok){
                 throw new Error('Timeout')
             }
-            const data = await response.json()
-            categorias = data
+            categorias = await response.json()
         } catch(error){
             console.error ('Error:',error)
         }
@@ -214,7 +210,7 @@
                                 </div>
                             </div>
                             <div class="join-button-wrapper">
-                                <button type="button" class="btn btn-dark rounded-pill">Crear pool</button>
+                                <button type="submit" class="btn btn-dark rounded-pill">Crear pool</button>
                             </div>
                         </div>
                     </form>
@@ -248,6 +244,12 @@
   }
 
   input {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 50px;
+    text-align: left;
+  }
+  select {
     width: 100%;
     max-width: 500px;
     border-radius: 50px;

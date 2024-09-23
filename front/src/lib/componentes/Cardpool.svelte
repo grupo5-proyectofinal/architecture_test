@@ -3,11 +3,12 @@
   export let data;
   export let imagePreview = "http://www.w3.org/2000/svg";
 
+
   let imageSrc = data?.producto?.imagenes?.[0]?.imagen || imagePreview;
   let fecha = format(new Date(data.fecha_cierre), 'dd/MM/yyyy HH:mm');
   let estado = data.estado
 
-  console.log(data.estado)
+
 </script>
 
 <div class="card mb-3">
@@ -17,7 +18,14 @@
       <h6 class="card-subtitle text-muted">{data.categoria}</h6>
     </div> -->
     <div style="width: 100%; height: 200px; overflow: hidden;">
-      <img src={imageSrc} class="d-block user-select-none" style="width: 100%; height: 100%; object-fit: cover;" alt="Imagen del producto" />
+      <a href="/verpool/{data.id}">
+        <img src={imageSrc}
+        class="d-block user-select-none"
+        style="width: 100%; height: 100%; object-fit: cover;" 
+        alt="Imagen del producto"
+        />
+      </a>
+
     </div>
         
     <ul class="list-group list-group-flush">
