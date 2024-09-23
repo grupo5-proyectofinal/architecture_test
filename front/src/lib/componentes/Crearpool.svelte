@@ -56,7 +56,7 @@
 
 
     async function sendForm() {
-
+        console.log("entro al send")
         const formData = new FormData()
         formData.append('titulo',titulo)
         formData.append('descripcion',descripcion)
@@ -66,7 +66,6 @@
         formData.append('cantidad',cantidadDisponible)
         formData.append('categoria',categoriaPool)
         formData.append('fecha_cierre', fecha_cierre)
-        formData.append('imagenes', imagenPool.elegirArchivo)
 
         try{
             const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/',{
@@ -90,6 +89,7 @@
     }
 
     const handleSubmit = (event) => {
+        console.log("entro al submit")
         event.preventDefault();
         if (validateForm()) {
             sendForm()
@@ -98,7 +98,7 @@
 
     onMount(async() =>{
         try{
-            const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categorias/')
+            const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categories/')
             if (!response.ok){
                 throw new Error('Timeout')
             }
@@ -214,7 +214,7 @@
                                 </div>
                             </div>
                             <div class="join-button-wrapper">
-                                <button type="button" class="btn btn-dark rounded-pill">Crear pool</button>
+                                <button type="submit" class="btn btn-dark rounded-pill">Crear pool</button>
                             </div>
                         </div>
                     </form>
