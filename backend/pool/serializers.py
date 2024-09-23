@@ -1,6 +1,7 @@
 from django.utils import timezone
 from rest_framework import serializers
 from .models import Pool, Categoria, Producto, ProductoImagen
+from user.serializers import MemberPoolSerializer
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -35,7 +36,7 @@ class PoolSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Pool
-        fields = ['titulo', 'descripcion', 'minimo_participantes', 'producto', 'precio', 'cantidad', 'categoria', 'fecha_cierre', 'imagenes']
+        fields = ['titulo', 'tipo_pago', 'descripcion', 'minimo_participantes', 'producto', 'cantidad_comprada', 'precio', 'cantidad', 'categoria', 'fecha_cierre', 'imagenes']
 
     def validate_titulo(self, value):
         if not value:
@@ -113,16 +114,29 @@ class PoolSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+    
 
 class ListPoolSerializer(serializers.ModelSerializer):
     producto = ProductoSerializer()
+    cantidad_disponible = serializers.SerializerMethodField('get_cantidad_disponible')
     class Meta:
         model = Pool
-        fields = ["id", "titulo", "minimo_participantes", "producto", "creador", "fecha_creacion", "fecha_cierre", "estado"]
+        fields = ["id", "titulo", "producto", "cantidad_disponible", "cantidad_comprada", "creador", "fecha_cierre", "estado"]
+
+
+    def get_cantidad_disponible(self, obj):
+        return obj.get_available_stock()
 
 
 class PoolDetailSerializer(serializers.ModelSerializer):
     producto = ProductoSerializer()
+    cantidad_disponible = serializers.SerializerMethodField('get_cantidad_disponible')
+    miembros = MemberPoolSerializer(many=True, read_only=True)
     class Meta:
         model = Pool
-        fields = ['minimo_participantes', 'producto', 'creador', 'fecha_creacion', 'fecha_cierre', 'estado']
+        fields = ['minimo_participantes', 'producto', 'cantidad_disponible', 'cantidad_comprada', 'tipo_pago', 'creador', 'fecha_creacion', 'fecha_cierre', 'estado', 'miembros']
+    
+    def get_cantidad_disponible(self, obj):
+        return obj.get_available_stock()
+    
+    

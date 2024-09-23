@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 
 # Create your models here.
@@ -50,6 +51,7 @@ class Pool(models.Model):
     creador = models.ForeignKey("user.Usuario", on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField()
+    cantidad_comprada = models.IntegerField(default=0)
     
     estado = models.CharField(
         max_length=20,
@@ -70,14 +72,26 @@ class Pool(models.Model):
         return self.estado == self.EstadoChoices.ABIERTO
 
     def update_stock(self, cantidad: int):
-        cant_productos = self.get_available_stock()
-        if cant_productos - cantidad >= 0:
-            self.cantidad_comprada+=cantidad
-            self.save()
-        else:
+        if cantidad > self.get_available_stock():
             raise ValueError("No hay suficientes productos en stock.")
+        
+        
+        self.cantidad_comprada+=cantidad 
+
+        if self.cantidad_comprada == self.producto.cantidad:
+            self.estado = self.EstadoChoices.LISTO
+
+        self.save()
+        
 
     def get_available_stock(self):
         return self.producto.cantidad - self.cantidad_comprada
     
+    def get_members(self):
+        return self.members.all()
     
+    """ def delete(self):
+        if self.members.count() > 0:
+            raise ValueError("No se puede eliminar un pool con miembros.")
+        
+        self.estado = self.EstadoChoices.CANCELADO """

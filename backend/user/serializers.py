@@ -51,3 +51,11 @@ class MemberSerializer(serializers.ModelSerializer):
         
         member =  Member.objects.create(**validated_data)
         return member
+    
+
+class MemberPoolSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    class Meta:
+        model = Member
+        fields = ['user', 'product_quantity', 'joined_at']
+        
