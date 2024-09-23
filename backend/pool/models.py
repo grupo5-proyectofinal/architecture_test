@@ -88,8 +88,8 @@ class Pool(models.Model):
     def get_members(self):
         return self.members.all()
     
-    def delete(self):
+    """ def delete(self):
         if self.members.count() > 0:
             raise ValueError("No se puede eliminar un pool con miembros.")
         
-        #self.estado = self.EstadoChoices.CANCELADO
+        self.estado = self.EstadoChoices.CANCELADO """
