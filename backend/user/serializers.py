@@ -36,14 +36,13 @@ class MemberSerializer(serializers.ModelSerializer):
 
         pool = validated_data.get('pool')
 
-        if not pool.is_open():
-            raise ValidationError({"error": "El pool está cerrado."})
+        """ if not pool.is_open():
+            raise ValidationError({"error": "El pool está cerrado."}) """
         
         user = validated_data.get('user')
 
         if user.is_member_of(pool):
             raise ValidationError({"error": "El usuario ya es miembro de este pool."})
-
 
         pool.update_stock(validated_data.get('product_quantity'))
         
@@ -51,3 +50,11 @@ class MemberSerializer(serializers.ModelSerializer):
         
         member =  Member.objects.create(**validated_data)
         return member
+    
+
+class MemberPoolSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    class Meta:
+        model = Member
+        fields = ['user', 'product_quantity', 'joined_at']
+        
