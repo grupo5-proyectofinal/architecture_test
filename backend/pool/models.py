@@ -71,8 +71,9 @@ class Pool(models.Model):
         return self.estado == self.EstadoChoices.ABIERTO
 
     def update_stock(self, cantidad: int):
-        if self.cantidad_comprada + cantidad > self.producto.cantidad:
+        if cantidad > self.get_available_stock():
             raise ValueError("No hay suficientes productos en stock.")
+        
         
         self.cantidad_comprada+=cantidad 
 
