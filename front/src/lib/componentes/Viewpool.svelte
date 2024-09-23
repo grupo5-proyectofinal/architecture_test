@@ -1,4 +1,14 @@
+<script context="module">
+  export async function load({ params }) {
+    const id = params.id;
+    const res = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/{id}');
+    const product = await res.json();
+    return { pool };
+  }
+</script>
 <script>
+  export let data;
+  console.log(data)
   import BtnJoin from "./BtnJoin.svelte";
 
   import Modal from './ModalConfirmation.svelte'; 
@@ -12,6 +22,8 @@
     showModal = false;
   }
   let currentIndex = 0;
+
+
 
   export let product = {
     images: [

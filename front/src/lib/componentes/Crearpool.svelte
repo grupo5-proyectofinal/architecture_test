@@ -76,11 +76,8 @@
             if (respuesta.ok){
                 const resultado = await respuesta.json();
                 alert('Pool creado correctamente');
-                console.log(respuesta.status)
             } else {
                 alert('Error al crear Pool')
-                console.log(formData)
-                console.log(respuesta.status)
             }
         } catch(error){
             console.error('Error en la solicitud:', error);
@@ -102,8 +99,7 @@
             if (!response.ok){
                 throw new Error('Timeout')
             }
-            const data = await response.json()
-            categorias = data
+            categorias = await response.json()
         } catch(error){
             console.error ('Error:',error)
         }
@@ -248,6 +244,12 @@
   }
 
   input {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 50px;
+    text-align: left;
+  }
+  select {
     width: 100%;
     max-width: 500px;
     border-radius: 50px;

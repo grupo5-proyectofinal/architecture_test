@@ -62,6 +62,7 @@
             <CardButton 
             titulo="Explore pools abiertos"
             descripcion="Explore pools de otros usuarios y unase!"
+            redirectTo="/verpool"
             actionLabel="Ver pools"
           />   
           </div>
@@ -69,6 +70,7 @@
             <CardButton 
               titulo="Administre sus pools"
               descripcion="Vea y administre sus pools abiertos/cerrados"
+              redirectTo="/"
               actionLabel="Ver mis pools"
             />      
           </div>
