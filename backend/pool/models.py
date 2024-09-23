@@ -50,7 +50,7 @@ class Pool(models.Model):
     creador = models.ForeignKey("user.Usuario", on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField()
-    cantidad_comprada = models.IntegerField(default=0, null=True)
+    cantidad_comprada = models.IntegerField(default=0)
     
     estado = models.CharField(
         max_length=20,
