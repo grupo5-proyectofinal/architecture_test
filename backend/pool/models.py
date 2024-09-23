@@ -50,6 +50,7 @@ class Pool(models.Model):
     creador = models.ForeignKey("user.Usuario", on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField()
+    cantidad_comprada = models.IntegerField(default=0, null=True)
     
     estado = models.CharField(
         max_length=20,
@@ -70,19 +71,17 @@ class Pool(models.Model):
         return self.estado == self.EstadoChoices.ABIERTO
 
     def update_stock(self, cantidad: int):
-        cant_productos = self.producto.cantidad
-        if cant_productos - cantidad >= 0:
-            self.cantidad_comprada+=cantidad
-            
-            if self.cantidad_comprada == self.producto.cantidad:
-                self.estado = self.EstadoChoices.LISTO
-
-            self.save()
-
-        else:
+        if self.cantidad_comprada + cantidad > self.producto.cantidad:
             raise ValueError("No hay suficientes productos en stock.")
-
         
+        self.cantidad_comprada+=cantidad 
+
+        if self.cantidad_comprada == self.producto.cantidad:
+            self.estado = self.EstadoChoices.LISTO
+
+        self.save()
+        
+
     def get_available_stock(self):
         return self.producto.cantidad - self.cantidad_comprada
     
