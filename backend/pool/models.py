@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 
 # Create your models here.
@@ -71,11 +72,25 @@ class Pool(models.Model):
     def update_stock(self, cantidad: int):
         cant_productos = self.producto.cantidad
         if cant_productos - cantidad >= 0:
-            self.producto.cantidad-=cantidad
-            self.producto.save()
+            self.cantidad_comprada+=cantidad
+            
+            if self.cantidad_comprada == self.producto.cantidad:
+                self.estado = self.EstadoChoices.LISTO
+
+            self.save()
+
         else:
             raise ValueError("No hay suficientes productos en stock.")
 
         
     def get_available_stock(self):
-        return self.producto.cantidad
+        return self.producto.cantidad - self.cantidad_comprada
+    
+    def get_members(self):
+        return self.members.all()
+    
+    def delete(self):
+        if self.members.count() > 0:
+            raise ValueError("No se puede eliminar un pool con miembros.")
+        
+        #self.estado = self.EstadoChoices.CANCELADO
