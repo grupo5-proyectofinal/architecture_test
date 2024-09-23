@@ -72,15 +72,11 @@ class Pool(models.Model):
         return self.estado == self.EstadoChoices.ABIERTO
 
     def update_stock(self, cantidad: int):
-        if cantidad > self.get_available_stock():
+        if cantidad > 0 and cantidad > self.get_available_stock():
             raise ValueError("No hay suficientes productos en stock.")
-        
-        
-        self.cantidad_comprada+=cantidad 
 
-        if self.cantidad_comprada == self.producto.cantidad:
-            self.estado = self.EstadoChoices.LISTO
-
+        self.cantidad_comprada += cantidad 
+        
         self.save()
         
 
@@ -89,6 +85,7 @@ class Pool(models.Model):
     
     def get_members(self):
         return self.members.all()
+     
     
     """ def delete(self):
         if self.members.count() > 0:
