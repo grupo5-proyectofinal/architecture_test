@@ -15,7 +15,7 @@
 
 <div class="image-section">
     <div class="row mb-3 justify-content-center">
-        <img src={imagePreview} alt="Pool location map" />
+        <img class="image" src={imagePreview} alt="Pool location map" />
     </div>
     <div class="row mb-3 justify-content-center">
         <input
@@ -25,8 +25,28 @@
         style="display: none;"
         id="imageInput"
         />
-        <button type="button" class="btn btn-secondary btn-sm" on:click={() => document.getElementById('imageInput').click()}>
+        <button type="button" class="btn btn-dark rounded-pill" on:click={() => document.getElementById('imageInput').click()}>
             Insertar imagen
         </button>
     </div>
 </div>
+
+<style>
+    .btn-dark {
+      background-color: #343a40;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  
+    .image{
+      width: 400%;
+      max-width: 400px; 
+      height: 400px;
+      border-radius: 8px; 
+      border: 2px solid #afaca8; 
+      object-fit: cover;
+      
+    }
+  </style>
