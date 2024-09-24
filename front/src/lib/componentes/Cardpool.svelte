@@ -19,21 +19,21 @@
     goto(`/verpool/${id}`);
   }
 
+console.log(imageSrc)
+
 </script>
 
 <div class="card mb-3 pool-card">
 
     <div class="card-header">
       <div class="creator-info d-flex align-items-center">
-        <img src="/path-to-avatar.png" alt="" class="creator-avatar" />
+        <img src={imageSrc} alt="" class="creator-avatar" />
         <p class="creator-name">{creador}</p>
       </div>
     </div>
 
     <div class="card-image-container">
-      <a href="/verpool/{id}">
         <img src={imageSrc} class="card-img-top pool-image" alt="Imagen del producto" />
-      </a>
     </div>
   
     <div class="card-body">

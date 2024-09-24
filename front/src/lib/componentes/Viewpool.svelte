@@ -11,6 +11,7 @@
   let tipo_pago = data.tipo_pago;
   let precio = data.producto.precio;
   let id = data.id
+  let imagen = data.producto.imagenes.imagen
 
   import BtnJoin from "./BtnJoin.svelte";
 
@@ -58,6 +59,7 @@
   <div class="card">
     <div class="image-wrapper">
       <img class="image" src={product.images[currentIndex]} alt="Descripción de la imagen del producto"/>
+       <!-- <img class="image" src={product.images} alt="Detalle del producto"/> -->
       <div class="carousel-buttons">
         <button on:click={prevImage} class="button carousel-button">&lt;</button>
         <button on:click={nextImage} class="button carousel-button">&gt;</button>

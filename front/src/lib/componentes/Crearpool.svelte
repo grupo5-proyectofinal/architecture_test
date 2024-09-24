@@ -1,11 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import Imagen from "./Imagen.svelte";
-    import DetailPool from "./DetailPool.svelte";
+    // import DetailPool from "./DetailPool.svelte";
 
     // Estado del modal
-    let showModal = false;
-    let poolData = {}; // Guardar los datos del pool para el modal
+    // let showModal = false;
+    // let poolData = {}; 
 
     // Datos del formulario
     let titulo = '';
@@ -44,65 +44,60 @@
         return isTituloValid && isDescripcionValid;
     };
 
-    // Enviar formulario (solo después de confirmar en el modal)
-    async function sendForm() {
-        const formData = new FormData();
-        formData.append('titulo', titulo);
-        formData.append('descripcion', descripcion);
-        formData.append('minimo_participantes', minimo_participantes);
-        formData.append('producto', producto);
-        formData.append('precio', precio);
-        formData.append('cantidad', cantidadDisponible);
-        formData.append('categoria', categoriaPool);
-        formData.append('fecha_cierre', fecha_cierre);
-        formData.append('ubicacion', ubicacion);
-        formData.append('radio', radio);
-        formData.append('imagen', imagenPool.elegirArchivo);
+    // Enviar formulario (sin usar el modal)
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Evita que el formulario se envíe automáticamente
 
-        try {
-            const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (respuesta.ok) {
-                alert('Pool creado correctamente');
-                // Aquí puedes hacer un redirect o reiniciar el formulario si es necesario
-            } else {
-                alert('Error al crear el Pool');
-            }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
-            alert('Error de red al enviar el formulario');
-        }
-    }
-
-    // Manejar la apertura del modal para confirmar los datos
-    const handleSubmit = (event) => {
-        event.preventDefault();  // Evita que el formulario se envíe automáticamente
         if (validateForm()) {
-            poolData = {
-                titulo,
-                descripcion,
-                minimo_participantes,
-                producto,
-                precio,
-                cantidadDisponible,
-                categoriaPool,
-                fecha_cierre,
-                ubicacion,
-                radio,
-                paymentsSelect,
-                imagenPool
-            };
-            showModal = true;  // Abrir el modal con los datos ingresados
+            const formData = new FormData();
+            formData.append('titulo', titulo);
+            formData.append('descripcion', descripcion);
+            formData.append('minimo_participantes', minimo_participantes);
+            formData.append('producto', producto);
+            formData.append('precio', precio);
+            formData.append('cantidad', cantidadDisponible);
+            formData.append('categoria', categoriaPool);
+            formData.append('fecha_cierre', fecha_cierre);
+            formData.append('ubicacion', ubicacion);
+            formData.append('radio', radio);
+            formData.append('imagen', imagenPool); // Asegúrate de que elegirArchivo esté correctamente definido
+            console.log(formData)
+            try {
+                const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/', {
+                    method: 'POST',
+                    body: formData
+                    
+                });
+
+                if (respuesta.ok) {
+                    alert('Pool creado correctamente');
+                    resetForm(); // Reiniciar el formulario después de una creación exitosa
+                } else {
+                    alert('Error al crear el Pool');
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                alert('Error de red al enviar el formulario');
+            }
         }
     };
 
-    // Confirmar y enviar el formulario desde el modal
-    const confirmSubmit = () => {
-        showModal = false;
-        sendForm(); // Llamar al envío del formulario solo al confirmar
+    // Función para reiniciar el formulario
+    const resetForm = () => {
+        titulo = '';
+        descripcion = '';
+        minimo_participantes = 1;
+        producto = '';
+        precio = '';
+        cantidadDisponible = 1;
+        categoriaPool = '';
+        fecha_cierre = '';
+        ubicacion = '';
+        radio = 0;
+        paymentsSelect = '';
+        imagenPool = ''; // Resetear también la imagen
+        tituloError = '';
+        descripcionError = '';
     };
 
     // Cargar categorías al montar el componente
@@ -230,9 +225,9 @@
 </div>
 
 <!-- Modal de confirmación -->
-{#if showModal}
+<!-- {#if showModal}
     <DetailPool {poolData} on:confirm={confirmSubmit} on:close={() => showModal = false} isModal={true} />
-{/if}
+{/if} -->
 
 <style>
     /* Estilos para el formulario */
