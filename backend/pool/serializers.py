@@ -134,7 +134,7 @@ class PoolDetailSerializer(serializers.ModelSerializer):
     members = MemberPoolSerializer(many=True, read_only=True)
     class Meta:
         model = Pool
-        fields = ['minimo_participantes', 'producto', 'cantidad_disponible', 'cantidad_comprada', 'tipo_pago', 'creador', 'fecha_creacion', 'fecha_cierre', 'estado', 'members']
+        fields = ['id', 'minimo_participantes', 'producto', 'cantidad_disponible', 'cantidad_comprada', 'tipo_pago', 'creador', 'fecha_creacion', 'fecha_cierre', 'estado', 'members']
     
     def get_cantidad_disponible(self, obj):
         return obj.get_available_stock()
