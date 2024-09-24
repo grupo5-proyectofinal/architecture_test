@@ -1,14 +1,10 @@
-<script context="module">
-  export async function load({ params }) {
-    const id = params.id;
-    const res = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/{id}');
-    const product = await res.json();
-    return { pool };
-  }
-</script>
+
 <script>
   export let data;
-  console.log(data)
+
+  //let poolID = data.poolID;
+  console.log (data)
+
   import BtnJoin from "./BtnJoin.svelte";
 
   import Modal from './ModalConfirmation.svelte'; 
@@ -30,7 +26,7 @@
       'https://images.pexels.com/photos/12973132/pexels-photo-12973132.jpeg', 
       'https://images.pexels.com/photos/126588/pexels-photo-126588.jpeg', 
     ],
-    title: 'Alfalfa',
+    title: "algo",
     location: 'Rancho ST ruta 12.Corrientes, Argentina',
     description: 'Alfalfa de alta calidad cultivada en Corrientes. Con tallos tiernos y hojas ricas en proteínas, es ideal para la alimentación animal, mejorando la salud del ganado y facilitando su almacenamiento.',
     price: '$105400.99',
