@@ -46,7 +46,7 @@
           <li class="nav-item">
             <a 
               class="nav-link {activeLink === 'pools' ? 'active' : ''}" 
-              href="#pools"
+              href="/"
               on:click={() => setActive('pools')}
             >
               Pools
@@ -64,7 +64,7 @@
           <li class="nav-item">
             <a 
               class="nav-link {activeLink === 'logout' ? 'active' : ''}" 
-              href="#logout"
+              href="/"
               on:click={() => setActive('logout')}
             >
               Salir
