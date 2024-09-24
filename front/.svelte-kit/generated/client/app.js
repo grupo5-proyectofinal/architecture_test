@@ -17,7 +17,7 @@ export const dictionary = {
 		"/crearpoolshop": [3],
 		"/detallepool": [4],
 		"/perfil": [5],
-		"/verpool": [6]
+		"/verpool/[id]": [~6]
 	};
 
 export const hooks = {

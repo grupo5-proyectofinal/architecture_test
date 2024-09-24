@@ -1,4 +1,5 @@
 <script>
+  import {goto} from '$app/navigation';
   import {format} from 'date-fns'
   export let data;
   export let imagePreview = "http://www.w3.org/2000/svg";
@@ -11,7 +12,12 @@
   let cantidad_comprada = data.cantidad_comprada;
   let progreso = (cantidad_comprada / cantidad_disponible) * 100;
   let creador = data.creador?.username || "Usuario";
-  console.log(data)
+
+  let id = parseInt(data.id)
+
+  function handleClick() {
+    goto(`/verpool/${id}`);
+  }
 
 </script>
 
@@ -25,14 +31,11 @@
     </div>
 
     <div class="card-image-container">
-      <a href="/verpool/{data.id}">
-        <img src={imageSrc}
-          class="pool-image"
-          alt="Imagen del producto"
-        />
+      <a href="/verpool/{id}">
+        <img src={imageSrc} class="card-img-top pool-image" alt="Imagen del producto" />
       </a>
     </div>
-
+  
     <div class="card-body">
       <h3 class="card-title">{data.titulo}</h3>
       <p class="card-text text-muted">${data.producto.precio} por unidad</p>
@@ -42,10 +45,10 @@
         <div class="progress-bar" style="width: {progreso}%"></div>
       </div>
       <div class="button-container">
-        <a href="/verpool/{data.id}" class="btn btn-primary view-pool-button">Ver</a>
+        <a href="#" on:click={handleClick} class="btn btn-primary view-pool-button">Ver</a>
       </div>
     </div>
-  </div>
+</div>
 
   <style>
 .pool-card {

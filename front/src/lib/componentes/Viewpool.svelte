@@ -1,14 +1,16 @@
-<script context="module">
-  export async function load({ params }) {
-    const id = params.id;
-    const res = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/{id}');
-    const product = await res.json();
-    return { pool };
-  }
-</script>
+
 <script>
+  import {format} from 'date-fns'
   export let data;
-  console.log(data)
+
+  let descripcion = data.producto.descripcion;
+  let titulo = data.producto.nombre;
+  let fecha_cierre = format(new Date(data.fecha_cierre), 'dd/MM/yyyy');
+  let cantidad_productos = data.producto.cantidad;
+  let cantidad_disponible = data.cantidad_disponible;
+  let tipo_pago = data.tipo_pago;
+  let precio = data.producto.precio;
+
   import BtnJoin from "./BtnJoin.svelte";
 
   import Modal from './ModalConfirmation.svelte'; 
@@ -30,14 +32,14 @@
       'https://images.pexels.com/photos/12973132/pexels-photo-12973132.jpeg', 
       'https://images.pexels.com/photos/126588/pexels-photo-126588.jpeg', 
     ],
-    title: 'Alfalfa',
-    location: 'Rancho ST ruta 12.Corrientes, Argentina',
-    description: 'Alfalfa de alta calidad cultivada en Corrientes. Con tallos tiernos y hojas ricas en proteínas, es ideal para la alimentación animal, mejorando la salud del ganado y facilitando su almacenamiento.',
-    price: '$105400.99',
-    expiryDate: '31/12/2024',
-    productCount: 50,
-    availableProducts: 10,
-    paymentMethod: 'Tarjeta de Crédito',
+    title: titulo,
+    //location: 'Rancho ST ruta 12.Corrientes, Argentina',
+    description: descripcion,
+    price: precio,
+    expiryDate: fecha_cierre,
+    productCount: cantidad_productos,
+    availableProducts: cantidad_disponible,
+    paymentMethod: tipo_pago,
     recommendations: 150 
   };
   
