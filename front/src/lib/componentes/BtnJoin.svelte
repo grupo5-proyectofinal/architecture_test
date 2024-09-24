@@ -2,6 +2,7 @@
   export let availableProducts = 0;
   export let isOpen = false;
   export let onClose = () => {};
+  export let id;
 
   let selectedQuantity = 1;
 
@@ -12,8 +13,28 @@
   import Modal from './ModalConfirmation.svelte'; 
   let showModal = false;
 
-  function openModal() {
-    showModal = true;
+  async function joinPool() {
+    try {
+      const response = await fetch(`https://poolshop-staging-748245240444.us-central1.run.app/api/pools/${parseInt(id)}/join/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          product_quantity: selectedQuantity  // Cantidad seleccionada
+        })
+      });
+
+      if (response.ok) {
+        showModal = true;  // Mostrar el modal de éxito si la solicitud fue exitosa
+      } else {
+        console.error('Error al unirse al pool:', await response.json());
+        alert('Hubo un error al intentar unirse al pool.');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud de unirse al pool:', error);
+      alert('Error de red al intentar unirse al pool.');
+    }
   }
 
   function closeModal() {
@@ -33,7 +54,7 @@
       <label for="quantity">Máximo: {availableProducts} productos.</label>
 
       <div class="join-button-wrapper">
-        <button type="button" class="btn btn-dark rounded-pill" on:click={openModal}>Guardar</button>
+        <button type="button" class="btn btn-dark rounded-pill" on:click={joinPool}>Guardar</button>
         <!-- Modal Component -->
 				<Modal showModal={showModal} closeModal={closeModal} />
       </div>

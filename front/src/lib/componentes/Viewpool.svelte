@@ -10,6 +10,7 @@
   let cantidad_disponible = data.cantidad_disponible;
   let tipo_pago = data.tipo_pago;
   let precio = data.producto.precio;
+  let id = data.id
 
   import BtnJoin from "./BtnJoin.svelte";
 
@@ -107,7 +108,7 @@
 </div>
 
 {#if showModal}
-  <BtnJoin availableProducts={product.availableProducts} isOpen={showModal} onClose={closeModal}/>
+  <BtnJoin id={id} availableProducts={product.availableProducts} isOpen={showModal} onClose={closeModal}/>
 {/if}
 
 <style>
