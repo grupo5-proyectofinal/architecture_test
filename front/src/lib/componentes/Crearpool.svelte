@@ -229,6 +229,7 @@
                             <div class="form-group">
                                 <label for="cantidadRestante">Cantidad disponible</label>
                                 <input
+                                    class="form-control"
                                     id="cantidadRestante"
                                     type="range"
                                     min="0"
@@ -236,6 +237,7 @@
                                     bind:value={cantidadRestante}
                                     disabled
                                 />
+                                <span>{cantidadRestante}</span>
                             </div>
                             
 
