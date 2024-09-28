@@ -20,8 +20,8 @@
     let ubicacion = '';
     let radio = 0;
     let imagenPool = '';
-    let paymentsMethods = ['Efectivo', 'Transferencia', 'Efectivo y/o Transferencia'];
-    let paymentsSelect = '';
+    let metodosPago = ['Efectivo', 'Transferencia', 'Efectivo y/o Transferencia'];
+    let pagoSeleccionado = '';
 
     // Manejo de errores
     let tituloError = '';
@@ -51,6 +51,7 @@
         if (validateForm()) {
             const formData = new FormData();
             formData.append('titulo', titulo);
+            formData.append('tipo_pago', pagoSeleccionado)
             formData.append('descripcion', descripcion);
             formData.append('minimo_participantes', minimo_participantes);
             formData.append('producto', producto);
@@ -58,8 +59,8 @@
             formData.append('cantidad', cantidadDisponible);
             formData.append('categoria', categoriaPool);
             formData.append('fecha_cierre', fecha_cierre);
-            formData.append('ubicacion', ubicacion);
-            formData.append('radio', radio);
+            // formData.append('ubicacion', ubicacion);
+            // formData.append('radio', radio);
             formData.append('imagen', imagenPool); // Asegúrate de que elegirArchivo esté correctamente definido
             console.log(formData)
             try {
@@ -74,6 +75,7 @@
                     resetForm(); // Reiniciar el formulario después de una creación exitosa
                 } else {
                     alert('Error al crear el Pool');
+                    console.log(respuesta.status)
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
@@ -158,9 +160,9 @@
                             <!-- Métodos de pago -->
                             <div class="form-group">
                                 <label for="payments" class="form-label">Formas de Pago</label>
-                                <select bind:value={paymentsSelect} class="form-control" id="payments">
-                                    {#each paymentsMethods as method}
-                                        <option>{method}</option>
+                                <select bind:value={pagoSeleccionado} class="form-control" id="payments">
+                                    {#each metodosPago as pago}
+                                        <option>{pago}</option>
                                     {/each}
                                 </select>
                             </div>
