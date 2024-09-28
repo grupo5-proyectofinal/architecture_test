@@ -60,7 +60,6 @@
         const isProducto = validateField(producto,(msg) => productoError = msg, 'El nombre de producto es obligatorio')
         return isTituloValid && isDescripcionValid && isProducto;
     };
-
     // Enviar formulario (sin usar el modal)
     const handleSubmit = async (event) => {
         event.preventDefault(); // Evita que el formulario se envíe automáticamente
@@ -73,14 +72,13 @@
             formData.append('minimo_participantes', minimo_participantes);
             formData.append('producto', producto);
             formData.append('precio', precio);
-            formData.append('cantidad', cantidadTotal);
-            formData.append('cantidad_comprada', cantidadAdquirida);
+            formData.append('cantidad', parseInt(cantidadTotal));
+            formData.append('cantidad_comprada', parseInt(cantidadAdquirida));
             formData.append('categoria', categoriaPool);
             formData.append('fecha_cierre', fecha_cierre);
             // formData.append('ubicacion', ubicacion);
             // formData.append('radio', radio);
-            formData.append('imagen', imagenPool); // Asegúrate de que elegirArchivo esté correctamente definido
-            console.log(formData)
+            formData.append('imagenes', imagenPool);
             try {
                 const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/', {
                     method: 'POST',
@@ -94,6 +92,7 @@
                 } else {
                     alert('Error al crear el Pool');
                     console.log(respuesta.status)
+                    console.log(formData)
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
