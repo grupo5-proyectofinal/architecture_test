@@ -22,7 +22,7 @@
     let ubicacion = '';
     let radio = 0;
     let imagenPool = '';
-    let metodosPago = ['Efectivo', 'Transferencia', 'Efectivo y/o Transferencia'];
+    let metodosPago = ['efectivo', 'transferencia','todos'];
     let pagoSeleccionado = '';
 
     // Manejo de errores
@@ -71,14 +71,15 @@
             formData.append('descripcion', descripcion);
             formData.append('minimo_participantes', minimo_participantes);
             formData.append('producto', producto);
+            formData.append('cantidad_comprada', cantidadAdquirida);
             formData.append('precio', precio);
-            formData.append('cantidad', parseInt(cantidadTotal));
-            formData.append('cantidad_comprada', parseInt(cantidadAdquirida));
+            formData.append('cantidad', cantidadTotal);
             formData.append('categoria', categoriaPool);
             formData.append('fecha_cierre', fecha_cierre);
             // formData.append('ubicacion', ubicacion);
             // formData.append('radio', radio);
             formData.append('imagenes', imagenPool);
+
             try {
                 const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/', {
                     method: 'POST',
@@ -88,11 +89,11 @@
 
                 if (respuesta.ok) {
                     alert('Pool creado correctamente');
-                    resetForm(); // Reiniciar el formulario después de una creación exitosa
+                    resetForm(); // Reinicio de formulario
                 } else {
                     alert('Error al crear el Pool');
                     console.log(respuesta.status)
-                    console.log(formData)
+                    console.log(titulo)
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
@@ -108,12 +109,13 @@
         minimo_participantes = 1;
         producto = '';
         precio = '';
-        cantidadDisponible = 1;
+        cantidadTotal = 1;
+        cantidadAdquirida = 1;
         categoriaPool = '';
         fecha_cierre = '';
         ubicacion = '';
         radio = 0;
-        paymentsSelect = '';
+        pagoSeleccionado = '';
         imagenPool = ''; // Resetear también la imagen
         tituloError = '';
         descripcionError = '';
