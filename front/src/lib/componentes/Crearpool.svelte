@@ -22,6 +22,7 @@
     let ubicacion = '';
     let radio = 0;
     let imagenPool = '';
+    let imagenPreview = "https://via.placeholder.com/400";
     let metodosPago = ['efectivo', 'transferencia','todos'];
     let pagoSeleccionado = '';
 
@@ -279,12 +280,14 @@
         <!-- Vista previa de la imagen -->
         <div class="col-md-6">
             <div class="container">
-                <Imagen bind:this={imagenPool} imagePreview="https://via.placeholder.com/400" />
+                <Imagen 
+                  bind:imagePreview={imagenPreview}
+                  bind:elegirArchivo={imagenPool}
+                />
             </div>
         </div>
     </div>
 </div>
-
 <!-- Modal de confirmación -->
 <!-- {#if showModal}
     <DetailPool {poolData} on:confirm={confirmSubmit} on:close={() => showModal = false} isModal={true} />
