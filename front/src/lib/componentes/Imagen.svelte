@@ -1,7 +1,6 @@
 <svelte:options accessors={true} />
 
 <script>
-  // Exportar las propiedades para permitir la vinculación desde el componente padre
   export let elegirArchivo = null; // Archivo de imagen seleccionado
   export let imagePreview = '';    // URL de la imagen de previsualización
 
@@ -18,7 +17,9 @@
 <!-- Sección de imagen y botón de subida -->
 <div class="image-section">
   <div class="row mb-3 justify-content-center">
-    <img class="image" src={imagePreview} alt="Previsualización de la imagen" />
+    <img class="image" 
+    src={imagePreview} 
+    alt="Previsualización de la imagen" />
   </div>
   <div class="row mb-3 justify-content-center">
     <input

@@ -20,8 +20,6 @@
     goto(`/verpool/${id}`);
   }
 
-console.log(imageSrc)
-
 </script>
 
 <div class="card mb-2 pool-card">
