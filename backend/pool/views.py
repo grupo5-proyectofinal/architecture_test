@@ -29,15 +29,20 @@ class PoolListCreateView(generics.ListCreateAPIView):
             User = get_user_model()
             usuario = User.objects.get(username="juan")
             serializer.is_valid(raise_exception=True)
-            serializer.save(creador=usuario)  
+            # Guardar el objeto con el creador asignado
+            serializer.save(creador=usuario)
         
         except User.DoesNotExist as e:
+            # Error si el usuario no existe
             logger.error("El usuario no existe.")
-            raise serializers.ValidationError(f"{e}", code='invalid')
-        
+            print(f"Error de usuario: {str(e)}")  # Imprime en consola
+            raise serializers.ValidationError(f"Usuario no encontrado: {str(e)}", code='invalid')
+
         except Exception as e:
+            # Capturar cualquier otro error y mostrarlo con detalles
             logger.error(f"Error al crear el Pool: {str(e)}")
-            raise serializers.ValidationError(f"{e}", code='invalid')
+            print(f"Error al crear el Pool: {str(e)}")  # Imprime en consola
+            raise serializers.ValidationError(f"Error desconocido al crear el Pool: {str(e)}", code='invalid')
 
 
 class PoolDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):

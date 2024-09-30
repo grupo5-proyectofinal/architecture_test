@@ -31,7 +31,7 @@ class PoolSerializer(serializers.ModelSerializer):
     cantidad = serializers.IntegerField(source='producto.cantidad')
     categoria = serializers.CharField(source='producto.categoria.nombre')
     imagenes = serializers.ListField(
-        child=serializers.ImageField(), write_only=True, required=False
+        child=serializers.ImageField(), required=False
     )
     
     class Meta:
@@ -74,28 +74,31 @@ class PoolSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        imagenes_data = validated_data.pop('imagenes', [])
-        producto_data = validated_data.pop('producto')
+        try:
+            imagenes_data = validated_data.pop('imagenes', [])
+            producto_data = validated_data.pop('producto')
 
-        categoria_data = producto_data.pop('categoria')
+            categoria_data = producto_data.pop('categoria')
 
-        categoria = Categoria.objects.get(**categoria_data)
+            categoria = Categoria.objects.get(**categoria_data)
 
-        producto = Producto.objects.create(
-            categoria=categoria,
-            **producto_data
-        )
+            producto = Producto.objects.create(
+                categoria=categoria,
+                **producto_data
+            )
 
-        for imagen_data in imagenes_data:
-            ProductoImagen.objects.create(producto=producto, imagen=imagen_data)
+            for imagen_data in imagenes_data:
+                ProductoImagen.objects.create(producto=producto, imagen=imagen_data)
 
-        pool = Pool.objects.create(
-            producto=producto,
-            **validated_data
-        )
+            pool = Pool.objects.create(
+                producto=producto,
+                **validated_data
+            )
 
-        return pool
-    
+            return pool
+        except Exception as e:
+            raise serializers.ValidationError(f"Error al crear el pool: {e}")
+                                               
     def update(self, instance, validated_data):
         producto_data = validated_data.pop('producto', None)
         if producto_data:

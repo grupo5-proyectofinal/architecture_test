@@ -47,7 +47,6 @@ class Pool(models.Model):
     titulo = models.CharField(max_length=100)
     minimo_participantes = models.IntegerField(default=1)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='pools')
-    cantidad_comprada = models.IntegerField()
     creador = models.ForeignKey("user.Usuario", on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField()
