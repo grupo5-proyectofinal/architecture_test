@@ -2,7 +2,9 @@
 <script>
   import {format} from 'date-fns'
   export let data;
-
+  export let imagenPreview;
+  let currentIndex = 0;
+  let imageSrc = data?.producto?.imagenes?.[currentIndex]?.imagen || imagenPreview.imagenes?.[currentIndex]?.imagen ;
   let descripcion = data.producto.descripcion;
   let titulo = data.producto.nombre;
   let fecha_cierre = format(new Date(data.fecha_cierre), 'dd/MM/yyyy');
@@ -11,6 +13,7 @@
   let tipo_pago = data.tipo_pago;
   let precio = data.producto.precio;
   let id = data.id
+  let imagen = data.producto.imagenes.imagen
 
   import BtnJoin from "./BtnJoin.svelte";
 
@@ -24,15 +27,12 @@
   function closeModal() {
     showModal = false;
   }
-  let currentIndex = 0;
+ 
 
 
 
   export let product = {
-    images: [
-      'https://images.pexels.com/photos/12973132/pexels-photo-12973132.jpeg', 
-      'https://images.pexels.com/photos/126588/pexels-photo-126588.jpeg', 
-    ],
+    images: imagenPreview,
     title: titulo,
     //location: 'Rancho ST ruta 12.Corrientes, Argentina',
     description: descripcion,
@@ -51,13 +51,14 @@
   function prevImage() {
     currentIndex = (currentIndex - 1 + product.images.length) % product.images.length;
   }
-  
+
 </script>
 
 <div class="page-container"> 
   <div class="card">
     <div class="image-wrapper">
-      <img class="image" src={product.images[currentIndex]} alt="Descripción de la imagen del producto"/>
+      <!-- <img class="image" src={product.images[currentIndex]} alt="Descripción de la imagen del producto"/> -->
+       <img class="image" src={imageSrc} alt="Detalle del producto"/>
       <div class="carousel-buttons">
         <button on:click={prevImage} class="button carousel-button">&lt;</button>
         <button on:click={nextImage} class="button carousel-button">&gt;</button>

@@ -47,54 +47,55 @@
             <Filter />
           </div>
         </div>
-        
+      </div> 
         <!-- Sección de botones -->
-        <div class="row">
-          <div class="col-md-4">
-            <CardButton 
-              titulo="Cree nuevo pool de compra"
-              descripcion="Empiece creando su propio Pool de compra"
-              actionLabel="Crear pool"
-              redirectTo="/crearpoolshop"
-            />
+      <div class="container">
+          <div class="row">
+            <div class="col-md-4">
+              <CardButton 
+                titulo="Cree nuevo pool de compra"
+                descripcion="Empiece creando su propio Pool de compra"
+                actionLabel="Crear pool"
+                redirectTo="/crearpoolshop"
+              />
+            </div>
+            <div class="col-md-4">
+              <CardButton 
+              titulo="Explore pools abiertos"
+              descripcion="Explore pools de otros usuarios y unase!"
+              redirectTo="/verpool"
+              actionLabel="Ver pools"
+            />   
+            </div>
+            <div class="col-md-4">
+              <CardButton 
+                titulo="Administre sus pools"
+                descripcion="Vea y administre sus pools abiertos/cerrados"
+                redirectTo="/"
+                actionLabel="Ver mis pools"
+              />      
+            </div>
           </div>
-          <div class="col-md-4">
-            <CardButton 
-            titulo="Explore pools abiertos"
-            descripcion="Explore pools de otros usuarios y unase!"
-            redirectTo="/verpool"
-            actionLabel="Ver pools"
-          />   
-          </div>
-          <div class="col-md-4">
-            <CardButton 
-              titulo="Administre sus pools"
-              descripcion="Vea y administre sus pools abiertos/cerrados"
-              redirectTo="/"
-              actionLabel="Ver mis pools"
-            />      
-          </div>
-        </div>
-  
-        <!-- Sección de pools más vistos -->
-        <div class="container">
-          <div class="pool-visto-container">
+      </div>
+
+      <!-- Sección de pools más vistos -->
+      <div class="container">
+        <div class="pool-visto-container">
             <h2 class="text-body-secondary">
               Pools más vistos
             </h2>
-          </div>
-          <br />
-          <div class="container">
-            <div class="row">
-              {#each trespools as pool}
-                <div class="col">
-                  <Cardpool
-                  imagePreview={pool}
-                  data={pool} 
-                  />
-                </div>
-              {/each}
-            </div>
+        </div>
+        <br />
+        <div class="container-fluid">
+          <div class="row">
+            {#each trespools as pool}
+              <div class="col">
+                <Cardpool
+                imagePreview={pool}
+                data={pool} 
+                />
+              </div>
+            {/each}
           </div>
         </div>
       </div>

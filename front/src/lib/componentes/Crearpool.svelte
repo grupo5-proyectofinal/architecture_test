@@ -1,11 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import Imagen from "./Imagen.svelte";
-    import DetailPool from "./DetailPool.svelte";
+    // import DetailPool from "./DetailPool.svelte";
 
     // Estado del modal
-    let showModal = false;
-    let poolData = {}; // Guardar los datos del pool para el modal
+    // let showModal = false;
+    // let poolData = {}; 
 
     // Datos del formulario
     let titulo = '';
@@ -13,19 +13,23 @@
     let minimo_participantes = 1;
     let producto = '';
     let precio = '';
-    let cantidadDisponible = 1;
+    let cantidadTotal = 1;
+    let cantidadAdquirida = 1;
+    let cantidadRestante = 0;
     let categorias = [];
     let categoriaPool = '';
     let fecha_cierre = '';
     let ubicacion = '';
     let radio = 0;
     let imagenPool = '';
-    let paymentsMethods = ['Efectivo', 'Transferencia', 'Efectivo y/o Transferencia'];
-    let paymentsSelect = '';
+    let imagenPreview = "https://via.placeholder.com/400";
+    let metodosPago = ['efectivo', 'transferencia','todos'];
+    let pagoSeleccionado = '';
 
     // Manejo de errores
     let tituloError = '';
     let descripcionError = '';
+    let productoError = '';
 
     // Validación de campo vacío
     const validateField = (fieldValue, errorMessageSetter, errorMessage) => {
@@ -37,72 +41,86 @@
         return true;
     };
 
+    const actualizarCantidadRestante = () => {
+        cantidadRestante = Math.max (0,cantidadTotal-cantidadAdquirida)
+    }
+
+    //Validacion de cantidad de productos
+    const validateProduct = () => {
+        if(cantidadAdquirida > cantidadTotal){
+            alert('La cantidad adquirida no puede ser mayor a la cantidad total.')
+            cantidadAdquirida = cantidadTotal
+        }
+        actualizarCantidadRestante();
+    }
+
     // Validar el formulario completo
     const validateForm = () => {
         const isTituloValid = validateField(titulo, (msg) => tituloError = msg, 'El título del pool es obligatorio');
         const isDescripcionValid = validateField(descripcion, (msg) => descripcionError = msg, 'La descripción es obligatoria');
-        return isTituloValid && isDescripcionValid;
+        const isProducto = validateField(producto,(msg) => productoError = msg, 'El nombre de producto es obligatorio')
+        return isTituloValid && isDescripcionValid && isProducto;
     };
+    // Enviar formulario (sin usar el modal)
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Evita que el formulario se envíe automáticamente
 
-    // Enviar formulario (solo después de confirmar en el modal)
-    async function sendForm() {
-        const formData = new FormData();
-        formData.append('titulo', titulo);
-        formData.append('descripcion', descripcion);
-        formData.append('minimo_participantes', minimo_participantes);
-        formData.append('producto', producto);
-        formData.append('precio', precio);
-        formData.append('cantidad', cantidadDisponible);
-        formData.append('categoria', categoriaPool);
-        formData.append('fecha_cierre', fecha_cierre);
-        formData.append('ubicacion', ubicacion);
-        formData.append('radio', radio);
-        formData.append('imagen', imagenPool.elegirArchivo);
-
-        try {
-            const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (respuesta.ok) {
-                alert('Pool creado correctamente');
-                // Aquí puedes hacer un redirect o reiniciar el formulario si es necesario
-            } else {
-                alert('Error al crear el Pool');
-            }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
-            alert('Error de red al enviar el formulario');
-        }
-    }
-
-    // Manejar la apertura del modal para confirmar los datos
-    const handleSubmit = (event) => {
-        event.preventDefault();  // Evita que el formulario se envíe automáticamente
         if (validateForm()) {
-            poolData = {
-                titulo,
-                descripcion,
-                minimo_participantes,
-                producto,
-                precio,
-                cantidadDisponible,
-                categoriaPool,
-                fecha_cierre,
-                ubicacion,
-                radio,
-                paymentsSelect,
-                imagenPool
-            };
-            showModal = true;  // Abrir el modal con los datos ingresados
+            const formData = new FormData();
+            formData.append('titulo', titulo);
+            formData.append('tipo_pago', pagoSeleccionado)
+            formData.append('descripcion', descripcion);
+            formData.append('minimo_participantes', minimo_participantes);
+            formData.append('producto', producto);
+            formData.append('cantidad_comprada', cantidadAdquirida);
+            formData.append('precio', precio);
+            formData.append('cantidad', cantidadTotal);
+            formData.append('categoria', categoriaPool);
+            formData.append('fecha_cierre', fecha_cierre);
+            // formData.append('ubicacion', ubicacion);
+            // formData.append('radio', radio);
+            formData.append('imagenes', imagenPool);
+
+            try {
+                const respuesta = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/', {
+                    method: 'POST',
+                    body: formData
+                    
+                });
+
+                if (respuesta.ok) {
+                    alert('Pool creado correctamente');
+                    resetForm(); // Reinicio de formulario
+                } else {
+                    alert('Error al crear el Pool');
+                    console.log(respuesta.status)
+                    console.log(titulo)
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                alert('Error de red al enviar el formulario');
+            }
         }
     };
 
-    // Confirmar y enviar el formulario desde el modal
-    const confirmSubmit = () => {
-        showModal = false;
-        sendForm(); // Llamar al envío del formulario solo al confirmar
+    // Función para reiniciar el formulario
+    const resetForm = () => {
+        titulo = '';
+        descripcion = '';
+        minimo_participantes = 1;
+        producto = '';
+        precio = '';
+        cantidadTotal = 1;
+        cantidadAdquirida = 1;
+        categoriaPool = '';
+        fecha_cierre = '';
+        ubicacion = '';
+        radio = 0;
+        pagoSeleccionado = '';
+        imagenPool = ''; // Resetear también la imagen
+        tituloError = '';
+        descripcionError = '';
+        productoError = '';
     };
 
     // Cargar categorías al montar el componente
@@ -132,7 +150,10 @@
                             <!-- Título del Pool -->
                             <div class="form-group">
                                 <label for="titulo">Título del Pool</label>
-                                <input id="titulo" class="form-control" type="text" bind:value={titulo} placeholder="Ingrese título del Pool" />
+                                <input id="titulo" class="form-control rounded" type="text" 
+                                bind:value={titulo} 
+                                placeholder="Ingrese título del Pool"
+                                required/>
                                 {#if tituloError}
                                     <span class="error">{tituloError}</span>
                                 {/if}
@@ -141,13 +162,18 @@
                             <!-- Producto -->
                             <div class="form-group">
                                 <label for="producto">Nombre del producto</label>
-                                <input id="producto" class="form-control" type="text" bind:value={producto} placeholder="Ingrese nombre del producto" />
+                                <input id="producto" class="form-control rounded" type="text"
+                                 bind:value={producto} 
+                                 placeholder="Ingrese nombre del producto"
+                                 required/>
+                                {#if productoError}
+                                    <span class="error">{productoError}</span>
+                                {/if}
                             </div>
-
                             <!-- Categoría -->
                             <div class="form-group">
                                 <label for="categorias" class="form-label">Categoría</label>
-                                <select bind:value={categoriaPool} class="form-control" id="categorias">
+                                <select bind:value={categoriaPool} class="form-control rounded" id="categorias">
                                     {#each categorias as categoria}
                                         <option value={categoria.nombre}>{categoria.nombre}</option>
                                     {/each}
@@ -157,15 +183,20 @@
                             <!-- Precio -->
                             <div class="form-group">
                                 <label for="priceInput">Precio unitario del producto</label>
-                                <input id="priceInput" class="form-control" type="number" bind:value={precio} min="0" step="0.01" placeholder="Ingrese el precio" required />
+                                <input id="priceInput" class="form-control rounded" type="number"
+                                 bind:value={precio}
+                                 min="0" 
+                                 step="0.01"
+                                 placeholder="Ingrese el precio"
+                                 required />
                             </div>
 
                             <!-- Métodos de pago -->
                             <div class="form-group">
                                 <label for="payments" class="form-label">Formas de Pago</label>
-                                <select bind:value={paymentsSelect} class="form-control" id="payments">
-                                    {#each paymentsMethods as method}
-                                        <option>{method}</option>
+                                <select bind:value={pagoSeleccionado} class="form-control rounded" id="payments">
+                                    {#each metodosPago as pago}
+                                        <option>{pago}</option>
                                     {/each}
                                 </select>
                             </div>
@@ -173,23 +204,49 @@
                             <!-- Descripción -->
                             <div class="form-group">
                                 <label for="descripcion">Descripción del Producto</label>
-                                <input id="descripcion" class="form-control" type="text" bind:value={descripcion} placeholder="Ingrese descripción del producto" />
+                                <input id="descripcion" class="form-control rounded" type="text" bind:value={descripcion} placeholder="Ingrese descripción del producto" />
                                 {#if descripcionError}
                                     <span class="error">{descripcionError}</span>
                                 {/if}
                             </div>
 
-                            <!-- Cantidad disponible -->
+                            <!-- Cantidad total -->
                             <div class="form-group">
-                                <label for="cantidadDisponible">Cantidad disponible</label>
-                                <input id="cantidadDisponible" class="form-control" type="range" min="1" max="100" bind:value={cantidadDisponible} />
-                                <span>{cantidadDisponible}</span>
+                                <label for="cantidadTotal">Cantidad total de productos</label>
+                                <input id="cantidadTotal" class="form-control rounded" type="number"
+                                 min="1"
+                                 bind:value={cantidadTotal}
+                                 on:input={validateProduct}
+                                 required/>
                             </div>
+                            <!-- Cantidad adquirida -->
+                            <div class="form-group">
+                                <label for="cantidadDisponible">Cantidad adquirida</label>
+                                <input id="cantidadDisponible" class="form-control rounded" type="number"
+                                  min="1"
+                                  bind:value={cantidadAdquirida}
+                                  on:input={validateProduct}
+                                  required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="cantidadRestante">Cantidad disponible</label>
+                                <input
+                                    class="form-control"
+                                    id="cantidadRestante"
+                                    type="range"
+                                    min="0"
+                                    max={cantidadTotal}
+                                    bind:value={cantidadRestante}
+                                    disabled
+                                />
+                                <span>{cantidadRestante}</span>
+                            </div>
+                            
 
                             <!-- Fecha de cierre -->
                             <div class="form-group">
                                 <label for="fecha_cierre">Fecha de vencimiento del Pool</label>
-                                <input id="fecha_cierre" class="form-control" type="date" bind:value={fecha_cierre} />
+                                <input id="fecha_cierre" class="form-control rounded" type="date" bind:value={fecha_cierre} />
                             </div>
 
                             <!-- Mínimo de participantes -->
@@ -201,7 +258,7 @@
                             <!-- Ubicación -->
                             <div class="form-group">
                                 <label for="ubicacion">Ubicación</label>
-                                <input id="ubicacion" class="form-control" type="text" bind:value={ubicacion} placeholder="Ingrese Ubicación" />
+                                <input id="ubicacion" class="form-control rounded" type="text" bind:value={ubicacion} placeholder="Ingrese Ubicación" />
                             </div>
 
                             <!-- Radio -->
@@ -223,16 +280,18 @@
         <!-- Vista previa de la imagen -->
         <div class="col-md-6">
             <div class="container">
-                <Imagen bind:this={imagenPool} imagePreview="https://via.placeholder.com/400" />
+                <Imagen 
+                  bind:imagePreview={imagenPreview}
+                  bind:elegirArchivo={imagenPool}
+                />
             </div>
         </div>
     </div>
 </div>
-
 <!-- Modal de confirmación -->
-{#if showModal}
+<!-- {#if showModal}
     <DetailPool {poolData} on:confirm={confirmSubmit} on:close={() => showModal = false} isModal={true} />
-{/if}
+{/if} -->
 
 <style>
     /* Estilos para el formulario */

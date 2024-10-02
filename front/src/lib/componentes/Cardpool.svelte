@@ -12,8 +12,9 @@
   let cantidad_comprada = data.cantidad_comprada;
   let progreso = (cantidad_comprada / cantidad_disponible) * 100;
   let creador = data.creador?.username || "Usuario";
-
   let id = parseInt(data.id)
+
+  
 
   function handleClick() {
     goto(`/verpool/${id}`);
@@ -21,19 +22,16 @@
 
 </script>
 
-<div class="card mb-3 pool-card">
-
+<div class="card mb-2 pool-card">
     <div class="card-header">
       <div class="creator-info d-flex align-items-center">
-        <img src="/path-to-avatar.png" alt="" class="creator-avatar" />
+        <img src={imageSrc} alt="" class="creator-avatar" />
         <p class="creator-name">{creador}</p>
       </div>
     </div>
 
     <div class="card-image-container">
-      <a href="/verpool/{id}">
         <img src={imageSrc} class="card-img-top pool-image" alt="Imagen del producto" />
-      </a>
     </div>
   
     <div class="card-body">
@@ -58,8 +56,7 @@
   margin-bottom: 20px;
   background-color: #fff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 500px;
-  height: 500px;
+  width:300px;
 }
 
 .pool-card:hover {
@@ -110,6 +107,9 @@
   font-weight: bold;
   color: #333;
   margin-bottom: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .card-text {
