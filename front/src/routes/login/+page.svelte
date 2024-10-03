@@ -18,12 +18,30 @@
             isLoading = false;
             return;
         }
-
-        // Simulamos una respuesta de carga por ahora
-        setTimeout(() => {
-            isLoading = false;
-            window.location.href = '/';  // Redirigir a la página principal después de iniciar sesión
-        }, 1500);
+        
+        try{
+            const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/auth/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const token = data.token;
+                console.log('Login successful', data);
+            } else {
+                console.log(response)
+                const errorData = await response.json();
+                errorMessage = errorData.message || 'Error al iniciar sesión. Por favor, verifique sus credenciales.';
+            }
+        }catch{
+            console.log("error")
+        }
     }
 </script>
 
