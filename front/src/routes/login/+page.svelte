@@ -73,7 +73,7 @@
         </form>
 
         <p class="register-link">
-            ¿No tienes cuenta? <a href="/perfil">Regístrate aquí</a>.
+            ¿No tienes cuenta? <a href="/crearusuario">Regístrate aquí</a>.
         </p>
     </div>
 
