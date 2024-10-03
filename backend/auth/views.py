@@ -18,13 +18,11 @@ class ObtainTokenView(views.APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        username_or_email = serializer.validated_data.get('username')
+        email = serializer.validated_data.get('email')
         password = serializer.validated_data.get('password')
 
-        user = User.objects.filter(username=username_or_email).first()
-        if user is None:
-            user = User.objects.filter(phone_number=username_or_email).first()
-
+        user = User.objects.filter(email=email).first()
+        
         if user is None or not user.check_password(password):
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
