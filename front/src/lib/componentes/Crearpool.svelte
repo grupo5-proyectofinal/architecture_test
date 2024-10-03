@@ -1,11 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import Imagen from "./Imagen.svelte";
-    // import DetailPool from "./DetailPool.svelte";
+    import DetailPool from "./DetailPool.svelte";
 
     // Estado del modal
-    // let showModal = false;
-    // let poolData = {}; 
+    let showModal = false;
+    let poolData = {}; 
 
     // Datos del formulario
     let titulo = '';
@@ -89,12 +89,13 @@
                 });
 
                 if (respuesta.ok) {
-                    alert('Pool creado correctamente');
+                    const createdPool = await respuesta.json();
+                    poolData = createdPool;
+                    showModal = true;
                     resetForm(); // Reinicio de formulario
                 } else {
                     alert('Error al crear el Pool');
-                    console.log(respuesta.status)
-                    console.log(titulo)
+                    console.log(respuesta)
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
@@ -273,6 +274,9 @@
                             </div>
                         </div>
                     </form>
+                    {#if showModal}
+                        <DetailPool {poolData} isModal={true} on:confirm={() => { showModal = false; }} on:close={() => showModal = false}  />
+                    {/if}
                 </div>
             </div>
         </div>
@@ -289,8 +293,8 @@
     </div>
 </div>
 <!-- Modal de confirmación -->
-<!-- {#if showModal}
-    <DetailPool {poolData} on:confirm={confirmSubmit} on:close={() => showModal = false} isModal={true} />
+<!-- 
+   
 {/if} -->
 
 <style>
