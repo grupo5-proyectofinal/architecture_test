@@ -36,7 +36,7 @@ class PoolSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Pool
-        fields = ['titulo', 'tipo_pago', 'descripcion', 'minimo_participantes', 'producto', 'cantidad_comprada', 'precio', 'cantidad', 'categoria', 'fecha_cierre', 'imagenes']
+        fields = ['id', 'titulo', 'tipo_pago', 'descripcion', 'minimo_participantes', 'producto', 'cantidad_comprada', 'precio', 'cantidad', 'categoria', 'fecha_cierre', 'imagenes']
 
     def validate_titulo(self, value):
         if not value:
@@ -94,7 +94,6 @@ class PoolSerializer(serializers.ModelSerializer):
                 producto=producto,
                 **validated_data
             )
-
             return pool
         except Exception as e:
             raise serializers.ValidationError(f"Error al crear el pool: {e}")
@@ -137,7 +136,7 @@ class PoolDetailSerializer(serializers.ModelSerializer):
     members = MemberPoolSerializer(many=True, read_only=True)
     class Meta:
         model = Pool
-        fields = ['id', 'minimo_participantes', 'producto', 'cantidad_disponible', 'cantidad_comprada', 'tipo_pago', 'creador', 'fecha_creacion', 'fecha_cierre', 'estado', 'members']
+        fields = ['id', 'titulo', 'minimo_participantes', 'producto', 'cantidad_disponible', 'cantidad_comprada', 'tipo_pago', 'creador', 'fecha_creacion', 'fecha_cierre', 'estado', 'members']
     
     def get_cantidad_disponible(self, obj):
         return obj.get_available_stock()
