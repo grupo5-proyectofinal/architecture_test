@@ -8,7 +8,7 @@
     export let poolId = null;  // Pool ID for the created pool
     
     function viewPoolDetails() {
-        goto(`/pools/${poolId}`);
+        goto(`/mispools/${poolId}`);
     }
   </script>
   
