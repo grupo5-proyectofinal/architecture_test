@@ -13,7 +13,6 @@
   let tipo_pago = data.tipo_pago;
   let precio = data.producto.precio;
   let id = data.id
-  let imagen = data.producto.imagenes.imagen
 
   import BtnJoin from "./BtnJoin.svelte";
 
