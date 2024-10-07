@@ -82,7 +82,7 @@
           <li class="nav-item">
             <a
               class="nav-link {activeLink === 'logout' ? 'active' : ''}"
-              href="javascript:void(0);"
+              href="#"
               on:click={logout}>
               Salir
             </a>
