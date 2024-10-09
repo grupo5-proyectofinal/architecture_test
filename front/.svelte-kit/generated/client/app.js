@@ -18,8 +18,8 @@ export const dictionary = {
 		"/": [2],
 		"/crearpoolshop": [3],
 		"/crearusuario": [4],
-		"/detallepool": [5],
-		"/login": [6],
+		"/login": [5],
+		"/mispools/[id]": [~6],
 		"/perfil": [7],
 		"/verpool/[id]": [~8]
 	};

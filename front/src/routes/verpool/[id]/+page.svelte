@@ -11,7 +11,6 @@
       }
     ]
   };
-  console.log(URLs.imagenes[0].imagen)
 </script>
 
 

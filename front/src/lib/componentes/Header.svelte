@@ -80,6 +80,7 @@
             </a>
           </li>
           <li class="nav-item">
+            <!-- svelte-ignore a11y-invalid-attribute -->
             <a
               class="nav-link {activeLink === 'logout' ? 'active' : ''}"
               href="#"
