@@ -26,16 +26,6 @@
 
   // Función para guardar los cambios y cerrar el modal
   function saveChanges() {
-      console.log('Cambios guardados:', {
-          titulo,
-          descripcion,
-          producto,
-          minimo_participantes,
-          cantidadDisponible,
-          fecha_cierre,
-          ubicacion,
-      });
-
       editMode = false;
       closeModal();
   }

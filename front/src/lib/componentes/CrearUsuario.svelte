@@ -98,7 +98,7 @@
       }
 
       // Llamamos a la función que envía los datos a la API
-      enviarDatos(foto);
+      enviarDatos();
     }
   }
 
@@ -113,13 +113,13 @@
     });
   }
 
-  async function enviarDatos(foto) {
+  async function enviarDatos() {
     const data = {
       username,
       email,
       password,
       gender,
-      foto, // Imagen en base64 o vacía si no se seleccionó
+      //foto, // Imagen en base64 o vacía si no se seleccionó
       phone_number,
       direccion,
       country,
