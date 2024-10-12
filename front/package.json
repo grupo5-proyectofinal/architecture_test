@@ -17,6 +17,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"date-fns": "^4.1.0"
+		"date-fns": "^4.1.0",
+		"svelte-icons": "^2.1.0"
 	}
 }

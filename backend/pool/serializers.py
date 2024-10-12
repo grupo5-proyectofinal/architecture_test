@@ -25,7 +25,7 @@ class ProductoSerializer(serializers.ModelSerializer):
 
 
 class PoolSerializer(serializers.ModelSerializer):
-    producto = serializers.CharField(source='producto.nombre')
+    producto = serializers.CharField(source='producto.nombre', required=False)
     descripcion = serializers.CharField(source='producto.descripcion')
     precio = serializers.DecimalField(source='producto.precio', max_digits=10, decimal_places=2)
     cantidad = serializers.IntegerField(source='producto.cantidad')
@@ -57,21 +57,6 @@ class PoolSerializer(serializers.ModelSerializer):
         if value <= timezone.now():
             raise serializers.ValidationError("La fecha de cierre debe ser en el futuro.")
         return value
-
-    def validate(self, data):
-        producto_data = data.get('producto')
-        if not producto_data:
-            raise serializers.ValidationError("El producto es obligatorio.")
-
-        categoria_data = data.get('producto')["categoria"]
-        if not categoria_data:
-            raise serializers.ValidationError("La categoría es obligatoria.")
-
-        cantidad = data.get('cantidad')
-        if cantidad is not None and cantidad <= 0:
-            raise serializers.ValidationError("La cantidad debe ser mayor que cero.")
-
-        return data
 
     def create(self, validated_data):
         try:
