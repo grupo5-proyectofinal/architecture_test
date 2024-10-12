@@ -1,9 +1,11 @@
+from django.shortcuts import get_object_or_404
 from user.models import Member
+from rest_framework.views import APIView
 from user.serializers import MemberSerializer
 from .serializers import CategoriaSerializer, PoolSerializer, ListPoolSerializer, PoolDetailSerializer
 from .models import Categoria, Pool
 from django.contrib.auth import get_user_model
-from rest_framework import permissions, generics, serializers
+from rest_framework import permissions, generics, serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 import logging
@@ -45,20 +47,48 @@ class PoolListCreateView(generics.ListCreateAPIView):
             raise serializers.ValidationError(f"Error desconocido al crear el Pool: {str(e)}", code='invalid')
 
 
-class PoolDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Pool.objects.all()
+class PoolDetailUpdateDeleteView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get_serializer_class(self):
-        if self.request.method == 'GET':
-            return PoolDetailSerializer  
-        return PoolSerializer 
+    def get_object(self, pk):
+        return get_object_or_404(Pool, pk=pk)
 
-    def perform_update(self, serializer):
-        serializer.save(partial=True)
+    def get(self, request, pk, format=None):
+        pool = self.get_object(pk)
+        serializer = PoolDetailSerializer(pool)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def perform_destroy(self, instance):
-        instance.delete()
+    def put(self, request, pk, format=None):
+        """
+        Maneja la actualización completa o parcial de un Pool específico.
+        Utiliza PoolSerializer para deserializar y validar los datos.
+        """
+        pool = self.get_object(pk)
+        serializer = PoolSerializer(pool, data=request.data, partial=True)  # partial=True para permitir actualizaciones parciales
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk, format=None):
+        """
+        Maneja la actualización parcial de un Pool específico.
+        Utiliza PoolSerializer para deserializar y validar los datos.
+        """
+        pool = self.get_object(pk)
+        serializer = PoolSerializer(pool, data=request.data, partial=True)  # partial=True para permitir actualizaciones parciales
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        """
+        Maneja la eliminación de un Pool específico.
+        """
+        pool = self.get_object(pk)
+        pool.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class JoinPoolView(generics.CreateAPIView):
