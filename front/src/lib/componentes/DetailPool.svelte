@@ -1,48 +1,104 @@
 <script>
   import { FaPencilAlt } from "svelte-icons/fa";
-    import {format} from 'date-fns'
+  import { format } from 'date-fns';
 
   export let poolData;
+  export let product = {
+    images: poolData.producto.imagenes || [],
+    titulo: poolData.titulo,
+    ubicacion: poolData.ubicacion || 'Ubicación no disponible',
+    description: poolData.descripcion,
+    precio: poolData.producto.precio,
+    fecha_cierre: poolData.fecha_cierre,
+    cantidad: poolData.cantidad_productos,
+    cantidad_disponible: poolData.cantidad_disponible,
+    tipo_pago: poolData.tipo_pago,
+  };
 
   let currentIndex = 0;
   let imageSrc = poolData.producto.imagenes[currentIndex].imagen;
 
   let enEdicion = {
-    title: false,
-    location: false,
-    description: false,
-    price: false,
-    expiryDate: false,
-    productCount: false,
-    availableProducts: false,
-    paymentMethod: false,
-    recommendations: false
+    titulo: false,
+    ubicacion: false,
+    descripcion: false,
+    precio: false,
+    fecha_cierre: false,
+    cantidad: false,
+    cantidad_disponible: false,
+    tipo_pago: false,
   };
 
   let fieldValues = {
-    title: '',
-    location: '',
-    description: '',
-    price: '',
-    expiryDate: '',
-    productCount: '',
-    availableProducts: '',
-    paymentMethod: '',
-    recommendations: ''
+    titulo: '',
+    ubicacion: '',
+    descripcion: '',
+    precio: '',
+    fecha_cierre: '',
+    cantidad: '',
+    cantidad_disponible: '',
+    tipo_pago: ''
   };
 
-  export let product = {
-    images: poolData.producto.imagenes || [],
-    title: poolData.titulo,
-    location: poolData.ubicacion || 'Ubicación no disponible',
-    description: poolData.descripcion,
-    price: poolData.producto.precio,
-    expiryDate: poolData.fecha_cierre,
-    productCount: poolData.cantidad_productos,
-    availableProducts: poolData.cantidad_disponible,
-    paymentMethod: poolData.tipo_pago,
-    // recommendations: 150
-  };
+  let initialValues = { ...fieldValues }; // Almacenar valores iniciales para comparación
+
+  // Detectar cambio
+  function hasFieldChanged() {
+    return Object.keys(fieldValues).some(field => fieldValues[field] !== initialValues[field]);
+  }
+
+  // Si se detacta cambio, cambia el boton
+  $: anyChange = hasFieldChanged() || Object.values(enEdicion).some(value => value === true);
+
+
+  async function guardarCambios() {
+    try {
+      const fieldUpdate = Object.keys(fieldValues).filter(key => {
+        const value = fieldValues[key];
+        return value !== ""})
+      
+      const updatedPool = new FormData();
+      for (let field of fieldUpdate){
+        updatedPool.append(field, product[field]);
+      }
+      
+      const respuesta = await fetch(`https://poolshop-staging-748245240444.us-central1.run.app/api/pools/${poolData.id}/`, {
+        method: 'PATCH',
+        body: updatedPool
+      });
+
+      if (respuesta.ok) {
+        alert('Pool modificado exitosamente');
+        initialValues = { ...fieldValues };
+      } else {
+        alert('Error al modificar el Pool');
+        console.error(await respuesta.json());
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      alert('Error de red al enviar el formulario');
+    }
+  }
+
+  // Iniciar edición y copiar el valor inicial
+  function handleEdit(fieldName) {
+    enEdicion[fieldName] = true;
+    fieldValues[fieldName] = product[fieldName];
+    initialValues[fieldName] = product[fieldName];
+  }
+
+  // Guardar cambios locales cuando se finaliza la edición
+  function handleSave(event, fieldName) {
+    if (event.key === "Enter" || event.type === "blur") {
+      enEdicion[fieldName] = false;
+      // Actualizar el valor solo si cambió
+      if (fieldValues[fieldName] !== initialValues[fieldName]) {
+        product[fieldName] = fieldValues[fieldName];
+      } else {
+        fieldValues[fieldName] = initialValues[fieldName];
+      }
+    }
+  }
 
   function nextImage() {
     currentIndex = (currentIndex + 1) % product.images.length;
@@ -51,24 +107,12 @@
   function prevImage() {
     currentIndex = (currentIndex - 1 + product.images.length) % product.images.length;
   }
-
-  function handleEdit(fieldName) {
-    enEdicion[fieldName] = true;
-    fieldValues[fieldName] = product[fieldName];
-  }
-
-  function handleSave(event, fieldName) {
-    if (event.key === "Enter" || event.type === "blur") {
-      enEdicion[fieldName] = false;
-      product[fieldName] = fieldValues[fieldName];
-    }
-  }
 </script>
 
-<div class="page-container"> 
+<div class="page-container">
   <div class="card">
     <div class="image-wrapper">
-      <img class="image" src={imageSrc} alt="Detalle del producto"/>
+      <img class="image" src={imageSrc} alt="Detalle del producto" />
       <div class="carousel-buttons">
         <button on:click={prevImage} class="button carousel-button">&lt;</button>
         <button on:click={nextImage} class="button carousel-button">&gt;</button>
@@ -76,133 +120,140 @@
     </div>
     <div class="details">
       <h1 class="titulo-pool text-center">Detalle del Pool</h1>
+      
       <!-- PRODUCTO -->
       <div class="detail-item">
-        {#if enEdicion['title']}
+        {#if enEdicion['titulo']}
           <i class="bi bi-box"></i><strong>Producto: </strong>
-          <input type="text" bind:value={fieldValues['title']} on:blur={(e) => handleSave(e, 'title')} on:keydown={(e) => handleSave(e, 'title')}/>
+          <input type="text" bind:value={fieldValues['titulo']} on:blur={(e) => handleSave(e, 'titulo')} on:keydown={(e) => handleSave(e, 'titulo')} />
         {:else}
           <i class="bi bi-box"></i><strong>Producto: </strong>
-          <p>{product.title}</p>
-          <button class="button-edit" on:click={() => handleEdit('title')}>
+          <p>{product.titulo}</p>
+          <button class="button-edit" on:click={() => handleEdit('titulo')}>
             <div class="edit-icon">
               <FaPencilAlt />
             </div>
           </button>
         {/if}
       </div>
-      <!-- DESCRIPCION -->
+
+      <!-- DESCRIPCIÓN -->
       <div class="detail-item">
-        {#if enEdicion['description']}
+        {#if enEdicion['descripcion']}
           <i class="bi bi-info-circle"></i><strong>Descripción: </strong>
-          <input type="text" bind:value={fieldValues['description']} on:blur={(e) => handleSave(e, 'description')} on:keydown={(e) => handleSave(e, 'description')}/>
+          <input type="text" bind:value={fieldValues['descripcion']} on:blur={(e) => handleSave(e, 'descripcion')} on:keydown={(e) => handleSave(e, 'descripcion')} />
         {:else}
           <i class="bi bi-info-circle"></i><strong>Descripción: </strong>
           <p>{product.description}</p>
-          <button class="button-edit" on:click={() => handleEdit('description')}>
+          <button class="button-edit" on:click={() => handleEdit('descripcion')}>
             <div class="edit-icon">
               <FaPencilAlt />
             </div>
           </button>
         {/if}
       </div>
+
       <!-- PRECIO -->
       <div class="detail-item">
-        {#if enEdicion['price']}
+        {#if enEdicion['precio']}
           <i class="bi bi-cash"></i><strong>Precio: </strong>
-          <input type="number" bind:value={fieldValues['price']} on:blur={(e) => handleSave(e, 'price')} on:keydown={(e) => handleSave(e, 'price')}/>
+          <input type="number" bind:value={fieldValues['precio']} on:blur={(e) => handleSave(e, 'precio')} on:keydown={(e) => handleSave(e, 'precio')} />
         {:else}
           <i class="bi bi-cash"></i><strong>Precio: </strong>
-          <p>${product.price}</p>
-          <button class="button-edit" on:click={() => handleEdit('price')}>
+          <p>${product.precio}</p>
+          <button class="button-edit" on:click={() => handleEdit('precio')}>
             <div class="edit-icon">
               <FaPencilAlt />
             </div>
           </button>
         {/if}
       </div>
+
       <!-- UBICACIÓN -->
       <div class="detail-item">
-        {#if enEdicion['location']}
+        {#if enEdicion['ubicacion']}
           <i class="bi bi-geo-alt"></i><strong>Ubicación: </strong>
-          <input type="text" bind:value={fieldValues['location']} on:blur={(e) => handleSave(e, 'location')} on:keydown={(e) => handleSave(e, 'location')}/>
+          <input type="text" bind:value={fieldValues['ubicacion']} on:blur={(e) => handleSave(e, 'ubicacion')} on:keydown={(e) => handleSave(e, 'ubicacion')} />
         {:else}
           <i class="bi bi-geo-alt"></i><strong>Ubicación: </strong>
-          <p>{product.location}</p>
-          <button class="button-edit" on:click={() => handleEdit('location')}>
+          <p>{product.ubicacion}</p>
+          <button class="button-edit" on:click={() => handleEdit('ubicacion')}>
             <div class="edit-icon">
               <FaPencilAlt />
             </div>
           </button>
         {/if}
       </div>
+
       <!-- FECHA DE CIERRE -->
       <div class="detail-item">
-        {#if enEdicion['expiryDate']}
+        {#if enEdicion['fecha_cierre']}
           <i class="bi bi-calendar"></i><strong>Fecha de vencimiento: </strong>
-          <input type="date" bind:value={fieldValues['expiryDate']} on:blur={(e) => handleSave(e, 'expiryDate')} on:keydown={(e) => handleSave(e, 'expiryDate')}/>
+          <input type="date" bind:value={fieldValues['fecha_cierre']} on:blur={(e) => handleSave(e, 'fecha_cierre')} on:keydown={(e) => handleSave(e, 'fecha_cierre')} />
         {:else}
           <i class="bi bi-calendar"></i><strong>Fecha de vencimiento: </strong>
-          <p>{format(new Date(product.expiryDate), 'dd/MM/yyyy')}</p>
-          <button class="button-edit" on:click={() => handleEdit('expiryDate')}>
+          <p>{format(new Date(product.fecha_cierre), 'dd/MM/yyyy')}</p>
+          <button class="button-edit" on:click={() => handleEdit('fecha_cierre')}>
             <div class="edit-icon">
               <FaPencilAlt />
             </div>
           </button>
         {/if}
       </div>
-      <!-- CANTIDAD TOTAL DE PRODUCTOS -->
+
+      <!-- CANTIDAD TOTAL -->
       <div class="detail-item">
-        {#if enEdicion['productCount']}
+        {#if enEdicion['cantidad']}
           <i class="bi bi-boxes"></i><strong>Cantidad de Productos: </strong>
-          <input type="number" bind:value={fieldValues['productCount']} on:blur={(e) => handleSave(e, 'productCount')} on:keydown={(e) => handleSave(e, 'productCount')}/>
+          <input type="number" bind:value={fieldValues['cantidad']} on:blur={(e) => handleSave(e, 'cantidad')} on:keydown={(e) => handleSave(e, 'cantidad')} />
         {:else}
           <i class="bi bi-boxes"></i><strong>Cantidad de Productos: </strong>
-          <p>{product.productCount}</p>
-          <button class="button-edit" on:click={() => handleEdit('productCount')}>
+          <p>{product.cantidad}</p>
+          <button class="button-edit" on:click={() => handleEdit('cantidad')}>
             <div class="edit-icon">
               <FaPencilAlt />
             </div>
           </button>
         {/if}
       </div>
-      <!-- PRODUCTOS DISPONIBLES -->
+      <!-- CANTIDAD DISPONIBLE -->
       <div class="detail-item">
-        {#if enEdicion['availableProducts']}
-          <i class="bi bi-box"></i><strong>Productos disponibles: </strong>
-          <input type="number" bind:value={fieldValues['availableProducts']} on:blur={(e) => handleSave(e, 'availableProducts')} on:keydown={(e) => handleSave(e, 'availableProducts')}/>
+        {#if enEdicion['cantidad_disponible']}
+            <i class="bi bi-box"></i><strong>Productos disponibles: </strong>
+            <input type="number" bind:value={fieldValues['cantidad_disponible']} on:blur={(e) => handleSave(e, 'cantidad_disponible')} on:keydown={(e) => handleSave(e, 'cantidad_disponible')} />
+          {:else}
+              <i class="bi bi-box"></i><strong>Productos disponibles: </strong>
+              <p>{product.cantidad_disponible}</p>
+              <button class="button-edit" on:click={() => handleEdit('cantidad_disponible')}>
+                <div class="edit-icon">
+                  <FaPencilAlt />
+                </div>
+              </button>
+          {/if}
+      </div>
+      <!-- TIPO DE PAGO -->
+      <div class="detail-item">
+        {#if enEdicion['tipo_pago']}
+          <i class="bi bi-cash"></i><strong>Métodos de Pago: </strong>
+          <input type="text" bind:value={fieldValues['tipo_pago']} on:blur={(e) => handleSave(e, 'tipo_pago')} on:keydown={(e) => handleSave(e, 'tipo_pago')} />
         {:else}
-          <i class="bi bi-box"></i><strong>Productos disponibles: </strong>
-          <p>{product.availableProducts}</p>
-          <button class="button-edit" on:click={() => handleEdit('availableProducts')}>
+          <i class="bi bi-cash"></i><strong>Métodos de Pago: </strong>
+          <p>{product.tipo_pago}</p>
+          <button class="button-edit" on:click={() => handleEdit('tipo_pago')}>
             <div class="edit-icon">
               <FaPencilAlt />
             </div>
           </button>
         {/if}
       </div>
-      <!-- Método de Pago -->
-      <div class="detail-item">
-        {#if enEdicion['paymentMethod']}
-          <i class="bi bi-box"></i><strong>Métodos de Pago: </strong>
-          <input type="text" bind:value={fieldValues['paymentMethod']} on:blur={(e) => handleSave(e, 'paymentMethod')} on:keydown={(e) => handleSave(e, 'paymentMethod')}/>
-        {:else}
-          <i class="bi bi-box"></i><strong>Métodos de Pago: </strong>
-          <p>{product.paymentMethod}</p>
-          <button class="button-edit" on:click={() => handleEdit('paymentMethod')}>
-            <div class="edit-icon">
-              <FaPencilAlt />
-            </div>
-          </button>
-        {/if}
-      </div>
-      <!-- RECOMENDACIONES -->
-      <div class="detail-item">
-        <i class="bi bi-star-fill"></i><strong>150 personas lo recomiendan</strong>
-      </div>
-      <!-- Botón -->
+
+      <!-- Botón para guardar o finalizar -->
       <div class="details-button-wrapper">
-        <button class="btn btn-dark rounded-pill">Guardar cambios</button>
+        {#if anyChange}
+          <button class="btn btn-dark rounded-pill" on:click={guardarCambios}>Guardar cambios</button>
+        {:else}
+          <button class="btn btn-dark rounded-pill">Finalizar</button>
+        {/if}
       </div>
     </div>
   </div>
