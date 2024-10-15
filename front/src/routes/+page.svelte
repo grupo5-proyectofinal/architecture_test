@@ -1,7 +1,4 @@
 <script>
-
-    import Header from '../lib/componentes/Header.svelte';
-    import Footer from "../lib/componentes/Footer.svelte";
     import Cardpool from '../lib/componentes/Cardpool.svelte';
     import CardButton from '../lib/componentes/CardButton.svelte';
     import Filter from '../lib/componentes/Filter.svelte';
@@ -38,7 +35,6 @@
   </script>
   
   <main>
-    <Header />
     <br />
     <div class="body">
       <div class="container">
@@ -100,7 +96,6 @@
         </div>
       </div>
     </div>
-    <Footer />
   </main>
   
   <style>

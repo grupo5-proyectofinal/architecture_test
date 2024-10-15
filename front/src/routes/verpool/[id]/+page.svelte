@@ -1,7 +1,5 @@
 <script>
-  import Header from '../../../lib/componentes/Header.svelte'
   import Viewpool from "../../../lib/componentes/Viewpool.svelte";
-  import Footer from '../../../lib/componentes/Footer.svelte'
   
   export let data;
   let URLs = {
@@ -12,11 +10,7 @@
     ]
   };
 </script>
-
-
-<Header />
 <Viewpool
  bind:data={data.data}
  bind:imagenPreview={URLs}
   />
-<Footer />

@@ -1,6 +1,4 @@
 <script>
-    import Header from '../../lib/componentes/Header.svelte';  // Importamos el Header
-    import Footer from '../../lib/componentes/Footer.svelte';  // Importamos el Footer
     
     let email = '';
     let password = '';
@@ -46,8 +44,6 @@
 </script>
 
 <main>
-    <!-- Añadimos el Header en la parte superior -->
-    <Header />
 
     <div class="login-container">
         <h2>Iniciar sesión</h2>
@@ -94,9 +90,6 @@
             ¿No tienes cuenta? <a href="/crearusuario">Regístrate aquí</a>.
         </p>
     </div>
-
-    <!-- Añadimos el Footer al final de la página -->
-    <Footer />
 </main>
 
 <style>
