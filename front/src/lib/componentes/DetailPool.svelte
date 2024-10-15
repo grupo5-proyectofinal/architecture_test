@@ -1,6 +1,10 @@
 <script>
   import { FaPencilAlt } from "svelte-icons/fa";
   import { format } from 'date-fns';
+  import Modal from '../componentes/ModalConfirmation.svelte'
+  import { goto } from '$app/navigation';
+  let redirectTo = '/'
+  let showModal = false;
 
   export let poolData;
   export let product = {
@@ -68,8 +72,7 @@
       });
 
       if (respuesta.ok) {
-        alert('Pool modificado exitosamente');
-        initialValues = { ...fieldValues };
+        showModal = true;
       } else {
         alert('Error al modificar el Pool');
         console.error(await respuesta.json());
@@ -106,6 +109,14 @@
 
   function prevImage() {
     currentIndex = (currentIndex - 1 + product.images.length) % product.images.length;
+  }
+
+  function closeModal() {
+    showModal = false;
+  }
+
+  function handleClick() {
+        goto(redirectTo);
   }
 </script>
 
@@ -251,8 +262,9 @@
       <div class="details-button-wrapper">
         {#if anyChange}
           <button class="btn btn-dark rounded-pill" on:click={guardarCambios}>Guardar cambios</button>
+          <Modal showModal={showModal} closeModal={closeModal} />
         {:else}
-          <button class="btn btn-dark rounded-pill">Finalizar</button>
+          <button class="btn btn-dark rounded-pill" on:click={handleClick}>Finalizar</button>
         {/if}
       </div>
     </div>
