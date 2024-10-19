@@ -66,6 +66,12 @@
             <a href="/perfil" class="nav-link">
               <i class="bi bi-person"></i>
             </a>
+            <a
+              class="nav-link btn btn-outline-light login-button {activeLink === 'logout' ? 'active' : ''}"
+              href="#"
+              on:click={logout}>
+              logout
+            </a>
           {:else}
             <a href="/login" class="nav-link btn btn-outline-light login-button">
               Login

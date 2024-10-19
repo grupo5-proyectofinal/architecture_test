@@ -1,5 +1,8 @@
 <script>
-    
+    import Header from '../../lib/componentes/Header1.svelte';  // Importamos el Header
+    import Footer from '../../lib/componentes/Footer.svelte';
+    import { goto } from '$app/navigation';  // Para redirigir después del login
+
     let email = '';
     let password = '';
     let errorMessage = '';
@@ -17,7 +20,7 @@
             return;
         }
         
-        try{
+        try {
             const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/auth/login/', {
                 method: 'POST',
                 headers: {
@@ -28,22 +31,42 @@
                     password: password
                 })
             });
+            
             if (response.ok) {
                 const data = await response.json();
                 const token = data.token;
+
+                // Almacenar el token en localStorage para que la sesión sea persistente
+                localStorage.setItem('authToken', token);
+
                 console.log('Login successful', data);
+
+                // Redirigir al menú principal después de un inicio de sesión exitoso
+                goto('/');  // Redirige a la página principal
             } else {
-                console.log(response)
                 const errorData = await response.json();
                 errorMessage = errorData.message || 'Error al iniciar sesión. Por favor, verifique sus credenciales.';
             }
-        }catch{
-            console.log("error")
+        } catch (error) {
+            console.log("Error al iniciar sesión", error);
+            errorMessage = 'Error de red. Intente nuevamente más tarde.';
+        } finally {
+            isLoading = false;
+        }
+    }
+
+    // Comprobamos si el usuario ya está autenticado al cargar la página
+    if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            goto('/');  // Redirigimos al usuario si ya está autenticado
         }
     }
 </script>
 
 <main>
+    <!-- Añadimos el Header en la parte superior -->
+    <Header />
 
     <div class="login-container">
         <h2>Iniciar sesión</h2>
@@ -90,6 +113,9 @@
             ¿No tienes cuenta? <a href="/crearusuario">Regístrate aquí</a>.
         </p>
     </div>
+
+    <!-- Añadimos el Footer al final de la página -->
+    <Footer />
 </main>
 
 <style>
@@ -185,5 +211,9 @@
 
     .register-link a:hover {
         text-decoration: underline;
+    }
+
+    .error-message {
+        color: red;
     }
 </style>
