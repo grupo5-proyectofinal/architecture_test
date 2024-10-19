@@ -17,34 +17,49 @@ class CategoriaListView(generics.ListAPIView):
     serializer_class = CategoriaSerializer
     permission_classes = [permissions.AllowAny] 
 
-class PoolListCreateView(generics.ListCreateAPIView):
-    queryset = Pool.objects.all()
+class PoolListCreateView(APIView):
     permission_classes = [permissions.AllowAny]
     
-    def get_serializer_class(self):
-        if self.request.method == 'GET':
-            return ListPoolSerializer
-        return PoolSerializer
+    def get(self, request, *args, **kwargs):
+        pools = Pool.objects.all()
 
-    def perform_create(self, serializer):
+        producto = request.query_params.get('producto')
+        creador = request.query_params.get('creador')
+        categoria = request.query_params.get('categoria')
+
+        if producto:
+            pools = pools.filter(producto__nombre__icontains=producto)
+        if creador:
+            pools = pools.filter(creador__username__icontains=creador)
+        if categoria:
+            pools = pools.filter(producto__categoria__nombre__icontains=categoria)
+            
+        serializer = ListPoolSerializer(pools, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        serializer = PoolSerializer(data=request.data)
         try:
             User = get_user_model()
             usuario = User.objects.get(username="juan")
             serializer.is_valid(raise_exception=True)
-            # Guardar el objeto con el creador asignado
             serializer.save(creador=usuario)
-        
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         except User.DoesNotExist as e:
-            # Error si el usuario no existe
             logger.error("El usuario no existe.")
-            print(f"Error de usuario: {str(e)}")  # Imprime en consola
-            raise serializers.ValidationError(f"Usuario no encontrado: {str(e)}", code='invalid')
+            return Response(
+                {"detail": f"Usuario no encontrado: {str(e)}"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         except Exception as e:
-            # Capturar cualquier otro error y mostrarlo con detalles
             logger.error(f"Error al crear el Pool: {str(e)}")
-            print(f"Error al crear el Pool: {str(e)}")  # Imprime en consola
-            raise serializers.ValidationError(f"Error desconocido al crear el Pool: {str(e)}", code='invalid')
+            return Response(
+                {"detail": f"Error desconocido al crear el Pool: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 
 
 class PoolDetailUpdateDeleteView(APIView):
@@ -59,10 +74,6 @@ class PoolDetailUpdateDeleteView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
-        """
-        Maneja la actualización completa o parcial de un Pool específico.
-        Utiliza PoolSerializer para deserializar y validar los datos.
-        """
         pool = self.get_object(pk)
         serializer = PoolSerializer(pool, data=request.data, partial=True)  # partial=True para permitir actualizaciones parciales
         if serializer.is_valid():
@@ -71,10 +82,6 @@ class PoolDetailUpdateDeleteView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk, format=None):
-        """
-        Maneja la actualización parcial de un Pool específico.
-        Utiliza PoolSerializer para deserializar y validar los datos.
-        """
         pool = self.get_object(pk)
         serializer = PoolSerializer(pool, data=request.data, partial=True)  # partial=True para permitir actualizaciones parciales
         if serializer.is_valid():
@@ -135,3 +142,4 @@ class LeavePoolView(generics.GenericAPIView):
             raise ValidationError({"error": "El usuario no es miembro de este pool."})
         except Pool.DoesNotExist:
             raise ValidationError({"error": "El pool no existe."})
+
