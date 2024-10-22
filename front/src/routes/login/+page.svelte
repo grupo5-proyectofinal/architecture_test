@@ -1,6 +1,4 @@
 <script>
-    import Header from '../../lib/componentes/Header1.svelte';  // Importamos el Header
-    import Footer from '../../lib/componentes/Footer.svelte';
     import { goto } from '$app/navigation';  // Para redirigir después del login
 
     let email = '';
@@ -42,7 +40,7 @@
                 console.log('Login successful', data);
 
                 // Redirigir al menú principal después de un inicio de sesión exitoso
-                goto('/');  // Redirige a la página principal
+                goto('/(authed)/perfil');  // Redirige a la página principal
             } else {
                 const errorData = await response.json();
                 errorMessage = errorData.message || 'Error al iniciar sesión. Por favor, verifique sus credenciales.';
@@ -65,8 +63,6 @@
 </script>
 
 <main>
-    <!-- Añadimos el Header en la parte superior -->
-    <Header />
 
     <div class="login-container">
         <h2>Iniciar sesión</h2>
@@ -114,8 +110,6 @@
         </p>
     </div>
 
-    <!-- Añadimos el Footer al final de la página -->
-    <Footer />
 </main>
 
 <style>
