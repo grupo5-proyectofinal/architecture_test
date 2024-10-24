@@ -38,3 +38,19 @@ class RegisterView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
+
+
+class ValidateTokenView(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        token = request.data.get('token')
+        
+        if not token:
+            return Response({'message': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = JWTAuthentication.decode_jwt(token)
+            return Response({'message': 'Token is valid', 'user_id': user.id, 'email': user.email}, status=status.HTTP_200_OK)
+        except JWTAuthentication.InvalidTokenError:
+            return Response({'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
