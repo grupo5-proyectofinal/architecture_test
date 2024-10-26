@@ -51,6 +51,6 @@ class ValidateTokenView(views.APIView):
 
         try:
             user = JWTAuthentication.decode_jwt(token)
-            return Response({'message': 'Token is valid', 'user_id': user.id, 'email': user.email}, status=status.HTTP_200_OK)
-        except JWTAuthentication.InvalidTokenError:
-            return Response({'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'message': 'Token is valid'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'message': 'Token is invalid', 'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
