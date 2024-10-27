@@ -47,7 +47,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <nav class="navbar-nav mr-auto">
           <a class="nav-link {activeLink === 'home' ? 'active' : ''}" href="/" on:click={() => setActive('home')}>
-            Home
+            Inicio
           </a>
           <a class="nav-link {activeLink === 'mispools' ? 'active' : ''}" href="/pools" on:click={() => setActive('mispools')}>
             Mispools
