@@ -1,5 +1,7 @@
 <script>
-    import { goto } from '$app/navigation';  // Para redirigir después del login
+    import { goto } from '$app/navigation';
+    import Cookies  from 'js-cookie'
+    import { setAuthStatus } from '$lib/auth.js';
 
     let email = '';
     let password = '';
@@ -31,16 +33,11 @@
             });
             
             if (response.ok) {
-                const data = await response.json();
-                const token = data.token;
+                const {token} = await response.json();
+                Cookies.set('token',token, {path: '/'})
+                setAuthStatus(true)
+                goto('/principal');
 
-                // Almacenar el token en localStorage para que la sesión sea persistente
-                localStorage.setItem('authToken', token);
-
-                console.log('Login successful', data);
-
-                // Redirigir al menú principal después de un inicio de sesión exitoso
-                goto('/(authed)/perfil');  // Redirige a la página principal
             } else {
                 const errorData = await response.json();
                 errorMessage = errorData.message || 'Error al iniciar sesión. Por favor, verifique sus credenciales.';
@@ -53,13 +50,7 @@
         }
     }
 
-    // Comprobamos si el usuario ya está autenticado al cargar la página
-    if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            goto('/');  // Redirigimos al usuario si ya está autenticado
-        }
-    }
+
 </script>
 
 <main>

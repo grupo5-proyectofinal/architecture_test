@@ -10,19 +10,21 @@ export const nodes = [
 	() => import('./nodes/6'),
 	() => import('./nodes/7'),
 	() => import('./nodes/8'),
-	() => import('./nodes/9')
+	() => import('./nodes/9'),
+	() => import('./nodes/10')
 ];
 
 export const server_loads = [2];
 
 export const dictionary = {
 		"/": [3],
-		"/crearpoolshop": [5],
-		"/crearusuario": [6],
-		"/login": [7],
-		"/mispools/[id]": [~8],
-		"/(authed)/perfil": [4,[2]],
-		"/verpool/[id]": [~9]
+		"/(authed)/crearpoolshop": [~4,[2]],
+		"/crearusuario": [8],
+		"/login": [9],
+		"/(authed)/mispools/[id]": [~5,[2]],
+		"/(authed)/perfil": [6,[2]],
+		"/(authed)/principal": [7,[2]],
+		"/verpool/[id]": [~10]
 	};
 
 export const hooks = {
