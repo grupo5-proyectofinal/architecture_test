@@ -1,11 +1,13 @@
 <script>
-    import Crearpool from "../../lib/componentes/Crearpool.svelte"
+    import Crearpool from "../../../lib/componentes/Crearpool.svelte"
+
+    export let data;
    
 </script>
 
 <main>
     <div class="crearpool">
-        <Crearpool />
+        <Crearpool categorias={data.data}/>
     </div>
 </main>
 

@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
+    import Cookies from 'js-cookie';
   
     let activeLink = 'home';
     let isAuthenticated = false;
@@ -11,15 +12,19 @@
   
     // Comprobamos si el usuario está autenticado
     onMount(() => {
-      const token = localStorage.getItem('authToken');
+      const token = Cookies.get('token')
       isAuthenticated = !!token; // Si hay un token, el usuario está autenticado
     });
   
     // Función para cerrar sesión
     function logout() {
-      localStorage.removeItem('authToken'); // Eliminamos el token
+      Cookies.remove('token'); // Eliminamos el token
       isAuthenticated = false;
-      goto('/login'); // Redirigir a la página de login
+      goto('/'); // Redirigir a la página de login
+    }
+    function goToProfile (){
+      event.preventDefault()
+      goto('/perfil')
     }
   </script>
   
@@ -27,7 +32,7 @@
   <header class="navbar navbar-expand-lg fixed-top">
     <div class="container d-flex justify-content-between align-items-center">
       <!-- Logo -->
-      <a class="navbar-brand" href="/">
+      <a class="navbar-brand" href="/principal">
         <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
       </a>
   
@@ -63,7 +68,7 @@
   
           <!-- Ícono de perfil -->
           {#if isAuthenticated}
-            <a href="/perfil" class="nav-link">
+            <a  href="#" class="nav-link" on:click={(event) => goToProfile(event)}>
               <i class="bi bi-person"></i>
             </a>
             <a
