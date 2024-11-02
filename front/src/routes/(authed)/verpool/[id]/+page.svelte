@@ -1,5 +1,5 @@
 <script>
-  import Viewpool from "../../../lib/componentes/Viewpool.svelte";
+  import Viewpool from "../../../../lib/componentes/Viewpool.svelte";
   
   export let data;
   let URLs = {

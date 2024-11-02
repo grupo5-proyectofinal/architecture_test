@@ -34,7 +34,8 @@
             
             if (response.ok) {
                 const {token} = await response.json();
-                Cookies.set('token',token, {path: '/'})
+                Cookies.set('token',token, {
+                    path: '/'})
                 setAuthStatus(true)
                 goto('/principal');
 

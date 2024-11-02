@@ -13,7 +13,6 @@
     let cantidadTotal = 1;
     let cantidadAdquirida = 1;
     let cantidadRestante = 0;
-    // let categorias = ['Alimento'];
     let categoriaPool = categorias[0];
     let fecha_cierre = '';
     let ubicacion = '';
@@ -124,19 +123,6 @@
         descripcionError = '';
         productoError = '';
     };
-
-    // Cargar categorías al montar el componente
-    // onMount(async () => {
-    //     try {
-    //         const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categories/');
-    //         if (!response.ok) {
-    //             throw new Error('Error al cargar categorías');
-    //         }
-    //         categorias = await response.json();
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // });
 </script>
 
 <div class="container">
