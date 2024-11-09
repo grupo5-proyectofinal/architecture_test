@@ -13,6 +13,6 @@
 
 <style>
     .crearpool {
-        padding: 120px;
+        padding: 10px;
     }
 </style>

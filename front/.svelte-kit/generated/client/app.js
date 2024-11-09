@@ -19,12 +19,12 @@ export const server_loads = [2];
 export const dictionary = {
 		"/": [3],
 		"/(authed)/crearpoolshop": [~4,[2]],
-		"/crearusuario": [8],
-		"/login": [9],
-		"/(authed)/mispools/[id]": [~5,[2]],
+		"/crearusuario": [9],
+		"/(authed)/detallePoolCreado/[id]": [~5,[2]],
+		"/login": [10],
 		"/(authed)/perfil": [6,[2]],
 		"/(authed)/principal": [7,[2]],
-		"/verpool/[id]": [~10]
+		"/(authed)/verpool/[id]": [~8,[2]]
 	};
 
 export const hooks = {
