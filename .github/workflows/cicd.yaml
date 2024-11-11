@@ -68,7 +68,7 @@ jobs:
           GS_BUCKET_NAME: "poolshop-dev"
           GS_CREDENTIALS_FILE_PATH: "/app/service-account.json"
           GS_PROJECT_ID: "poolshop"
-          DATABASE_URL: "postgres://postgres:mnbmnbmnb3@130.211.125.221:5432/poolshop"
+          DATABASE_URL: "postgres://postgres:mnbmnbmnb3@34.69.80.23:5432/poolshop"
           STATIC_URL: "https://storage.googleapis.com/poolshop-dev/static/"
           MEDIA_URL: "https://storage.googleapis.com/poolshop-dev/media/"
         run: |
