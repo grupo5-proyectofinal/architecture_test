@@ -37,7 +37,8 @@ declare module '$env/static/private' {
 	export const npm_config_noproxy: string;
 	export const HOME: string;
 	export const OLDPWD: string;
-	export const DESKTOP_SESSION: string;
+	export const TERM_PROGRAM_VERSION: string;
+	export const VSCODE_IPC_HOOK_CLI: string;
 	export const npm_package_json: string;
 	export const GNOME_SHELL_SESSION_MODE: string;
 	export const GTK_MODULES: string;
@@ -155,7 +156,8 @@ declare module '$env/dynamic/private' {
 		npm_config_noproxy: string;
 		HOME: string;
 		OLDPWD: string;
-		DESKTOP_SESSION: string;
+		TERM_PROGRAM_VERSION: string;
+		VSCODE_IPC_HOOK_CLI: string;
 		npm_package_json: string;
 		GNOME_SHELL_SESSION_MODE: string;
 		GTK_MODULES: string;
