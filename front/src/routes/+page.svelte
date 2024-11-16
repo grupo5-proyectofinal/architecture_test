@@ -6,8 +6,12 @@
    
     
   
-    let trespools = [];
+    let searchQuery = '';
     let pools = [];
+    let filteredPools = [];
+    let trespools = [];
+    let categories = [];
+    let selectedCategory = '';
   
     // Función para obtener tres elementos aleatorios del array
     function getRandomPools(array, num) {
@@ -19,18 +23,45 @@
     onMount(async () => {
       try {
         const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+
+        if (!response.ok) throw new Error('Network response was not ok');
   
-        const data = await response.json();
-        pools = data;
-         //3 pools aleatorios
+        pools = await response.json();
         trespools = getRandomPools(pools, 3);
+
+        const categoriesResponse = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categories/');
+        if (!categoriesResponse.ok) throw new Error('Error al cargar las categorías');
+        categories = await categoriesResponse.json();
+        
       } catch (error) {
         console.error('Hubo un problema en la respuesta, error:', error);
       }
     });
+
+    async function handleSearch(){
+      if (!searchQuery.trim() && !selectedCategory) {
+        filteredPools = pools;
+        trespools = getRandomPools(pools, 3);
+        return;
+      }
+
+      try {
+        const url = `https://poolshop-staging-748245240444.us-central1.run.app/api/pools?producto=${encodeURIComponent(searchQuery)}${selectedCategory ? `&categoria=${encodeURIComponent(selectedCategory)}` : ''}`;
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error al cargar los pools filtrados');
+
+        filteredPools = await response.json();
+        trespools = getRandomPools(filteredPools, 3);
+      } catch (err) {
+        console.error('Error en la busqueda', err);
+      }
+    }
+
+    function handleCategoryChange(event) {
+      selectedCategory = event.target.value;
+      handleSearch();
+    }
   
   </script>
   
@@ -39,12 +70,9 @@
     <div class="body">
       <div class="container">
         <div class="row">
-          <div class="col">
-            <Filter />
-          </div>
+          <h1 class="titulo-home text-center mt-5">Bienvenido a Pool Shop</h1>
         </div>
-      </div> 
-        <!-- Sección de botones -->
+      </div>
       <div class="container">
           <div class="row">
             <div class="col-md-4">
@@ -73,14 +101,31 @@
             </div>
           </div>
       </div>
-
+      <div class="container">
+        <div class="row">
+          <div class="col-9">
+            <input 
+              class="form-control mb-3" 
+              type="text" 
+              bind:value={searchQuery} 
+              on:input={handleSearch} 
+              placeholder="Buscar por producto..."
+            />
+          </div>
+          <div class="col-3">
+            <select 
+              class="form-control mb-3" 
+              on:change={handleCategoryChange}
+            >
+              <option value="">Todas las categorías</option>
+              {#each categories as category}
+                <option value={category.nombre}>{category.nombre}</option>
+              {/each}
+            </select>
+        </div>
+      </div> 
       <!-- Sección de pools más vistos -->
       <div class="container">
-        <div class="pool-visto-container">
-            <h2 class="text-body-secondary">
-              Pools más vistos
-            </h2>
-        </div>
         <br />
         <div class="container-fluid">
           <div class="row">
@@ -101,9 +146,5 @@
   <style>
     .body {
       padding: 10px;
-    }
-    .pool-visto-container {
-      text-align: center;
-      margin-top: 20px;  
     }
   </style>  
