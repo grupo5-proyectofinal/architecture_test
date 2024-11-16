@@ -1,5 +1,5 @@
 <script>
-    import Header1 from "../lib/componentes/Header1.svelte"; // Header
+    import Header1 from "../lib/componentes/Header1.svelte"; 
     import Footer from "../lib/componentes/Footer.svelte"; // Footer
     import { isAuthenticated, setAuthStatus, usuario, setUsuario, clearUsuario } from '$lib/stores/auth';
 
