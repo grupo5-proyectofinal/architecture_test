@@ -28,7 +28,7 @@ class ObtainTokenView(views.APIView):
 
         jwt_token = JWTAuthentication.create_jwt(user)
 
-        return Response({'token': jwt_token})
+        return Response({'token': jwt_token, "user": UsuarioSerializer(user).data})
     
 
 class RegisterView(generics.CreateAPIView):
