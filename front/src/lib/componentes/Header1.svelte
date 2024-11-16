@@ -52,21 +52,26 @@
       </li>
 
       <!-- Menú de navegación -->
+
       <li class="w-100">
         <div class="nav-buttons text-center">
           <nav class="navbar-nav d-flex justify-content-center">
             <a class="nav-link mx-2 {activeLink === 'home' ? 'active' : ''}" href="/" on:click={() => setActive('home')}>
-              Home
+               Bienvenido
             </a>
             <a class="nav-link mx-2 {activeLink === 'crear' ? 'active' : ''}" href="/crearpoolshop" on:click={() => setActive('crear')}>
-              Crear pool
+               Crear pool
             </a>
             <a class="nav-link mx-2 {activeLink === 'unidos' ? 'active' : ''}" href="/unidos" on:click={() => setActive('unidos')}>
-              Unidos
+               Unidos
+            </a>
+            <a class="nav-link mx-2 {activeLink === 'mispools' ? 'active' : ''}" href="/mispools" on:click={() => setActive('mispools')}>
+               Mispools
             </a>
           </nav>
         </div>
       </li>
+
     </ul>
 
     <!-- Íconos de notificaciones y perfil -->
