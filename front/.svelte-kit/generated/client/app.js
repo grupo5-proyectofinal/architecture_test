@@ -13,16 +13,17 @@ export const nodes = [
 	() => import('./nodes/9')
 ];
 
-export const server_loads = [2];
+export const server_loads = [0];
 
 export const dictionary = {
-		"/": [3],
-		"/crearpoolshop": [5],
-		"/crearusuario": [6],
-		"/login": [7],
-		"/mispools/[id]": [~8],
-		"/(authed)/perfil": [4,[2]],
-		"/verpool/[id]": [~9]
+		"/": [2],
+		"/(authed)/crearpoolshop": [~3],
+		"/crearusuario": [8],
+		"/(authed)/detallePoolCreado/[id]": [~4],
+		"/login": [9],
+		"/(authed)/perfil": [5],
+		"/(authed)/principal": [6],
+		"/(authed)/verpool/[id]": [~7]
 	};
 
 export const hooks = {

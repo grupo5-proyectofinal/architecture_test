@@ -37,7 +37,22 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def perform_create(self, serializer):
-        serializer.save()
+        user = serializer.save()
+        jwt_token = JWTAuthentication.create_jwt(user)
+        self.token = jwt_token
+        self.user = user
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+
+        user_serializer = self.get_serializer(self.user)
+
+        response.data = {
+            'token': self.token,
+            'user': user_serializer.data
+        }
+
+        return response
 
 
 class ValidateTokenView(views.APIView):

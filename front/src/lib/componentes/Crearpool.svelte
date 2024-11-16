@@ -3,7 +3,7 @@
     import Imagen from "./Imagen.svelte";
     import SuccessModal from "./CreatedPoolModal.svelte";
    
-
+    export let categorias;
     // Datos del formulario
     let titulo = '';
     let descripcion = '';
@@ -13,8 +13,7 @@
     let cantidadTotal = 1;
     let cantidadAdquirida = 1;
     let cantidadRestante = 0;
-    let categorias = [];
-    let categoriaPool = '';
+    let categoriaPool = categorias[0];
     let fecha_cierre = '';
     let ubicacion = '';
     let radio = 0;
@@ -124,19 +123,6 @@
         descripcionError = '';
         productoError = '';
     };
-
-    // Cargar categorías al montar el componente
-    onMount(async () => {
-        try {
-            const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categories/');
-            if (!response.ok) {
-                throw new Error('Error al cargar categorías');
-            }
-            categorias = await response.json();
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
 </script>
 
 <div class="container">
@@ -327,7 +313,7 @@
         }
     
         .form-group input, .form-group select {
-            padding: 12px;
+            padding: 9px;
             border: 1px solid #ddd;
             border-radius: 8px;
             transition: border 0.3s ease;
