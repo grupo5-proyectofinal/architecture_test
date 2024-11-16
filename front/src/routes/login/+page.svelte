@@ -1,7 +1,8 @@
 <script>
     import { goto } from '$app/navigation';
     import Cookies  from 'js-cookie'
-    import { setAuthStatus } from '$lib/auth.js';
+    import {setAuthStatus, setUsuario} from '$lib/stores/auth';
+    import { invalidate } from '$app/navigation';
 
     let email = '';
     let password = '';
@@ -35,8 +36,11 @@
             if (response.ok) {
                 const {token} = await response.json();
                 Cookies.set('token',token, {
-                    path: '/'})
-                setAuthStatus(true)
+                    path: '/',
+                    expires: 1})
+                setAuthStatus(true);
+                setUsuario(user); 
+                await invalidate('/');
                 goto('/principal');
 
             } else {
