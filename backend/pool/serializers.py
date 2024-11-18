@@ -127,3 +127,24 @@ class PoolDetailSerializer(serializers.ModelSerializer):
         return obj.get_available_stock()
     
     
+
+class ListMyPoolsSerializer(serializers.ModelSerializer):
+    producto = serializers.CharField(source='producto.nombre', required=False)
+    descripcion = serializers.CharField(source='producto.descripcion')
+    precio = serializers.DecimalField(source='producto.precio', max_digits=10, decimal_places=2)
+    cantidad = serializers.IntegerField(source='producto.cantidad')
+    categoria = serializers.CharField(source='producto.categoria.nombre')
+    imagenes = serializers.ListField(
+        child=serializers.ImageField(), required=False
+    )
+    cantidad_disponible = serializers.SerializerMethodField('get_cantidad_disponible')
+    cantidad_total = serializers.IntegerField(source='producto.cantidad')
+    
+    class Meta:
+        model = Pool
+        fields = ['id', 'titulo', 'tipo_pago', 'descripcion', 'minimo_participantes', 'producto', 'cantidad_comprada', 
+                  'precio', 'cantidad', 'categoria', 'fecha_cierre', 'imagenes', 'cantidad_disponible', 'cantidad_total']
+        
+    def get_cantidad_disponible(self, obj):
+        return obj.get_available_stock()
+    

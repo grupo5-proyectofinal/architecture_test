@@ -57,4 +57,9 @@ class MemberPoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
         fields = ['user', 'product_quantity', 'joined_at']
+
+
+
+
+
         

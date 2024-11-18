@@ -1,182 +1,257 @@
 <script>
-  import { onMount } from 'svelte';
+  import { isAuthenticated, usuario, clearUsuario } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
-  
-  let activeLink = 'home';
-  let isAuthenticated = false;
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
 
-  // Función para redirigir a diferentes rutas
-  export let redirectTo;
+  // Variables para manejar el estado del header
+  let lastScrollY = 0; // Posición anterior del scroll
+  let headerHidden = false; // Indica si el header está oculto
 
-  function handleRedirect() {
-    goto(redirectTo);
+  // Función para manejar el scroll
+  function handleScroll() {
+    const currentScrollY = window.scrollY;
+
+    // Ocultar si el usuario hace scroll hacia abajo, mostrar si es hacia arriba
+    headerHidden = currentScrollY > lastScrollY && currentScrollY > 50;
+    lastScrollY = currentScrollY; // Actualizar la posición del scroll
   }
 
-  function setActive(link) {
-    activeLink = link;
-  }
-
-  // Comprobamos si el usuario está autenticado
+  // Agregar y eliminar el listener de scroll
   onMount(() => {
-    const token = localStorage.getItem('authToken');
-    isAuthenticated = !!token; // Si hay un token, el usuario está autenticado
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   });
+  
+
+  // Variables locales que reaccionan automáticamente a los valores de los stores
+  let authenticated;
+  let user;
+
+  // Reactividad automática con los stores globales
+  $: authenticated = $isAuthenticated;
+  $: user = $usuario;
 
   // Función para cerrar sesión
   function logout() {
-    localStorage.removeItem('authToken'); // Eliminamos el token
-    isAuthenticated = false;
-    goto('/login'); // Redirigir a la página de login
+    clearUsuario(); // Limpia el estado global
+    goto('/'); // Redirige a la página de inicio
   }
+
+  function goToProfile(event) {
+    event.preventDefault();
+    goto('/perfil');
+  }
+
+  let activeLink;
+  $: {
+    const path = $page.url.pathname;
+    if (path === '/' || path === '/principal') activeLink = 'home';
+    else if (path === '/crearpoolshop') activeLink = 'crear';
+    else if (path === '/unidos') activeLink = 'unidos';
+    else if (path === '/mispools') activeLink = 'mispools';
+    else activeLink = null;
+  }
+  
 </script>
 
-<header class="navbar navbar-expand-lg fixed-top">
-  <div class="container d-flex justify-content-between align-items-center">
-    <!-- Espacio para el logo -->
-    <a class="navbar-brand" href="/">
-      <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
-    </a>
+<!-- Header -->
+<header class="navbar navbar-expand-lg fixed-top bg-dark {headerHidden ? 'hidden' : ''}">
+  <div class="container d-flex align-items-center justify-content-between">
+    <!-- Logo y Título -->
+    <div class="text-center">
+      <a class="navbar-brand" href="/principal">
+        <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
+        <div class="brand-text">PoolShop</div>
+      </a>
+    </div>
 
-    <!-- Menú de navegación -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <!-- Barra de búsqueda y navegación -->
+    <ul class="d-flex flex-column align-items-center m-0 p-0">
+      <!-- Barra de búsqueda -->
+      <li class="mb-3 w-100">
+        <div class="search-bar-container">
+          <div class="search-bar">
+            <input type="text" placeholder="Buscar..." class="search-input" />
+            <button class="search-button"><i class="bi bi-search"></i></button>
+          </div>
+        </div>
+      </li>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a
-            class="nav-link {activeLink === 'home' ? 'active' : ''}"
-            aria-current="page"
-            href="/"
-            on:click={() => setActive('home')}>
-            Inicio
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link {activeLink === 'pools' ? 'active' : ''}"
-            href="/pools"
-            on:click={() => setActive('pools')}>
-            Pools
-          </a>
-        </li>
+      <!-- Menú de navegación -->
 
-        {#if isAuthenticated}
-          <!-- Mostramos estos enlaces solo si el usuario está autenticado -->
-          <li class="nav-item">
-            <a
-              class="nav-link {activeLink === 'perfil' ? 'active' : ''}"
-              href="/perfil"
-              on:click={() => setActive('perfil')}>
-              Perfil
+      <li class="w-100">
+        <div class="nav-buttons text-center">
+          <nav class="navbar-nav d-flex justify-content-center">
+            <a class="nav-link mx-2 {activeLink === 'home' ? 'active' : ''}"
+             href="/">
+               Bienvenido
             </a>
-          </li>
-          <li class="nav-item">
-            <!-- svelte-ignore a11y-invalid-attribute -->
+            <a class="nav-link mx-2 {activeLink === 'crear' ? 'active' : ''}"
+             href="/crearpoolshop">
+               Crear pool
+            </a>
+            <a class="nav-link mx-2 {activeLink === 'unidos' ? 'active' : ''}"
+             href="/unidos">
+               Unidos
+            </a>
+            <a class="nav-link mx-2 {activeLink === 'mispools' ? 'active' : ''}"
+             href="/mispools">
+               Mispools
+            </a>
+          </nav>
+        </div>
+      </li>
+
+    </ul>
+
+    <!-- Íconos de notificaciones y perfil -->
+    <div class="d-flex align-items-center">
+      <a href="/notifications" class="nav-link me-3">
+        <i class="bi bi-bell"></i>
+      </a>
+
+      {#if authenticated}
+        <div class="text-center">
+          <img
+            src={user?.foto || '/img/default-user.png'}
+            alt="Foto de Usuario"
+            class="user-photo rounded-circle me-2"
+            width="40"
+            height="40"
+          />
+          <div class="nav-item dropdown">
             <a
-              class="nav-link {activeLink === 'logout' ? 'active' : ''}"
+              class="nav-link dropdown-toggle text-white"
+              data-toggle="dropdown"
               href="#"
-              on:click={logout}>
-              Salir
+              role="button"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {user?.username || 'Usuario'}
             </a>
-          </li>
-        {:else}
-          <!-- Mostramos este enlace si el usuario no está autenticado -->
-          <li class="nav-item">
-            <a
-              class="nav-link {activeLink === 'login' ? 'active' : ''}"
-              href="/login"
-              on:click={() => setActive('login')}>
+            <div class="dropdown-menu bg-white">
+              <h6 class="dropdown-header">Hola</h6>
+              <a class="dropdown-item" href="/perfil">Editar perfil</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#" on:click={logout}>Cerrar sesión</a>
+            </div>
+          </div>
+        </div>
+      {:else}
+        <div class="d-flex flex-column align-items-center">
+          <div class="login">
+            <a href="/login" class="nav-link btn btn-outline-light login-button">
               Iniciar sesión
             </a>
-          </li>
-        {/if}
-      </ul>
+          </div>
+          <div class="registrarse mt-2">
+            <a href="/registrarse">Registrarse</a>
+          </div>
+        </div>
+      {/if}
     </div>
   </div>
 </header>
 
 <style>
-  .navbar {
-    padding: 10px 20px;
-    font-size: 20px;
-    background-color: #343a40;
+    /* Ocultar el header cuando está scrolleado hacia abajo */
+  header.hidden {
+    transform: translateY(-100%);
   }
 
-  .navbar-brand {
+  /* Mostrar el header */
+  header:not(.hidden) {
+    transform: translateY(0);
+  }
+
+  /* Logo */
+  .navbar-brand img {
+    max-height: 70px;
+  }
+  .brand-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  /* Barra de búsqueda */
+  .search-bar-container {
+    max-width: 600px;
+    width: 100%;
+  }
+  .search-bar {
     display: flex;
     align-items: center;
+    background-color: #f0f0f0;
+    padding: 8px 15px;
+    border-radius: 20px;
+    width: 600px;
+  }
+  .search-input {
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 1rem;
+    color: #333;
+    width: 100%;
+    padding-left: 10px;
+  }
+  .search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    font-size: 1.2rem;
   }
 
-  .logo {
-    max-width: 100px;
-    max-height: 100px;
-  }
-
-  .navbar-nav .nav-link {
-    color: #8f9295;
+  /* Enlaces de navegación */
+  .nav-buttons .nav-link {
+    color: #f8f9fa;
+    font-weight: bold;
+    font-size: 1rem;
     transition: color 0.3s ease-in-out;
+    text-decoration: none;
+  }
+  .nav-buttons .nav-link:hover,
+  .nav-buttons .nav-link.active {
+    color: #ffffff;
+    border-bottom: 2px solid #ffffff;
   }
 
-  .navbar-nav .nav-link:hover,
-  .navbar-nav .nav-link.active {
-    color: #f9f3f3; /* Letras blancas en hover o activo */
-    border-bottom: 2px solid #000000; /* Borde negro para enlace activo */
+  /* Botones de autenticación */
+  .auth-buttons .nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 20px;
+  }
+  .auth-buttons .nav-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
   }
 
-  /* Media query para pantallas pequeñas */
+  /* Ajustes responsivos */
   @media (max-width: 991.98px) {
-    .navbar-collapse {
-      justify-content: flex-end;
+    .search-bar-container {
+      max-width: 100%;
     }
-
-    .navbar-nav {
+    .nav-buttons {
       flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-      padding-left: 0;
+      align-items: center;
     }
-
-    .nav-item {
-      width: 100%;
-    }
-
-    .nav-link {
+    .navbar-nav .nav-link {
       padding: 10px 0;
       width: 100%;
-      text-align: left;
-    }
-
-    .navbar-brand {
-      margin-right: auto;
-    }
-
-    .logo {
-      max-width: 80px; /* Reduce el tamaño del logo en pantallas pequeñas */
+      text-align: center;
     }
   }
-
-  /* Media query para pantallas extra pequeñas */
-  @media (max-width: 575.98px) {
-    .navbar {
-      font-size: 16px;
-      padding: 5px 10px;
-    }
-
-    .logo {
-      max-width: 60px;
-    }
-
-    .nav-link {
-      font-size: 18px;
-    }
+  .dropdown{
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
   }
 </style>

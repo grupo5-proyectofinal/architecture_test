@@ -1,5 +1,9 @@
 <script>
-    
+    import { goto } from '$app/navigation';
+    import Cookies  from 'js-cookie'
+    import {setAuthStatus, setUsuario} from '$lib/stores/auth';
+    import { invalidate } from '$app/navigation';
+
     let email = '';
     let password = '';
     let errorMessage = '';
@@ -17,7 +21,7 @@
             return;
         }
         
-        try{
+        try {
             const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/auth/login/', {
                 method: 'POST',
                 headers: {
@@ -28,19 +32,30 @@
                     password: password
                 })
             });
+            
             if (response.ok) {
-                const data = await response.json();
-                const token = data.token;
-                console.log('Login successful', data);
+                const {token, user} = await response.json();
+                Cookies.set('token',token, {
+                    path: '/',
+                    expires: 1})
+                setAuthStatus(true);
+                setUsuario(user);
+                await invalidate('/');
+                goto('/principal');
+
             } else {
-                console.log(response)
                 const errorData = await response.json();
                 errorMessage = errorData.message || 'Error al iniciar sesión. Por favor, verifique sus credenciales.';
             }
-        }catch{
-            console.log("error")
+        } catch (error) {
+            console.log("Error al iniciar sesión", error);
+            errorMessage = 'Error de red. Intente nuevamente más tarde.';
+        } finally {
+            isLoading = false;
         }
     }
+
+
 </script>
 
 <main>
@@ -90,6 +105,7 @@
             ¿No tienes cuenta? <a href="/crearusuario">Regístrate aquí</a>.
         </p>
     </div>
+
 </main>
 
 <style>
@@ -185,5 +201,9 @@
 
     .register-link a:hover {
         text-decoration: underline;
+    }
+
+    .error-message {
+        color: red;
     }
 </style>

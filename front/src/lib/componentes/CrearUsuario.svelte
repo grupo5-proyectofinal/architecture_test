@@ -1,19 +1,25 @@
 <script>
   import { goto } from '$app/navigation';
+  import Imagen from './Imagen.svelte';
 
+  // Variables del formulario
   let username = '';
   let email = '';
   let password = '';
   let confirmPassword = '';
-  let gender = 'Male'; // Por defecto
+  let gender = 'Male';
   let first_name = '';
   let last_name = '';
   let direccion = '';
-  let country = 'Argentina'; // Campo fijo
+  let country = 'Argentina';
   let city = '';
-  let phone_number = ''; // Añadido el número de teléfono
+  let phone_number = ''; 
 
-  let profilePictureFile = null; // Para manejar el archivo de imagen
+  // Variables para la imagen
+  let profilePictureFile = null; // Archivo de imagen seleccionado
+  let profilePicturePreview = "https://via.placeholder.com/400"; // URL de la imagen de previsualización
+
+  // Manejo de errores
   let errors = {
     username: '',
     email: '',
@@ -26,138 +32,73 @@
     phone_number: '',
   };
 
+  // Validación de formulario
   function validateForm() {
     errors = { username: '', email: '', password: '', confirmPassword: '', first_name: '', last_name: '', direccion: '', city: '', phone_number: '' };
     let isValid = true;
 
-    // Validar nombre de usuario
-    if (!username.trim()) {
-      errors.username = 'El nombre de usuario es requerido';
-      isValid = false;
-    }
+    // Validaciones de campos requeridos
+    if (!username.trim()) errors.username = 'El nombre de usuario es requerido';
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Correo electrónico válido es requerido';
+    if (password.length < 6) errors.password = 'La contraseña debe tener al menos 6 caracteres';
+    if (password !== confirmPassword) errors.confirmPassword = 'Las contraseñas no coinciden';
+    if (!first_name.trim()) errors.first_name = 'El nombre es requerido';
+    if (!last_name.trim()) errors.last_name = 'El apellido es requerido';
+    if (!direccion.trim()) errors.direccion = 'La dirección es requerida';
+    if (!city.trim()) errors.city = 'La ciudad es requerida';
+    if (!phone_number.trim()) errors.phone_number = 'El número de teléfono es requerido';
 
-    // Validar email
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errors.email = 'Correo electrónico válido es requerido';
-      isValid = false;
-    }
-
-    // Validar contraseña
-    if (password.length < 6) {
-      errors.password = 'La contraseña debe tener al menos 6 caracteres';
-      isValid = false;
-    }
-
-    // Confirmar contraseña
-    if (password !== confirmPassword) {
-      errors.confirmPassword = 'Las contraseñas no coinciden';
-      isValid = false;
-    }
-
-    // Validar nombres
-    if (!first_name.trim()) {
-      errors.first_name = 'El nombre es requerido';
-      isValid = false;
-    }
-
-    if (!last_name.trim()) {
-      errors.last_name = 'El apellido es requerido';
-      isValid = false;
-    }
-
-    // Validar dirección
-    if (!direccion.trim()) {
-      errors.direccion = 'La dirección es requerida';
-      isValid = false;
-    }
-
-    // Validar ciudad
-    if (!city.trim()) {
-      errors.city = 'La ciudad es requerida';
-      isValid = false;
-    }
-
-    // Validar número de teléfono
-    if (!phone_number.trim()) {
-      errors.phone_number = 'El número de teléfono es requerido';
-      isValid = false;
-    }
-
-    return isValid;
+    return Object.values(errors).every((error) => !error);
   }
 
+  // Enviar el formulario
   async function handleSubmit(event) {
     event.preventDefault();
 
     if (validateForm()) {
-      let foto = '';
-
-      // Si se selecciona una imagen, la convertimos a base64
-      if (profilePictureFile) {
-        foto = await convertirImagenBase64(profilePictureFile);
-      }
-
-      // Llamamos a la función que envía los datos a la API
       enviarDatos();
     }
   }
 
-  function convertirImagenBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        resolve(reader.result);
-      };
-      reader.onerror = (error) => reject(error);
-    });
-  }
-
+  // Función para enviar los datos a la API usando FormData
   async function enviarDatos() {
-    const data = {
-      username,
-      email,
-      password,
-      gender,
-      //foto, // Imagen en base64 o vacía si no se seleccionó
-      phone_number,
-      direccion,
-      country,
-      city,
-      first_name,
-      last_name
-    };
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('gender', gender);
+    formData.append('phone_number', phone_number);
+    formData.append('direccion', direccion);
+    formData.append('country', country);
+    formData.append('city', city);
+    formData.append('first_name', first_name);
+    formData.append('last_name', last_name);
 
-    console.log(data);
+    // Añadir la imagen solo si existe
+    if (profilePictureFile) {
+      formData.append('foto', profilePictureFile);
+    }
 
-    // Realizar el POST a la API
     try {
       const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/auth/register/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+        body: formData
       });
 
       if (!response.ok) {
-        throw new Error('Error al crear el usuario');
+        // Extraer el mensaje de error de la respuesta y lanzarlo
+        const errorData = await response.json();
+        console.error('Detalles del error:', errorData); // Muestra los detalles del error en la consola
+        throw new Error(`Error al crear el usuario: ${errorData.message || JSON.stringify(errorData)}`);
       }
 
       const responseData = await response.json();
       console.log('Usuario creado con éxito:', responseData);
 
       // Redirigir al menú principal después de la creación del usuario
-      goto('/');  // Redirige a la página principal o menú principal
+      goto('/');  // Redirige a la página principal
     } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-  function handleProfilePictureChange(event) {
-    const file = event.target.files[0];
-    if (file) {
-      profilePictureFile = file;
+      console.error('Error al enviar datos:', error);
     }
   }
 </script>
@@ -170,152 +111,147 @@
           <h2 class="card-title mb-4">Crear cuenta</h2>
           
           <!-- Formulario de alta de usuario -->
-          <form on:submit={handleSubmit}>
-            <div class="mb-3">
-              <label for="email" class="form-label">Correo electrónico:</label>
-              <input
-                type="email"
-                id="email"
-                class="form-control"
-                bind:value={email}
-                placeholder="Ingresa tu correo electrónico"
-              />
-              {#if errors.email}<div class="text-danger">{errors.email}</div>{/if}
+          <form on:submit={handleSubmit} class="form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email" class="form-label">Correo electrónico:</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="form-control"
+                  bind:value={email}
+                  placeholder="Ingresa tu correo electrónico"
+                  required
+                />
+                {#if errors.email}<div class="text-danger">{errors.email}</div>{/if}
+              </div>
+
+              <div class="form-group">
+                <label for="username" class="form-label">Nombre de usuario:</label>
+                <input
+                  type="text"
+                  id="username"
+                  class="form-control"
+                  bind:value={username}
+                  placeholder="Ingresa tu nombre de usuario"
+                  required
+                />
+                {#if errors.username}<div class="text-danger">{errors.username}</div>{/if}
+              </div>
             </div>
 
-            <div class="mb-3">
-              <label for="password" class="form-label">Contraseña:</label>
-              <input
-                type="password"
-                id="password"
-                class="form-control"
-                bind:value={password}
-                placeholder="Ingresa una contraseña"
-              />
-              {#if errors.password}<div class="text-danger">{errors.password}</div>{/if}
+            <div class="form-row">
+              <div class="form-group">
+                <label for="password" class="form-label">Contraseña:</label>
+                <input
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  bind:value={password}
+                  placeholder="Ingresa una contraseña"
+                  required
+                />
+                {#if errors.password}<div class="text-danger">{errors.password}</div>{/if}
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword" class="form-label">Confirmar contraseña:</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  class="form-control"
+                  bind:value={confirmPassword}
+                  placeholder="Confirma tu contraseña"
+                  required
+                />
+                {#if errors.confirmPassword}<div class="text-danger">{errors.confirmPassword}</div>{/if}
+              </div>
             </div>
 
-            <div class="mb-3">
-              <label for="confirmPassword" class="form-label">Confirmar contraseña:</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                class="form-control"
-                bind:value={confirmPassword}
-                placeholder="Confirma tu contraseña"
-              />
-              {#if errors.confirmPassword}<div class="text-danger">{errors.confirmPassword}</div>{/if}
+            <div class="form-row">
+              <div class="form-group">
+                <label for="first_name" class="form-label">Nombre:</label>
+                <input
+                  type="text"
+                  id="first_name"
+                  class="form-control"
+                  bind:value={first_name}
+                  placeholder="Ingresa tu nombre"
+                  required
+                />
+                {#if errors.first_name}<div class="text-danger">{errors.first_name}</div>{/if}
+              </div>
+
+              <div class="form-group">
+                <label for="last_name" class="form-label">Apellido:</label>
+                <input
+                  type="text"
+                  id="last_name"
+                  class="form-control"
+                  bind:value={last_name}
+                  placeholder="Ingresa tu apellido"
+                  required
+                />
+                {#if errors.last_name}<div class="text-danger">{errors.last_name}</div>{/if}
+              </div>
             </div>
 
-            <div class="mb-3">
-              <label for="username" class="form-label">Nombre de usuario:</label>
-              <input
-                type="text"
-                id="username"
-                class="form-control"
-                bind:value={username}
-                placeholder="Ingresa tu nombre de usuario"
-              />
-              {#if errors.username}<div class="text-danger">{errors.username}</div>{/if}
+            <div class="form-row">
+              <div class="form-group">
+                <label for="phone_number" class="form-label">Teléfono:</label>
+                <input
+                  type="text"
+                  id="phone_number"
+                  class="form-control"
+                  bind:value={phone_number}
+                  placeholder="Ingresa tu número de teléfono"
+                  required
+                />
+                {#if errors.phone_number}<div class="text-danger">{errors.phone_number}</div>{/if}
+              </div>
+
+              <div class="form-group">
+                <label for="gender" class="form-label">Género:</label>
+                <select id="gender" class="form-control" bind:value={gender}>
+                  <option value="Male">Masculino</option>
+                  <option value="Female">Femenino</option>
+                  <option value="Other">Otro</option>
+                </select>
+              </div>
             </div>
 
-            <div class="mb-3">
-              <label for="first_name" class="form-label">Nombre:</label>
-              <input
-                type="text"
-                id="first_name"
-                class="form-control"
-                bind:value={first_name}
-                placeholder="Ingresa tu nombre"
-              />
-              {#if errors.first_name}<div class="text-danger">{errors.first_name}</div>{/if}
+            <div class="form-row">
+              <div class="form-group">
+                <label for="direccion" class="form-label">Dirección:</label>
+                <input
+                  type="text"
+                  id="direccion"
+                  class="form-control"
+                  bind:value={direccion}
+                  placeholder="Ingresa tu dirección"
+                  required
+                />
+                {#if errors.direccion}<div class="text-danger">{errors.direccion}</div>{/if}
+              </div>
+
+              <div class="form-group">
+                <label for="city" class="form-label">Ciudad:</label>
+                <input
+                  type="text"
+                  id="city"
+                  class="form-control"
+                  bind:value={city}
+                  placeholder="Ingresa tu ciudad"
+                  required
+                />
+                {#if errors.city}<div class="text-danger">{errors.city}</div>{/if}
+              </div>
             </div>
 
-            <div class="mb-3">
-              <label for="last_name" class="form-label">Apellido:</label>
-              <input
-                type="text"
-                id="last_name"
-                class="form-control"
-                bind:value={last_name}
-                placeholder="Ingresa tu apellido"
-              />
-              {#if errors.last_name}<div class="text-danger">{errors.last_name}</div>{/if}
-            </div>
+            <!-- Componente Imagen para seleccionar y previsualizar la imagen de perfil -->
+            <Imagen bind:elegirArchivo={profilePictureFile} bind:imagePreview={profilePicturePreview} />
 
-            <div class="mb-3">
-              <label for="phone_number" class="form-label">Teléfono:</label>
-              <input
-                type="text"
-                id="phone_number"
-                class="form-control"
-                bind:value={phone_number}
-                placeholder="Ingresa tu número de teléfono"
-              />
-              {#if errors.phone_number}<div class="text-danger">{errors.phone_number}</div>{/if}
-            </div>
-
-            <div class="mb-3">
-              <label for="gender" class="form-label">Género:</label>
-              <select id="gender" class="form-select" bind:value={gender}>
-                <option value="Male">Masculino</option>
-                <option value="Female">Femenino</option>
-                <option value="Other">Otro</option>
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label for="direccion" class="form-label">Dirección:</label>
-              <input
-                type="text"
-                id="direccion"
-                class="form-control"
-                bind:value={direccion}
-                placeholder="Ingresa tu dirección"
-              />
-              {#if errors.direccion}<div class="text-danger">{errors.direccion}</div>{/if}
-            </div>
-
-            <div class="mb-3">
-              <label for="city" class="form-label">Ciudad:</label>
-              <input
-                type="text"
-                id="city"
-                class="form-control"
-                bind:value={city}
-                placeholder="Ingresa tu ciudad"
-              />
-              {#if errors.city}<div class="text-danger">{errors.city}</div>{/if}
-            </div>
-
-            <div class="mb-3">
-              <label for="country" class="form-label">País:</label>
-              <input
-                type="text"
-                id="country"
-                class="form-control"
-                bind:value={country}
-                placeholder="Ingresa tu país"
-                disabled
-              />
-            </div>
-
-            <div class="mb-3">
-              <label for="profilePicture" class="form-label">Foto de perfil:</label>
-              <input
-                type="file"
-                id="profilePicture"
-                class="form-control"
-                accept="image/*"
-                on:change={handleProfilePictureChange}
-              />
-            </div>
-
-            <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-dark rounded-pill">
-                Crear cuenta
-              </button>
-            </div>
+            <button type="submit" class="btn btn-dark rounded-pill mt-3">Crear cuenta</button>
           </form>
         </div>
       </div>
@@ -333,17 +269,9 @@
     color: red;
   }
 
-  input {
-    width: 100%;
-    max-width: 500px;
-    border-radius: 50px;
-    text-align: left;
-  }
-
-  button {
-    padding: 10px 30px;
-    text-align: center;
-    margin-top: 10px;
+  .form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 1rem;
   }
 </style>
-

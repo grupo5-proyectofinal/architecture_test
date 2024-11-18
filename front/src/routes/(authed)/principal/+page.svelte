@@ -1,0 +1,119 @@
+<script>
+    import Cardpool from '../../../lib/componentes/Cardpool.svelte';
+    import CardButton from '../../../lib/componentes/CardButton.svelte';
+    import { onMount } from 'svelte';
+    import Carrusel from '../../../lib/componentes/Carrusel.svelte';
+   
+    
+  
+    let trespools = [];
+    let pools = [];
+  
+    // Función para obtener tres elementos aleatorios del array
+    function getRandomPools(array, num) {
+      let shuffled = [...array].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, num);
+    }
+  
+    // Lógica de carga de datos en el cliente usando onMount
+    onMount(async () => {
+      try {
+        const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/pools/');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const data = await response.json();
+        pools = data;
+         //3 pools aleatorios
+        trespools = getRandomPools(pools, 3);
+      } catch (error) {
+        console.error('Hubo un problema en la respuesta, error:', error);
+      }
+    });
+
+
+    const images = [
+    {
+      src: 'https://via.placeholder.com/800x400?text=First+Slide',
+      alt: 'First Slide'
+    },
+    {
+      src: 'https://via.placeholder.com/800x400?text=Second+Slide',
+      alt: 'Second Slide'
+    },
+    {
+      src: 'https://via.placeholder.com/800x400?text=Third+Slide',
+      alt: 'Third Slide'
+    }
+  ];
+  
+  </script>
+  
+  <main>
+    <br />
+    <div class="body">
+      <Carrusel {images}/>
+        <!-- Sección de botones -->
+      <div class="container">
+          <div class="row">
+            <div class="col-md-4">
+              <CardButton 
+                titulo="Cree nuevo pool de compra"
+                descripcion="Empiece creando su propio Pool de compra"
+                actionLabel="Crear pool"
+                redirectTo="/crearpoolshop"
+              />
+            </div>
+            <div class="col-md-4">
+              <CardButton 
+              titulo="Explore pools abiertos"
+              descripcion="Explore pools de otros usuarios y unase!"
+              redirectTo="/verpool"
+              actionLabel="Ver pools"
+            />   
+            </div>
+            <div class="col-md-4">
+              <CardButton 
+                titulo="Administre sus pools"
+                descripcion="Vea y administre sus pools abiertos/cerrados"
+                redirectTo="/"
+                actionLabel="Ver mis pools"
+              />      
+            </div>
+          </div>
+      </div>
+
+      <!-- Sección de pools más vistos -->
+      <div class="container">
+        <div class="pool-visto-container">
+            <h2 class="text-body-secondary">
+              Pools más vistos
+            </h2>
+        </div>
+        <br />
+        <div class="container-fluid">
+          <div class="row">
+            {#each trespools as pool}
+              <div class="col">
+                <Cardpool
+                imagePreview={pool}
+                data={pool} 
+                />
+              </div>
+            {/each}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <style>
+    .body {
+      padding: 40px;
+    }
+    .pool-visto-container {
+      text-align: center;
+      margin-top: 20px;  
+    }
+  </style>  
