@@ -11,7 +11,8 @@ export const nodes = [
 	() => import('./nodes/7'),
 	() => import('./nodes/8'),
 	() => import('./nodes/9'),
-	() => import('./nodes/10')
+	() => import('./nodes/10'),
+	() => import('./nodes/11')
 ];
 
 export const server_loads = [0];
@@ -23,6 +24,7 @@ export const dictionary = {
 		"/(authed)/detallePoolCreado/[id]": [~4],
 		"/login": [10],
 		"/(authed)/mispools": [~5],
+		"/mispools/[id]": [~11],
 		"/(authed)/perfil": [6],
 		"/(authed)/principal": [7],
 		"/(authed)/verpool/[id]": [~8]

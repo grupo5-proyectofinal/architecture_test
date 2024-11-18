@@ -1,7 +1,7 @@
 <script>
-    import Header1 from "../lib/componentes/Header1.svelte"; 
+    import Header from "../lib/componentes/Header.svelte"; 
     import Footer from "../lib/componentes/Footer.svelte"; // Footer
-    import { isAuthenticated, setAuthStatus, usuario, setUsuario, clearUsuario } from '$lib/stores/auth';
+    import { isAuthenticated, setAuthStatus, setUsuario, clearUsuario } from '$lib/stores/auth';
 
     export let data;
 
@@ -14,10 +14,9 @@
             clearUsuario(); // Limpiar datos si no hay usuario
         }
     }
-    console.log(data.usuario)
 </script>
 
-<Header1 usuario={data.usuario} isAuthenticated={isAuthenticated}/>
+<Header usuario={data.usuario} isAuthenticated={isAuthenticated}/>
 
 <!-- Slot para el contenido de las rutas hijas -->
 <slot />

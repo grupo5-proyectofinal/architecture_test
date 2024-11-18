@@ -24,7 +24,7 @@ async function validartoken(fetch, token) {
 // Función para obtener datos del usuario
 async function obtenerUsuario(fetch, token) {
     try {
-        const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/user/me/', {
+        const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/user/', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -62,7 +62,5 @@ export async function load({ cookies, fetch }) {
         cookies.delete('token', { path: '/' });
         return { usuario: null };
     }
-
-    console.log(usuario)
     return { usuario }; // Retornamos el usuario autenticado
 }
