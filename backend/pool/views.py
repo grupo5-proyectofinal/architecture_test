@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from user.models import Member
 from rest_framework.views import APIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from user.serializers import MemberSerializer
 from .serializers import CategoriaSerializer, PoolSerializer, ListPoolSerializer, PoolDetailSerializer
 from .models import Categoria, Pool
@@ -17,85 +18,42 @@ class CategoriaListView(generics.ListAPIView):
     serializer_class = CategoriaSerializer
     permission_classes = [permissions.AllowAny] 
 
-class PoolListCreateView(APIView):
-    permission_classes = [permissions.AllowAny]
-    
-    def get(self, request, *args, **kwargs):
-        pools = Pool.objects.all()
+class PoolListCreateView(ListCreateAPIView):
+    queryset = Pool.objects.filter(estado=Pool.EstadoChoices.ABIERTO)
+    permission_classes = [permissions.IsAuthenticated]
 
-        producto = request.query_params.get('producto')
-        creador = request.query_params.get('creador')
-        categoria = request.query_params.get('categoria')
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ListPoolSerializer
+        return PoolSerializer
+    
+    def filter_queryset(self, queryset):
+        producto = self.request.query_params.get("producto")
+        creador = self.request.query_params.get("creador")
+        categoria = self.request.query_params.get("categoria")
 
         if producto:
-            pools = pools.filter(producto__nombre__icontains=producto)
+            queryset = queryset.filter(producto__nombre__icontains=producto)
         if creador:
-            pools = pools.filter(creador__username__icontains=creador)
+            queryset = queryset.filter(creador__username__icontains=creador)
         if categoria:
-            pools = pools.filter(producto__categoria__nombre__icontains=categoria)
-            
-        serializer = ListPoolSerializer(pools, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            queryset = queryset.filter(producto__categoria__nombre__icontains=categoria)
 
-    def post(self, request, *args, **kwargs):
-        serializer = PoolSerializer(data=request.data)
-        try:
-            User = get_user_model()
-            usuario = User.objects.get(username="juan")
-            serializer.is_valid(raise_exception=True)
-            serializer.save(creador=usuario)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return queryset
 
-        except User.DoesNotExist as e:
-            logger.error("El usuario no existe.")
-            return Response(
-                {"detail": f"Usuario no encontrado: {str(e)}"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        except Exception as e:
-            logger.error(f"Error al crear el Pool: {str(e)}")
-            return Response(
-                {"detail": f"Error desconocido al crear el Pool: {str(e)}"}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+    def perform_create(self, serializer):
+        serializer.save(creador=self.request.user)
 
 
-
-class PoolDetailUpdateDeleteView(APIView):
+class PoolDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
+    queryset = Pool.objects.all()
     permission_classes = [permissions.AllowAny]
+    lookup_field = "pk"
 
-    def get_object(self, pk):
-        return get_object_or_404(Pool, pk=pk)
-
-    def get(self, request, pk, format=None):
-        pool = self.get_object(pk)
-        serializer = PoolDetailSerializer(pool)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def put(self, request, pk, format=None):
-        pool = self.get_object(pk)
-        serializer = PoolSerializer(pool, data=request.data, partial=True)  # partial=True para permitir actualizaciones parciales
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def patch(self, request, pk, format=None):
-        pool = self.get_object(pk)
-        serializer = PoolSerializer(pool, data=request.data, partial=True)  # partial=True para permitir actualizaciones parciales
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        """
-        Maneja la eliminación de un Pool específico.
-        """
-        pool = self.get_object(pk)
-        pool.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return PoolDetailSerializer
+        return PoolSerializer
 
 
 class JoinPoolView(generics.CreateAPIView):

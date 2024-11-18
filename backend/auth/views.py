@@ -1,16 +1,17 @@
 from django.contrib.auth import get_user_model
 from rest_framework import views, permissions, status, generics
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .serializers import ObtainTokenSerializer
+from .serializers import ObtainTokenSerializer, TokenValidationSerializer
 from user.serializers import UsuarioSerializer
 from .auth import JWTAuthentication
 
 User = get_user_model()
 
 
-class ObtainTokenView(views.APIView):
+class ObtainTokenView(GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = ObtainTokenSerializer
 
@@ -28,7 +29,7 @@ class ObtainTokenView(views.APIView):
 
         jwt_token = JWTAuthentication.create_jwt(user)
 
-        return Response({'token': jwt_token})
+        return Response({'token': jwt_token, "user": UsuarioSerializer(user).data})
     
 
 class RegisterView(generics.CreateAPIView):
@@ -55,17 +56,21 @@ class RegisterView(generics.CreateAPIView):
         return response
 
 
-class ValidateTokenView(views.APIView):
+class ValidateTokenView(GenericAPIView):
     permission_classes = [permissions.AllowAny]
+    serializer_class = TokenValidationSerializer
 
     def post(self, request, *args, **kwargs):
-        token = request.data.get('token')
-        
-        if not token:
-            return Response({'message': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
+        token = serializer.validated_data["token"]
+        
         try:
             user = JWTAuthentication.decode_jwt(token)
             return Response({'message': 'Token is valid'}, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({'message': 'Token is invalid', 'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {'message': 'Token is invalid', 'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
