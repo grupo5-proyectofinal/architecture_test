@@ -5,48 +5,44 @@
     
     let searchQuery = '';
     let filteredPools = [];
-    let filteredUsers = [];
     let isLoading = false;
     let error = '';
 
-    // Función para manejar la búsqueda
-    async function handleSearch() {
-        if (searchQuery.trim() === '') {
-            filteredPools = [];
-            filteredUsers = [];
-            return;
-        }
+    let timeout;
 
-        isLoading = true;
-        error = '';
+    function handleSearch() {
+        clearTimeout(timeout);
+        timeout = setTimeout(async () => {
+            if (searchQuery.trim() === '') {
+                filteredPools = [];
+                return;
+            }
 
-        try {
-            const poolsResponse = await fetch(`https://api.example.com/pools?search=${encodeURIComponent(searchQuery)}`);
-            if (!poolsResponse.ok) throw new Error('Error al cargar los pools de compras');
-            const poolsData = await poolsResponse.json();
+            isLoading = true;
+            error = '';
 
-            const usersResponse = await fetch(`https://api.example.com/users?search=${encodeURIComponent(searchQuery)}`);
-            if (!usersResponse.ok) throw new Error('Error al cargar los usuarios');
-            const usersData = await usersResponse.json();
-
-            filteredPools = poolsData;
-            filteredUsers = usersData;
-        } catch (err) {
-            error = err.message;
-        } finally {
-            isLoading = false;
-        }
+            try {
+                const response = await fetch(`https://poolshop-staging-748245240444.us-central1.run.app/api/pools?producto=${encodeURIComponent(searchQuery)}`);
+                if (!response.ok) throw new Error('Error al cargar los pools de compras');
+                const data = await response.json();
+                console.log(data)
+                filteredPools = data;
+            } catch (err) {
+                error = err.message;
+            } finally {
+                isLoading = false;
+            }
+        }, 300);
     }
 
     onMount(() => {
         handleSearch();
     });
+
+
 </script>
 
 <div class="container">
-    <div class="row">
-        <h1 class="titulo-home text-center mt-5">Bienvenido a Pool Shop</h1>
-    </div>
     <div class="row">
         <div class="container mt-3">
             <input 
@@ -76,21 +72,12 @@
                     <h5 class="subtitulo">Pools de Compras Abiertos</h5>
                     <ul class="list-group mb-3">
                         {#each filteredPools as pool}
-                            <li class="list-group-item">{pool.name}</li>
+                            <li class="list-group-item">{pool.producto.nombre}</li>
                         {/each}
                     </ul>
                 {/if}
 
-                {#if filteredUsers.length > 0}
-                    <h5 class="subtitulo">Usuarios</h5>
-                    <ul class="list-group">
-                        {#each filteredUsers as user}
-                            <li class="list-group-item">{user.name}</li>
-                        {/each}
-                    </ul>
-                {/if}
-
-                {#if searchQuery && filteredPools.length === 0 && filteredUsers.length === 0 && !isLoading}
+                {#if searchQuery && filteredPools.length === 0 && !isLoading}
                     <p class="text-muted">No se encontraron resultados.</p>
                 {/if}
             </div>

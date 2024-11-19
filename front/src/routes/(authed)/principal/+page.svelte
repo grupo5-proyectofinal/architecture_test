@@ -1,8 +1,8 @@
 <script>
     import Cardpool from '../../../lib/componentes/Cardpool.svelte';
     import CardButton from '../../../lib/componentes/CardButton.svelte';
-    import Filter from '../../../lib/componentes/Filter.svelte';
     import { onMount } from 'svelte';
+    import Carrusel from '../../../lib/componentes/Carrusel.svelte';
    
     
   
@@ -31,19 +31,29 @@
         console.error('Hubo un problema en la respuesta, error:', error);
       }
     });
+
+
+    const images = [
+    {
+      src: 'https://via.placeholder.com/800x400?text=First+Slide',
+      alt: 'First Slide'
+    },
+    {
+      src: 'https://via.placeholder.com/800x400?text=Second+Slide',
+      alt: 'Second Slide'
+    },
+    {
+      src: 'https://via.placeholder.com/800x400?text=Third+Slide',
+      alt: 'Third Slide'
+    }
+  ];
   
   </script>
   
   <main>
     <br />
     <div class="body">
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            <Filter />
-          </div>
-        </div>
-      </div> 
+      <Carrusel {images}/>
         <!-- Sección de botones -->
       <div class="container">
           <div class="row">
@@ -100,7 +110,7 @@
   
   <style>
     .body {
-      padding: 10px;
+      padding: 40px;
     }
     .pool-visto-container {
       text-align: center;
