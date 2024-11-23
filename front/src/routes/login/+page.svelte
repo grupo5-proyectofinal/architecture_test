@@ -34,12 +34,12 @@
             });
             
             if (response.ok) {
-                const {token} = await response.json();
+                const {token, user} = await response.json();
                 Cookies.set('token',token, {
                     path: '/',
                     expires: 1})
                 setAuthStatus(true);
-                setUsuario(user); 
+                setUsuario(user);
                 await invalidate('/');
                 goto('/principal');
 

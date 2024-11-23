@@ -3,9 +3,9 @@ import Cookies from 'js-cookie';
 
 // Estado para verificar si el usuario está autenticado
 export const isAuthenticated = writable(!!Cookies.get('token'));
-
 // Estado para almacenar los datos del usuario autenticado
 export const usuario = writable(null);
+
 
 /**
  * Función para establecer el estado de autenticación.
@@ -35,9 +35,12 @@ export function setUsuario(user) {
  * Función para limpiar los datos del usuario y el estado de autenticación.
  */
 export function clearUsuario() {
-    usuario.set(null); // Limpia los datos del usuario.
-    Cookies.remove('token', { path: '/' }); // Elimina el token de las cookies.
-    isAuthenticated.set(false); // Marca al usuario como no autenticado.
+    // Comprueba si el código se está ejecutando en el cliente
+    if (typeof window !== 'undefined') {
+        Cookies.remove('token', { path: '/' }); // Elimina el token solo en el cliente
+    }
+    usuario.set(null); // Limpia los datos del usuario
+    isAuthenticated.set(false); // Marca al usuario como no autenticado
 }
 
 /**
