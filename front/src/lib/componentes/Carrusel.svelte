@@ -30,5 +30,5 @@
 </div>
 
 <style>
-  /* Agrega estilos personalizados si es necesario */
+
 </style>

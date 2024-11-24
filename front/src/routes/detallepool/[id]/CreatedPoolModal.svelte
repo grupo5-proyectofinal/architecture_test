@@ -8,7 +8,7 @@
     export let poolId = null;  // Pool ID for the created pool
     
     function viewPoolDetails() {
-        goto(`/detallePoolCreado/${poolId}`);
+        goto(`/detallepoolPoolCreado/${poolId}`);
     }
   </script>
   
@@ -27,7 +27,7 @@
             <h2 class="modal-title">¡Pool creado exitosamente!</h2>
           </div>
   
-          <p class="modal-body">Tu nuevo pool de compra ha sido creado correctamente. Ahora puedes ver los detalles.</p>
+          <p class="modal-body">Tu nuevo pool de compra ha sido creado correctamente. Ahora puedes ver los detallepools.</p>
   
           <!-- Single action button -->
           <div class="modal-footer">
