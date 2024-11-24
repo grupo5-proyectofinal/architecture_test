@@ -1,6 +1,5 @@
 <script>
   import { goto } from '$app/navigation';
-  import ModalConfirmation from './ModalConfirmation.svelte';
 
   // Variables del formulario
   let username = '';
@@ -13,16 +12,9 @@
   let direccion = '';
   let country = 'Argentina';
   let city = '';
-  let phone_number = ''; 
+  let phone_number = ''; // Añadido el número de teléfono
 
-  // Variables para la imagen
-  let profilePictureFile = null;
-  let profilePicturePreview = "https://via.placeholder.com/400";
-
-  // Modal confirmation state
-  let showModal = false;
-
-  // Manejo de errores
+  let profilePictureFile = null; // Para manejar el archivo de imagen
   let errors = {
     username: '',
     email: '',
@@ -35,21 +27,65 @@
     phone_number: '',
   };
 
+  // Validación de formulario
   function validateForm() {
     errors = { username: '', email: '', password: '', confirmPassword: '', first_name: '', last_name: '', direccion: '', city: '', phone_number: '' };
     let isValid = true;
 
-    if (!username.trim()) errors.username = 'El nombre de usuario es requerido';
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Correo electrónico válido es requerido';
-    if (password.length < 6) errors.password = 'La contraseña debe tener al menos 6 caracteres';
-    if (password !== confirmPassword) errors.confirmPassword = 'Las contraseñas no coinciden';
-    if (!first_name.trim()) errors.first_name = 'El nombre es requerido';
-    if (!last_name.trim()) errors.last_name = 'El apellido es requerido';
-    if (!direccion.trim()) errors.direccion = 'La dirección es requerida';
-    if (!city.trim()) errors.city = 'La ciudad es requerida';
-    if (!phone_number.trim()) errors.phone_number = 'El número de teléfono es requerido';
+    // Validar nombre de usuario
+    if (!username.trim()) {
+      errors.username = 'El nombre de usuario es requerido';
+      isValid = false;
+    }
 
-    return Object.values(errors).every((error) => !error);
+    // Validar email
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = 'Correo electrónico válido es requerido';
+      isValid = false;
+    }
+
+    // Validar contraseña
+    if (password.length < 6) {
+      errors.password = 'La contraseña debe tener al menos 6 caracteres';
+      isValid = false;
+    }
+
+    // Confirmar contraseña
+    if (password !== confirmPassword) {
+      errors.confirmPassword = 'Las contraseñas no coinciden';
+      isValid = false;
+    }
+
+    // Validar nombres
+    if (!first_name.trim()) {
+      errors.first_name = 'El nombre es requerido';
+      isValid = false;
+    }
+
+    if (!last_name.trim()) {
+      errors.last_name = 'El apellido es requerido';
+      isValid = false;
+    }
+
+    // Validar dirección
+    if (!direccion.trim()) {
+      errors.direccion = 'La dirección es requerida';
+      isValid = false;
+    }
+
+    // Validar ciudad
+    if (!city.trim()) {
+      errors.city = 'La ciudad es requerida';
+      isValid = false;
+    }
+
+    // Validar número de teléfono
+    if (!phone_number.trim()) {
+      errors.phone_number = 'El número de teléfono es requerido';
+      isValid = false;
+    }
+
+    return isValid;
   }
 
   async function handleSubmit(event) {
@@ -59,23 +95,35 @@
     }
   }
 
+  function convertirImagenBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
   async function enviarDatos() {
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('gender', gender);
-    formData.append('phone_number', phone_number);
-    formData.append('direccion', direccion);
-    formData.append('country', country);
-    formData.append('city', city);
-    formData.append('first_name', first_name);
-    formData.append('last_name', last_name);
+    const data = {
+      username,
+      email,
+      password,
+      gender,
+      //foto, // Imagen en base64 o vacía si no se seleccionó
+      phone_number,
+      direccion,
+      country,
+      city,
+      first_name,
+      last_name
+    };
 
-    if (profilePictureFile) {
-      formData.append('foto', profilePictureFile);
-    }
+    console.log(data);
 
+    // Realizar el POST a la API
     try {
       const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/auth/register/', {
         method: 'POST',
@@ -83,26 +131,23 @@
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Detalles del error:', errorData);
-        throw new Error(`Error al crear el usuario: ${errorData.message || JSON.stringify(errorData)}`);
+        throw new Error('Error al crear el usuario');
       }
 
       const responseData = await response.json();
       console.log('Usuario creado con éxito:', responseData);
 
-      showModal = true;
+      // Redirigir al menú principal después de la creación del usuario
+      goto('/');  // Redirige a la página principal o menú principal
     } catch (error) {
-      console.error('Error al enviar datos:', error);
+      console.error('Error:', error);
     }
   }
 
-  // Función para actualizar la vista previa de la imagen
   function handleProfilePictureChange(event) {
     const file = event.target.files[0];
     if (file) {
       profilePictureFile = file;
-      profilePicturePreview = URL.createObjectURL(file); // Actualiza la URL de la vista previa
     }
   }
 
@@ -119,76 +164,153 @@
         <div class="card-body">
           <h2 class="card-title text-center mb-4">Crear cuenta</h2>
           
-          <!-- Vista previa y botón para subir imagen -->
-          <div class="text-center mb-4">
-            <img src={profilePicturePreview} alt="Foto de perfil" class="profile-picture-preview" />
-            <div class="mt-2">
-              <input type="file" id="profilePicture" accept="image/*" on:change={handleProfilePictureChange} hidden />
-              <button type="button" class="btn btn-outline-secondary rounded-pill mt-2" on:click={() => document.getElementById('profilePicture').click()}>
-                Subir Imagen
-              </button>
-            </div>
-          </div>
-          
-          <!-- Formulario de alta de usuario en dos columnas -->
-          <form on:submit={handleSubmit} class="form">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="first_name" class="form-label">Nombre</label>
-                <input type="text" id="first_name" class="form-control rounded-pill" bind:value={first_name} placeholder="Ingresa tu nombre" required />
-                {#if errors.first_name}<div class="text-danger">{errors.first_name}</div>{/if}
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="last_name" class="form-label">Apellido</label>
-                <input type="text" id="last_name" class="form-control rounded-pill" bind:value={last_name} placeholder="Ingresa tu apellido" required />
-                {#if errors.last_name}<div class="text-danger">{errors.last_name}</div>{/if}
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" id="email" class="form-control rounded-pill" bind:value={email} placeholder="Ingresa tu correo electrónico" required />
-                {#if errors.email}<div class="text-danger">{errors.email}</div>{/if}
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="phone_number" class="form-label">Celular</label>
-                <input type="text" id="phone_number" class="form-control rounded-pill" bind:value={phone_number} placeholder="Ingresa tu número celular" required />
-                {#if errors.phone_number}<div class="text-danger">{errors.phone_number}</div>{/if}
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="username" class="form-label">Nombre de usuario</label>
-                <input type="text" id="username" class="form-control rounded-pill" bind:value={username} placeholder="Ingresa tu nombre de usuario" required />
-                {#if errors.username}<div class="text-danger">{errors.username}</div>{/if}
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" id="password" class="form-control rounded-pill" bind:value={password} placeholder="Ingresa una contraseña" required />
-                {#if errors.password}<div class="text-danger">{errors.password}</div>{/if}
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
-                <input type="password" id="confirmPassword" class="form-control rounded-pill" bind:value={confirmPassword} placeholder="Confirma tu contraseña" required />
-                {#if errors.confirmPassword}<div class="text-danger">{errors.confirmPassword}</div>{/if}
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="gender" class="form-label">Género</label>
-                <select id="gender" class="form-control rounded-pill" bind:value={gender}>
-                  <option value="Male">Masculino</option>
-                  <option value="Female">Femenino</option>
-                  <option value="Other">Otro</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="direccion" class="form-label">Dirección</label>
-                <input type="text" id="direccion" class="form-control rounded-pill" bind:value={direccion} placeholder="Ingresa tu dirección" required />
-                {#if errors.direccion}<div class="text-danger">{errors.direccion}</div>{/if}
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="city" class="form-label">Ciudad</label>
-                <input type="text" id="city" class="form-control rounded-pill" bind:value={city} placeholder="Ingresa tu ciudad" required />
-                {#if errors.city}<div class="text-danger">{errors.city}</div>{/if}
-              </div>
+          <!-- Formulario de alta de usuario -->
+          <form on:submit={handleSubmit}>
+            <div class="mb-3">
+              <label for="email" class="form-label">Correo electrónico:</label>
+              <input
+                type="email"
+                id="email"
+                class="form-control"
+                bind:value={email}
+                placeholder="Ingresa tu correo electrónico"
+              />
+              {#if errors.email}<div class="text-danger">{errors.email}</div>{/if}
             </div>
 
-            <button type="submit" class="btn btn-dark rounded-pill w-100 mt-3">Crear cuenta</button>
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña:</label>
+              <input
+                type="password"
+                id="password"
+                class="form-control"
+                bind:value={password}
+                placeholder="Ingresa una contraseña"
+              />
+              {#if errors.password}<div class="text-danger">{errors.password}</div>{/if}
+            </div>
+
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirmar contraseña:</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                class="form-control"
+                bind:value={confirmPassword}
+                placeholder="Confirma tu contraseña"
+              />
+              {#if errors.confirmPassword}<div class="text-danger">{errors.confirmPassword}</div>{/if}
+            </div>
+
+            <div class="mb-3">
+              <label for="username" class="form-label">Nombre de usuario:</label>
+              <input
+                type="text"
+                id="username"
+                class="form-control"
+                bind:value={username}
+                placeholder="Ingresa tu nombre de usuario"
+              />
+              {#if errors.username}<div class="text-danger">{errors.username}</div>{/if}
+            </div>
+
+            <div class="mb-3">
+              <label for="first_name" class="form-label">Nombre:</label>
+              <input
+                type="text"
+                id="first_name"
+                class="form-control"
+                bind:value={first_name}
+                placeholder="Ingresa tu nombre"
+              />
+              {#if errors.first_name}<div class="text-danger">{errors.first_name}</div>{/if}
+            </div>
+
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Apellido:</label>
+              <input
+                type="text"
+                id="last_name"
+                class="form-control"
+                bind:value={last_name}
+                placeholder="Ingresa tu apellido"
+              />
+              {#if errors.last_name}<div class="text-danger">{errors.last_name}</div>{/if}
+            </div>
+
+            <div class="mb-3">
+              <label for="phone_number" class="form-label">Teléfono:</label>
+              <input
+                type="text"
+                id="phone_number"
+                class="form-control"
+                bind:value={phone_number}
+                placeholder="Ingresa tu número de teléfono"
+              />
+              {#if errors.phone_number}<div class="text-danger">{errors.phone_number}</div>{/if}
+            </div>
+
+            <div class="mb-3">
+              <label for="gender" class="form-label">Género:</label>
+              <select id="gender" class="form-select" bind:value={gender}>
+                <option value="Male">Masculino</option>
+                <option value="Female">Femenino</option>
+                <option value="Other">Otro</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="direccion" class="form-label">Dirección:</label>
+              <input
+                type="text"
+                id="direccion"
+                class="form-control"
+                bind:value={direccion}
+                placeholder="Ingresa tu dirección"
+              />
+              {#if errors.direccion}<div class="text-danger">{errors.direccion}</div>{/if}
+            </div>
+
+            <div class="mb-3">
+              <label for="city" class="form-label">Ciudad:</label>
+              <input
+                type="text"
+                id="city"
+                class="form-control"
+                bind:value={city}
+                placeholder="Ingresa tu ciudad"
+              />
+              {#if errors.city}<div class="text-danger">{errors.city}</div>{/if}
+            </div>
+
+            <div class="mb-3">
+              <label for="country" class="form-label">País:</label>
+              <input
+                type="text"
+                id="country"
+                class="form-control"
+                bind:value={country}
+                placeholder="Ingresa tu país"
+                disabled
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="profilePicture" class="form-label">Foto de perfil:</label>
+              <input
+                type="file"
+                id="profilePicture"
+                class="form-control"
+                accept="image/*"
+                on:change={handleProfilePictureChange}
+              />
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-dark rounded-pill">
+                Crear cuenta
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -217,6 +339,18 @@
 
   .text-danger {
     color: red;
-    font-size: 0.875rem;
+  }
+
+  input {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 50px;
+    text-align: left;
+  }
+
+  button {
+    padding: 10px 30px;
+    text-align: center;
+    margin-top: 10px;
   }
 </style>
