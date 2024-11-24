@@ -1,13 +1,11 @@
-from django.shortcuts import get_object_or_404
 from user.models import Member
-from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from user.serializers import MemberSerializer
 from .serializers import CategoriaSerializer, PoolSerializer, ListPoolSerializer, PoolDetailSerializer
 from .models import Categoria, Pool
 from django.contrib.auth import get_user_model
 from rest_framework import permissions, generics, serializers, status
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied 
 from rest_framework.response import Response
 import logging
 
@@ -40,6 +38,10 @@ class PoolListCreateView(ListCreateAPIView):
             queryset = queryset.filter(producto__categoria__nombre__icontains=categoria)
 
         return queryset
+
+    def check_permissions(self, request):
+        if request.method == 'POST' and not request.user.is_authenticated:
+            raise PermissionDenied("You must be authenticated to create a pool.")
 
     def perform_create(self, serializer):
         serializer.save(creador=self.request.user)

@@ -3,6 +3,7 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
+  import Filter from './Filter.svelte';
 
   // Variables para manejar el estado del header
   let lastScrollY = 0; // Posición anterior del scroll
@@ -74,7 +75,7 @@
       <li class="mb-3 w-100">
         <div class="search-bar-container">
           <div class="search-bar">
-            <input type="text" placeholder="Buscar..." class="search-input" />
+            <Filter placeholder="Buscar productos" />
             <button class="search-button"><i class="bi bi-search"></i></button>
           </div>
         </div>
@@ -178,11 +179,6 @@
     color: #ffffff;
   }
 
-  /* Barra de búsqueda */
-  .search-bar-container {
-    max-width: 600px;
-    width: 100%;
-  }
   .search-bar {
     display: flex;
     align-items: center;
@@ -191,23 +187,15 @@
     border-radius: 20px;
     width: 600px;
   }
-  .search-input {
-    border: none;
-    background: none;
-    outline: none;
-    font-size: 1rem;
-    color: #333;
-    width: 100%;
-    padding-left: 10px;
-  }
-  .search-button {
+
+.search-button {
     background: none;
     border: none;
     cursor: pointer;
     color: #333;
     font-size: 1.2rem;
-  }
-
+}
+  
   /* Enlaces de navegación */
   .nav-buttons .nav-link {
     color: #f8f9fa;
