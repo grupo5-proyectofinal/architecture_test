@@ -22,9 +22,9 @@ export const dictionary = {
 		"/(authed)/crearpoolshop": [~3],
 		"/crearusuario": [9],
 		"/(authed)/detallePoolCreado/[id]": [~4],
-		"/login": [10],
+		"/detallepool/[id]": [~10],
+		"/login": [11],
 		"/(authed)/mispools": [~5],
-		"/mispools/[id]": [~11],
 		"/(authed)/perfil": [6],
 		"/(authed)/principal": [7],
 		"/(authed)/verpool/[id]": [~8]
