@@ -76,10 +76,17 @@
   <div class="container d-flex align-items-center justify-content-between">
     <!-- Logo y Título -->
     <div class="text-center">
-      <a class="navbar-brand" href="/principal">
-        <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
-        <div class="brand-text">PoolShop</div>
-      </a>
+      {#if authenticated}
+        <a class="navbar-brand" href="/principal">
+          <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
+          <div class="brand-text">PoolShop</div>
+        </a>
+      {:else}
+        <a class="navbar-brand" href="/">
+          <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
+          <div class="brand-text">PoolShop</div>
+        </a>
+      {/if}
     </div>
 
     <!-- Barra de búsqueda y navegación -->
@@ -105,10 +112,17 @@
       <li class="w-100">
         <div class="nav-buttons text-center">
           <nav class="navbar-nav d-flex justify-content-center">
-            <a class="nav-link mx-2 {activeLink === 'home' ? 'active' : ''}"
-             href="/">
-               Bienvenido
-            </a>
+            {#if authenticated}
+              <a class="nav-link mx-2 {activeLink === 'home' ? 'active' : ''}"
+              href="/principal">
+                Bienvenido
+              </a>
+            {:else}
+              <a class="nav-link mx-2 {activeLink === 'home' ? 'active' : ''}"
+              href="/">
+                Bienvenido
+              </a>
+            {/if}
             <a class="nav-link mx-2 {activeLink === 'crear' ? 'active' : ''}"
              href="/crearpoolshop">
                Crear pool
@@ -169,7 +183,7 @@
             </a>
           </div>
           <div class="registrarse mt-2">
-            <a href="/registrarse">Registrarse</a>
+            <a href="/crearusuario">Registrarse</a>
           </div>
         </div>
       {/if}

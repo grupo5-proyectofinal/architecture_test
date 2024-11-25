@@ -28,7 +28,7 @@ export const dictionary = {
 		"/login": [12],
 		"/(authed)/mispools": [~5],
 		"/(authed)/perfil": [6],
-		"/(authed)/principal": [7],
+		"/(authed)/principal": [~7],
 		"/(authed)/verpool/[id]": [~8]
 	};
 
