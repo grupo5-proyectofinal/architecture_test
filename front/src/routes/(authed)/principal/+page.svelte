@@ -1,9 +1,12 @@
 <script>
     import Cardpool from '../../../lib/componentes/Cardpool.svelte';
-    import CardButton from '../../../lib/componentes/CardButton.svelte';
     import { onMount } from 'svelte';
     import Carrusel from '../../../lib/componentes/Carrusel.svelte';
-   
+
+
+    let image1 = '/img/01.jpg'
+    let image2 = '/img/02.jpg'
+    let image3 = '/img/03.jpg' 
     
   
     let trespools = [];
@@ -35,16 +38,19 @@
 
     const images = [
     {
-      src: 'https://via.placeholder.com/800x400?text=First+Slide',
-      alt: 'First Slide'
+      // src: 'https://via.placeholder.com/800x400?text=First+Slide',
+      src: image1,
+      title: 'Bienvenido a poolshop de compras'
     },
     {
-      src: 'https://via.placeholder.com/800x400?text=Second+Slide',
-      alt: 'Second Slide'
+      // src: 'https://via.placeholder.com/800x400?text=Second+Slide',
+      src: image2,
+      title: 'Busca un producto de tu interes y ahorra hasta 50 % más'
     },
     {
-      src: 'https://via.placeholder.com/800x400?text=Third+Slide',
-      alt: 'Third Slide'
+      // src: 'https://via.placeholder.com/800x400?text=Third+Slide',
+      src:image3,
+      title: 'Encuentra usuarios para realizar compras al por mayor'
     }
   ];
   
@@ -54,35 +60,6 @@
     <br />
     <div class="body">
       <Carrusel {images}/>
-        <!-- Sección de botones -->
-      <div class="container">
-          <div class="row">
-            <div class="col-md-4">
-              <CardButton 
-                titulo="Cree nuevo pool de compra"
-                descripcion="Empiece creando su propio Pool de compra"
-                actionLabel="Crear pool"
-                redirectTo="/crearpoolshop"
-              />
-            </div>
-            <div class="col-md-4">
-              <CardButton 
-              titulo="Explore pools abiertos"
-              descripcion="Explore pools de otros usuarios y unase!"
-              redirectTo="/verpool"
-              actionLabel="Ver pools"
-            />   
-            </div>
-            <div class="col-md-4">
-              <CardButton 
-                titulo="Administre sus pools"
-                descripcion="Vea y administre sus pools abiertos/cerrados"
-                redirectTo="/"
-                actionLabel="Ver mis pools"
-              />      
-            </div>
-          </div>
-      </div>
 
       <!-- Sección de pools más vistos -->
       <div class="container">
