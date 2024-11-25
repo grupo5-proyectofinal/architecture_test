@@ -56,6 +56,19 @@
     else activeLink = null;
   }
   
+  let searchQuery = '';
+
+  async function handleSearch() {
+      goto(`/listadopools?producto=${encodeURIComponent(searchQuery)}`);
+  }
+
+  function handleKeydown(event) {
+      if (event.key === 'Enter') {
+          event.preventDefault(); 
+          handleSearch();
+      }
+  }
+
 </script>
 
 <!-- Header -->
@@ -75,7 +88,13 @@
       <li class="mb-3 w-100">
         <div class="search-bar-container">
           <div class="search-bar">
-            <Filter placeholder="Buscar productos" />
+            <input 
+                class="search-input" 
+                type="text" 
+                bind:value={searchQuery} 
+                on:keydown={handleKeydown} 
+                placeholder="Buscar..."
+            />
             <button class="search-button"><i class="bi bi-search"></i></button>
           </div>
         </div>
@@ -160,6 +179,15 @@
 
 <style>
     /* Ocultar el header cuando está scrolleado hacia abajo */
+  .search-input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 1rem;
+  color: #333;
+  width: 100%;
+  padding-left: 10px;
+}
   header.hidden {
     transform: translateY(-100%);
   }
@@ -221,7 +249,6 @@
     color: #ffffff;
     text-decoration: underline;
   }
-
   /* Ajustes responsivos */
   @media (max-width: 991.98px) {
     .search-bar-container {
