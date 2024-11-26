@@ -64,8 +64,7 @@ class JoinPoolView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         try:
-            User = get_user_model()
-            usuario = User.objects.get(username="juan")
+            usuario = self.request.user
 
             pool_id = self.kwargs.get('pk')
             pool = Pool.objects.get(id=pool_id)
