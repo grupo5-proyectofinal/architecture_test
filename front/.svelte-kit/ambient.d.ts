@@ -43,15 +43,20 @@ declare module '$env/static/private' {
 	export const FPS_BROWSER_USER_PROFILE_STRING: string;
 	export const GIT_ASKPASS: string;
 	export const HOME: string;
-	export const TERM_PROGRAM_VERSION: string;
-	export const VSCODE_IPC_HOOK_CLI: string;
-	export const npm_package_json: string;
-	export const VSCODE_GIT_ASKPASS_MAIN: string;
-	export const VSCODE_GIT_ASKPASS_NODE: string;
-	export const SSL_CERT_FILE: string;
-	export const npm_config_userconfig: string;
-	export const npm_config_local_prefix: string;
-	export const DBUS_SESSION_BUS_ADDRESS: string;
+	export const HOMEDRIVE: string;
+	export const HOMEPATH: string;
+	export const INIT_CWD: string;
+	export const LANG: string;
+	export const LOCALAPPDATA: string;
+	export const LOGONSERVER: string;
+	export const MSMPI_BENCHMARKS: string;
+	export const MSMPI_BIN: string;
+	export const NODE: string;
+	export const NODE_ENV: string;
+	export const NODE_EXE: string;
+	export const NPM_CLI_JS: string;
+	export const npm_command: string;
+	export const npm_config_cache: string;
 	export const npm_config_engine_strict: string;
 	export const npm_config_globalconfig: string;
 	export const npm_config_global_prefix: string;
@@ -156,7 +161,6 @@ declare module '$env/dynamic/private' {
 		FPS_BROWSER_USER_PROFILE_STRING: string;
 		GIT_ASKPASS: string;
 		HOME: string;
-<<<<<<< HEAD
 		HOMEDRIVE: string;
 		HOMEPATH: string;
 		INIT_CWD: string;
@@ -170,27 +174,6 @@ declare module '$env/dynamic/private' {
 		NODE_EXE: string;
 		NPM_CLI_JS: string;
 		npm_command: string;
-=======
-		TERM_PROGRAM_VERSION: string;
-		VSCODE_IPC_HOOK_CLI: string;
-		npm_package_json: string;
-		VSCODE_GIT_ASKPASS_MAIN: string;
-		VSCODE_GIT_ASKPASS_NODE: string;
-		SSL_CERT_FILE: string;
-		npm_config_userconfig: string;
-		npm_config_local_prefix: string;
-		DBUS_SESSION_BUS_ADDRESS: string;
-		npm_config_engine_strict: string;
-		COLORTERM: string;
-		COLOR: string;
-		npm_config_metrics_registry: string;
-		LOGNAME: string;
-		_: string;
-		npm_config_prefix: string;
-		XDG_SESSION_CLASS: string;
-		TERM: string;
-		XDG_SESSION_ID: string;
->>>>>>> a17c9288364d27b5bf18f3152cc13df269ff8e44
 		npm_config_cache: string;
 		npm_config_engine_strict: string;
 		npm_config_globalconfig: string;
