@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Cardpool from '$lib/componentes/Cardpool.svelte';
+  import { goto } from '$app/navigation';
 
   let pools = [];
   let isLoading = true;
@@ -11,15 +12,19 @@
   let precioMin = '';
   let precioMax = '';
   let ubicacion = '';
+  let categories = [];
 
-  // Retrieve the query parameter
-  // Reactividad para detectar cambios en los parámetros de la URL
   $: producto = $page.url.searchParams.get('producto') || '';
-  $: categoria = $page.url.searchParams.get('categoria') || '';
   $: ubicacion = $page.url.searchParams.get('ubicacion') || '';
 
-  $: if (producto || categoria || ubicacion) {
-    fetchPools();
+  async function fetchCategories() {
+    try {
+      const response = await fetch('https://poolshop-staging-748245240444.us-central1.run.app/api/categories');
+      if (!response.ok) throw new Error('Error al cargar las categorías');
+      categories = await response.json();
+    } catch (err) {
+      console.error(err.message);
+    }
   }
   
   async function fetchPools() {
@@ -41,7 +46,24 @@
     }
   }
 
-  onMount(fetchPools);
+  $: if (producto || categoria) {
+    fetchPools();
+  }
+
+  function applyFilters() {
+    const params = new URLSearchParams();
+    if (producto) params.set('producto', producto);
+    if (categoria) params.set('categoria', categoria);
+    if (ubicacion) params.set('ubicacion', ubicacion);
+    goto(`?${params.toString()}`, { replaceState: true });
+    fetchPools();
+    
+  }
+
+  onMount(() => {
+    fetchCategories();
+    fetchPools();
+  });
 
 </script>
 
@@ -53,11 +75,11 @@
             <label for="category">Categoría:</label>
             <select id="category" bind:value={categoria}>
                 <option value="">Todas</option>
-                <option value="electronics">Electrónica</option>
-                <option value="fashion">Moda</option>
-                <option value="vehicles">Vehículos</option>
-                <option value="home">Hogar</option>
+                {#each categories as category}
+                    <option value={category.nombre}>{category.nombre}</option>
+                 {/each}
             </select>
+            
         </div>
         <div class="filter-group">
             <label for="price-min">Precio:</label>
@@ -70,7 +92,7 @@
             <label for="location">Ubicación:</label>
             <input id="location" type="text" placeholder="Ej: Ciudad de México" bind:value={ubicacion} />
         </div>
-        <button class="apply-filters" on:click={fetchPools}>Aplicar</button>
+        <button class="apply-filters" type="button" on:click={applyFilters}>Aplicar</button>
     </div>
 
   <div class="results">
@@ -131,7 +153,7 @@
     .apply-filters {
       display: inline-block;
       padding: 0.75rem 1.5rem;
-      background-color: #007bff;
+      background-color: #000000;
       color: #ffffff;
       font-size: 1rem;
       font-weight: bold;
@@ -160,22 +182,5 @@
       margin-top: 1.5rem;
     }
   
-    .loading {
-      text-align: center;
-      font-size: 1.2rem;
-      color: #333;
-    }
-  
-    .no-results {
-      text-align: center;
-      font-size: 1.2rem;
-      color: #999;
-    }
-  
-    .error {
-      text-align: center;
-      color: red;
-      font-weight: bold;
-    }
   </style>
 

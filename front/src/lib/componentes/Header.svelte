@@ -3,8 +3,7 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Filter from './Filter.svelte';
-
+  
   // Variables para manejar el estado del header
   let lastScrollY = 0; // Posición anterior del scroll
   let headerHidden = false; // Indica si el header está oculto
@@ -59,6 +58,7 @@
   let searchQuery = '';
 
   async function handleSearch() {
+    console.log("EntorCaaa")
       goto(`/listadopools?producto=${encodeURIComponent(searchQuery)}`);
   }
 

@@ -25,12 +25,7 @@
 <Footer />
 
 <style>
-    body {
-    margin: 0;
-    padding: 0;
-}
-
 main {
-    padding-top: 70px;
+    padding-top: 20px;
 }
 </style>

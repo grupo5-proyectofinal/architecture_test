@@ -47,15 +47,6 @@ declare module '$env/static/private' {
 	export const SYSTEMD_EXEC_PID: string;
 	export const GSM_SKIP_SSH_AGENT_WORKAROUND: string;
 	export const DBUS_SESSION_BUS_ADDRESS: string;
-	export const HOMEDRIVE: string;
-	export const HOMEPATH: string;
-	export const INIT_CWD: string;
-	export const LOCALAPPDATA: string;
-	export const LOGONSERVER: string;
-	export const MSMPI_BENCHMARKS: string;
-	export const MSMPI_BIN: string;
-	export const NODE_EXE: string;
-	export const NPM_CLI_JS: string;
 	export const npm_config_engine_strict: string;
 	export const COLORTERM: string;
 	export const LIBVIRT_DEFAULT_URI: string;
@@ -119,6 +110,7 @@ declare module '$env/static/private' {
 	export const LC_PAPER: string;
 	export const MEMORY_PRESSURE_WRITE: string;
 	export const VTE_VERSION: string;
+	export const INIT_CWD: string;
 	export const EDITOR: string;
 	export const NODE_ENV: string;
 }
@@ -163,8 +155,7 @@ declare module '$env/dynamic/private' {
 		npm_config_noproxy: string;
 		HOME: string;
 		OLDPWD: string;
-		TERM_PROGRAM_VERSION: string;
-		VSCODE_IPC_HOOK_CLI: string;
+		DESKTOP_SESSION: string;
 		npm_package_json: string;
 		GNOME_SHELL_SESSION_MODE: string;
 		GTK_MODULES: string;
