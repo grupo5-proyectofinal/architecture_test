@@ -19,7 +19,7 @@
 <Header usuario={data.usuario} isAuthenticated={isAuthenticated}/>
 
 <main class="main-content">
-    <slot />
+    <slot usuario={data.usuario}/>
 </main>
 
 <Footer />

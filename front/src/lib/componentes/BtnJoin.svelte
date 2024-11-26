@@ -1,14 +1,17 @@
 <script>
+  import Cookies from "js-cookie";
   export let availableProducts = 0;
   export let isOpen = false;
   export let onClose = () => {};
   export let id;
-
+  const token = Cookies.get('token');
+  console.log(token)
   let selectedQuantity = 1;
-
+  console.log(selectedQuantity)
   function updateQuantity(event) {
     selectedQuantity = Math.min(Math.max(Number(event.target.value), 1), availableProducts);
   }
+  
 
   import Modal from './ModalConfirmation.svelte'; 
   let showModal = false;
@@ -18,12 +21,14 @@
       const response = await fetch(`https://poolshop-staging-748245240444.us-central1.run.app/api/pools/${parseInt(id)}/join/`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           product_quantity: selectedQuantity  // Cantidad seleccionada
         })
       });
+      console.log(response)
 
       if (response.ok) {
         showModal = true;  // Mostrar el modal de éxito si la solicitud fue exitosa
@@ -40,6 +45,7 @@
   function closeModal() {
     showModal = false;
   }
+
 </script>
 
 {#if isOpen}
