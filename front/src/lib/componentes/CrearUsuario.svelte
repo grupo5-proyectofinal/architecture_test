@@ -1,8 +1,7 @@
 <script>
   import { goto } from '$app/navigation';
-  import ModalConfirmation from './ModalConfirmation.svelte';
+  import ModalConfirmation from './ModalConfirmationUser.svelte';
 
-  // Variables del formulario
   let username = '';
   let email = '';
   let password = '';
@@ -13,16 +12,11 @@
   let direccion = '';
   let country = 'Argentina';
   let city = '';
-  let phone_number = ''; 
-
-  // Variables para la imagen
+  let phone_number = '';
   let profilePictureFile = null;
   let profilePicturePreview = "https://via.placeholder.com/400";
-
-  // Modal confirmation state
   let showModal = false;
 
-  // Manejo de errores
   let errors = {
     username: '',
     email: '',
@@ -55,7 +49,7 @@
   async function handleSubmit(event) {
     event.preventDefault();
     if (validateForm()) {
-      enviarDatos();
+      await enviarDatos();
     }
   }
 
@@ -91,24 +85,26 @@
       const responseData = await response.json();
       console.log('Usuario creado con éxito:', responseData);
 
-      showModal = true;
+      showModal = true; // Mostrar el modal
     } catch (error) {
       console.error('Error al enviar datos:', error);
     }
   }
 
-  // Función para actualizar la vista previa de la imagen
   function handleProfilePictureChange(event) {
     const file = event.target.files[0];
     if (file) {
       profilePictureFile = file;
-      profilePicturePreview = URL.createObjectURL(file); // Actualiza la URL de la vista previa
+      profilePicturePreview = URL.createObjectURL(file);
     }
   }
 
   function closeModal() {
     showModal = false;
-    goto('/login');  // Redirige a la página de inicio de sesión después de cerrar el modal
+  }
+
+  function handleContinue() {
+    goto('/login'); // Redirigir al inicio de sesión
   }
 </script>
 
@@ -197,7 +193,11 @@
 
   <!-- Modal de confirmación -->
   {#if showModal}
-    <ModalConfirmation {showModal} {closeModal} />
+    <ModalConfirmation
+      {showModal}
+      closeModal={closeModal}
+      onContinue={handleContinue}
+    />
   {/if}
 </main>
 

@@ -60,7 +60,7 @@ class PoolDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
 class JoinPoolView(generics.CreateAPIView):
     serializer_class = MemberSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         try:
@@ -81,7 +81,7 @@ class JoinPoolView(generics.CreateAPIView):
         
 class LeavePoolView(generics.GenericAPIView):
     serializer_class = MemberSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 
     def post(self, request, *args, **kwargs):

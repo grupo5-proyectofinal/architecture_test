@@ -18,7 +18,14 @@
 
 <Header usuario={data.usuario} isAuthenticated={isAuthenticated}/>
 
-<!-- Slot para el contenido de las rutas hijas -->
-<slot />
+<main class="main-content">
+    <slot usuario={data.usuario}/>
+</main>
 
 <Footer />
+
+<style>
+main {
+    padding-top: 20px;
+}
+</style>

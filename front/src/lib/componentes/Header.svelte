@@ -3,8 +3,7 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Filter from './Filter.svelte';
-
+  
   // Variables para manejar el estado del header
   let lastScrollY = 0; // Posición anterior del scroll
   let headerHidden = false; // Indica si el header está oculto
@@ -56,6 +55,20 @@
     else activeLink = null;
   }
   
+  let searchQuery = '';
+
+  async function handleSearch() {
+    console.log("EntorCaaa")
+      goto(`/listadopools?producto=${encodeURIComponent(searchQuery)}`);
+  }
+
+  function handleKeydown(event) {
+      if (event.key === 'Enter') {
+          event.preventDefault(); 
+          handleSearch();
+      }
+  }
+
 </script>
 
 <!-- Header -->
@@ -63,10 +76,17 @@
   <div class="container d-flex align-items-center justify-content-between">
     <!-- Logo y Título -->
     <div class="text-center">
-      <a class="navbar-brand" href="/principal">
-        <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
-        <div class="brand-text">PoolShop</div>
-      </a>
+      {#if authenticated}
+        <a class="navbar-brand" href="/principal">
+          <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
+          <div class="brand-text">PoolShop</div>
+        </a>
+      {:else}
+        <a class="navbar-brand" href="/">
+          <img src="/img/LogoPS-2.png" alt="PoolShop" class="logo img-fluid" />
+          <div class="brand-text">PoolShop</div>
+        </a>
+      {/if}
     </div>
 
     <!-- Barra de búsqueda y navegación -->
@@ -75,7 +95,13 @@
       <li class="mb-3 w-100">
         <div class="search-bar-container">
           <div class="search-bar">
-            <Filter placeholder="Buscar productos" />
+            <input 
+                class="search-input" 
+                type="text" 
+                bind:value={searchQuery} 
+                on:keydown={handleKeydown} 
+                placeholder="Buscar..."
+            />
             <button class="search-button"><i class="bi bi-search"></i></button>
           </div>
         </div>
@@ -86,10 +112,17 @@
       <li class="w-100">
         <div class="nav-buttons text-center">
           <nav class="navbar-nav d-flex justify-content-center">
-            <a class="nav-link mx-2 {activeLink === 'home' ? 'active' : ''}"
-             href="/">
-               Bienvenido
-            </a>
+            {#if authenticated}
+              <a class="nav-link mx-2 {activeLink === 'home' ? 'active' : ''}"
+              href="/principal">
+                Bienvenido
+              </a>
+            {:else}
+              <a class="nav-link mx-2 {activeLink === 'home' ? 'active' : ''}"
+              href="/">
+                Bienvenido
+              </a>
+            {/if}
             <a class="nav-link mx-2 {activeLink === 'crear' ? 'active' : ''}"
              href="/crearpoolshop">
                Crear pool
@@ -150,7 +183,7 @@
             </a>
           </div>
           <div class="registrarse mt-2">
-            <a href="/registrarse">Registrarse</a>
+            <a href="/crearusuario">Registrarse</a>
           </div>
         </div>
       {/if}
@@ -160,6 +193,15 @@
 
 <style>
     /* Ocultar el header cuando está scrolleado hacia abajo */
+  .search-input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 1rem;
+  color: #333;
+  width: 100%;
+  padding-left: 10px;
+}
   header.hidden {
     transform: translateY(-100%);
   }
@@ -221,7 +263,6 @@
     color: #ffffff;
     text-decoration: underline;
   }
-
   /* Ajustes responsivos */
   @media (max-width: 991.98px) {
     .search-bar-container {

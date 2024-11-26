@@ -120,7 +120,7 @@
   }
 </script>
 
-<div class="page-container">
+  <div class="page-container">
   <div class="card">
     <div class="image-wrapper">
       <img class="image" src={imageSrc} alt="Detalle del producto" />

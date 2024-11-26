@@ -1,7 +1,10 @@
 <script>
     import Crearpool from "../../../lib/componentes/Crearpool.svelte"
-
+    import { isAuthenticated } from '$lib/stores/auth';
     export let data;
+
+    let authenticated;
+    $: authenticated = $isAuthenticated;
    
 </script>
 
@@ -13,6 +16,6 @@
 
 <style>
     .crearpool {
-        padding: 10px;
+        padding: 40px;
     }
 </style>
