@@ -11,10 +11,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class CategoriaListView(generics.ListAPIView):
+class CategoriaListCreateView(generics.ListCreateAPIView):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
-    permission_classes = [permissions.AllowAny] 
+    permission_classes = [permissions.AllowAny]
 
 class PoolListCreateView(ListCreateAPIView):
     queryset = Pool.objects.filter(estado=Pool.EstadoChoices.ABIERTO)
