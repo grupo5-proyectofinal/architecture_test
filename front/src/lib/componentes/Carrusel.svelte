@@ -34,6 +34,9 @@
 
 <style>
     .rounded-carousel {
+    max-width: 100%;
+    height: 380px;
+    margin: 0 auto; 
     border-radius: 20px; /* Ajusta el radio de las curvas */
     overflow: hidden; /* Asegura que el contenido respete las curvas */
   }
@@ -43,23 +46,28 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    color: white;
+    color: rgb(216, 87, 1);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Mejor visibilidad */
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    /*background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
     padding: 10px;
     border-radius: 5px; /* Bordes redondeados */
   }
+    .carousel-caption h1{
+      font-weight: 700;
+    }
 
   /* Ajustes responsivos para texto */
   @media (max-width: 768px) {
     .carousel-caption h1 {
       font-size: 1.5rem;
+      font-weight: 700;
     }
   }
 
   @media (max-width: 576px) {
     .carousel-caption h1 {
       font-size: 1.2rem;
+      font-weight: 700;
     }
   }
 

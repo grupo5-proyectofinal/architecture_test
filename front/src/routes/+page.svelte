@@ -59,7 +59,7 @@
 <main>
   <br />
   <div class="body">
-    <Carrusel {images}/>
+     <Carrusel {images}/>
 
     <!-- Sección de pools más vistos -->
     <div class="container">
